@@ -1,7 +1,7 @@
 {
-  "name": "Turmspitze",
+  "name": "Turmspitze Spielhalle",
   "short_name": "Turmspitze",
-  "description": "Spielautomat mit drei Türmen, Sonne als Joker, Teufel und Risikoleiter – nur Spielgeld.",
+  "description": "Spielhalle mit Turmspitze (Spielautomat mit Risikoleiter), französischem Roulette und Black Jack – nur Spielgeld.",
   "lang": "de",
   "id": "./",
   "start_url": "./",
