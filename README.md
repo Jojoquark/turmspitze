@@ -1,9 +1,10 @@
 # Turmspitze – Spielhalle
 
-Eine kleine Spielhalle als Web-App mit drei Spielen und einem gemeinsamen Guthaben:
+Eine kleine Spielhalle als Web-App mit vier Spielen und einem gemeinsamen Guthaben:
 
 - **Turmspitze**: Spielautomat im Stil von „Alles Spitze“. Drei Türme, eine 1×1-Walze, die Sonne als Joker, der Teufel und die Risikoleiter bis 300 €.
 - **Roulette**: klassisches französisches Roulette mit einer Null, wie in der Spielbank. Alle Einsatzarten, Kesselspiele (Voisins, Tiers, Orphelins, Jeu Zéro, Nachbarn, Finales), „en prison“ oder Partage bei Zero, Permanenz und Statistik.
+- **Sonnenbuch**: Walzenspiel im Stil der klassischen Buch-Automaten aus deutschen Spielhallen, mit eigenen Symbolen. 5 Walzen, 1 bis 10 Gewinnlinien, das Sonnenbuch ist Joker und Scatter. 3 Bücher bringen 10 Freispiele mit einem Sondersymbol, das sich über ganze Walzen ausbreitet. Jede Wiederholung bringt +10 Freispiele und ein weiteres Sondersymbol, bis zu 9 gleichzeitig. Gewinne lassen sich wie an deutschen Automaten auf der Risikoleiter oder mit der Karte (Rot/Schwarz) riskieren. Auszahlungsquote 95,03 %.
 - **Black Jack**: nach den Regeln deutscher Spielbanken. Sechs Decks, die Bank zieht bis 16 und steht ab 17, keine verdeckte Bankkarte, Black Jack zahlt 3 : 2, Versicherung, Teilen und Verdoppeln. Dazu gibt es einen Strategie-Tipp mit exakten Erwartungswerten und eine Strategietabelle. Die Regeln lassen sich umstellen, auch auf Las Vegas.
 
 Alles läuft im Browser, auch offline. Auf iPhone, iPad und Android lässt sich die Spielhalle als App auf den Startbildschirm legen.
@@ -17,7 +18,7 @@ Alles läuft im Browser, auch offline. Auf iPhone, iPad und Android lässt sich 
 3. Im Repository **Settings → Pages** öffnen. Bei „Source“ **Deploy from a branch** wählen, dann den Branch `main` und den Ordner `/ (root)` einstellen und speichern.
 4. Nach ein bis zwei Minuten ist die Spielhalle unter `https://DEINNAME.github.io/turmspitze/` erreichbar.
 
-Direkt zu einem Spiel springen: `…/turmspitze/#roulette`, `#blackjack` oder `#turmspitze`.
+Direkt zu einem Spiel springen: `…/turmspitze/#roulette`, `#blackjack`, `#sonnenbuch` oder `#turmspitze`.
 
 ## Als App installieren
 
@@ -29,7 +30,7 @@ Danach startet die Spielhalle im Vollbild und funktioniert auch ohne Internet. G
 
 ## Bedienung
 
-**Spielauswahl:** Spiel antippen oder die Tasten 1 / 2 / 3. Mit G öffnet sich das Guthaben, mit E die Einstellungen (Ton, Lautstärke, Sparmodus, Croupier-Stimme). Aus jedem Spiel führt das Haus-Symbol (oder Esc) zurück, sobald die Runde vorbei ist.
+**Spielauswahl:** Spiel antippen oder die Tasten 1 bis 4. Mit G öffnet sich das Guthaben, mit E die Einstellungen (Ton, Lautstärke, Sparmodus, Croupier-Stimme). Aus jedem Spiel führt das Haus-Symbol (oder Esc) zurück, sobald die Runde vorbei ist.
 
 **Turmspitze**
 
@@ -55,6 +56,17 @@ Danach startet die Spielhalle im Vollbild und funktioniert auch ohne Internet. G
 | Zurück, Wiederholen, Verdoppeln, Löschen | Knöpfe | Z, W, D, C |
 | Drehen | DREHEN oder Kessel antippen | Leertaste |
 
+**Sonnenbuch**
+
+| Aktion | Touch | Tastatur |
+|---|---|---|
+| Start / Stopp | START oder Walzen antippen | Leertaste |
+| Einsatz je Linie / Linien | − / + / LINIEN | − / + / X |
+| Gewinn riskieren mit der Karte | RISIKO, dann ROT / SCHWARZ | R, dann ← / → |
+| Risikoleiter | LEITER, dann STOPP (oder Leiter antippen) | L, dann Leertaste oder ↑ |
+| Gewinn annehmen | ANNEHMEN (START nimmt den Gewinn und dreht weiter) | N oder ↓ |
+| Auto-Start, Gewinnplan | AUTO START, GEWINNPLAN | A, I |
+
 **Black Jack**
 
 | Aktion | Touch | Tastatur |
@@ -68,9 +80,11 @@ Danach startet die Spielhalle im Vollbild und funktioniert auch ohne Internet. G
 
 ## Regeln kurz
 
-**Turmspitze:** Jeder Dreh kostet den Einsatz. Käfer, Münze und Kleeblatt lassen ihren Turm eine Stufe steigen, die Sonne alle drei. Der Teufel setzt den Jackpot (Summe der Türme) auf 0. Volle Türme zahlen jeden weiteren Treffer direkt aus. Nach der Annahme dürfen Gewinne bis 84 € riskiert werden (Leiter, Karte Rot/Schwarz oder Teilen). Die Auszahlungsquote wird exakt berechnet (Voreinstellung „Original“: 99,1 % bei optimalem Spiel).
+**Turmspitze:** Jeder Dreh kostet den Einsatz. Käfer, Münze und Kleeblatt lassen ihren Turm eine Stufe steigen, die Sonne alle drei. Der Teufel setzt den Jackpot (Summe der Türme) auf 0. Volle Türme zahlen jeden weiteren Treffer direkt aus. Nach der Annahme dürfen Gewinne bis 84 € riskiert werden (Leiter, Karte Rot/Schwarz oder Teilen). Die Auszahlungsquote wird exakt berechnet (Voreinstellung „Original“: 96,0 % bei optimalem Spiel, 90,8 % bei sofortiger Annahme).
 
 **Roulette:** 37 Zahlen (0 bis 36), jede fällt mit 1/37. Plein 35 : 1, Cheval 17 : 1, Transversale und Trio 11 : 1, Carré und „Les quatre premiers“ 8 : 1, Sixain 5 : 1, Dutzend und Kolonne 2 : 1, einfache Chancen 1 : 1. Fällt Zero, werden einfache Chancen gesperrt („en prison“) oder zur Hälfte zurückgezahlt. Hausvorteil 2,70 %, auf einfachen Chancen 1,35 %.
+
+**Sonnenbuch:** Gewinne zählen auf den gespielten Linien von links nach rechts. Falke 10/100/1000/5000, Katze 5/40/400/2000, Ankh und Pyramide 5/30/100/750, A und K 5/40/150, Q, J und 10 5/25/100 (je Linieneinsatz), Bücher irgendwo 2/20/200 × Gesamteinsatz. In den Freispielen zahlt das ausgebreitete Sondersymbol auf allen gespielten Linien, auch auf Walzen, die nicht nebeneinander liegen. Risiko: Karte bis zu 5× verdoppeln, Leiter Stufe für Stufe bis zum 500-fachen Einsatz, jeweils 50 : 50. Freispiele kommen im Schnitt alle 197 Spiele.
 
 **Black Jack:** Näher an 21 als die Bank, ohne 21 zu überschreiten. Die Bank bekommt ihre zweite Karte erst, wenn alle Spieler fertig sind. Hat sie dann Black Jack, verlieren alle Einsätze, auch Verdopplungen und Teilungen (einstellbar). Verdoppeln bei 9, 10 und 11, auch nach dem Teilen. Geteilte Asse bekommen nur je eine Karte. Versicherung bis zum halben Einsatz, zahlt 2 : 1. Mit Grundstrategie liegt der Hausvorteil bei etwa 0,7 %.
 

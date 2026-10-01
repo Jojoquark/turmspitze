@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Turmspitze Spielhalle</title>
-<meta name="description" content="Turmspitze-Spielhalle: Spielautomat mit drei Türmen und Risikoleiter, französisches Roulette und Black Jack nach Spielbank-Regeln. Nur Spielgeld.">
+<meta name="description" content="Turmspitze-Spielhalle: Spielautomat mit drei Türmen und Risikoleiter, französisches Roulette, Black Jack nach Spielbank-Regeln und das Walzenspiel Sonnenbuch. Nur Spielgeld.">
 <meta name="theme-color" content="#140300">
 <meta name="color-scheme" content="dark">
 <meta name="mobile-web-app-capable" content="yes">
@@ -106,7 +106,7 @@ body {
 </style>
 </head>
 <body>
-<canvas id="spiel" aria-label="Turmspitze-Spielhalle – Turmspitze, Roulette und Black Jack (Spielgeld)" tabindex="0"></canvas>
+<canvas id="spiel" aria-label="Turmspitze-Spielhalle – Turmspitze, Roulette, Black Jack und Sonnenbuch (Spielgeld)" tabindex="0"></canvas>
 <div id="rand-probe"></div>
 <div id="laden">TURMSPITZE<small>wird geladen …</small></div>
 <noscript><p style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;color:#ffd21f;font:800 18px sans-serif">Bitte JavaScript aktivieren, um Turmspitze zu spielen.</p></noscript>
@@ -2036,17 +2036,20 @@ const TOENE = ['KNOPF', 'DREH', 'STOPP', 'SONNE', 'TEUFEL', 'SPITZE', 'JACKPOT',
   'RISIKO_HOCH', 'RISIKO_TIEF', 'RISIKO_GEWONNEN', 'RISIKO_VERLOREN', 'KARTE',
   'STUFE1', 'STUFE2', 'STUFE3', 'STUFE4', 'STUFE5', 'STUFE6', 'STUFE7', 'STUFE8', 'STUFE9', 'STUFE10',
   'GEWINN_KLEIN', 'GEWINN_MITTEL', 'GEWINN_GROSS', 'VERLUST',
-  'CHIP', 'CHIPS', 'KARTE_GEBEN', 'KARTE_DREHEN', 'MISCHEN', 'KUGEL_KLACK', 'KUGEL_FACH', 'KUGEL_ROLL', 'BLACKJACK'];
+  'CHIP', 'CHIPS', 'KARTE_GEBEN', 'KARTE_DREHEN', 'MISCHEN', 'KUGEL_KLACK', 'KUGEL_FACH', 'KUGEL_ROLL', 'BLACKJACK',
+  'WALZE_LAUF', 'WALZE_STOPP', 'BUCH', 'SPANNUNG', 'ZAEHL', 'FREISPIELE', 'EXPANDIEREN', 'SEITE', 'LINIE'];
 
 // Hall-Anteil je Ton (0 = trocken)
 const HALL = {
   KNOPF: 0.05, CHIP: 0.04, CHIPS: 0.06, KARTE_GEBEN: 0.06, KARTE_DREHEN: 0.05, KUGEL_KLACK: 0.12, KUGEL_FACH: 0.1,
-  KUGEL_ROLL: 0.15, MISCHEN: 0.05, STOPP: 0.12, DREH: 0.12, HERZ: 0.05, FEHLER: 0.1, KARTE: 0.08
+  KUGEL_ROLL: 0.15, MISCHEN: 0.05, STOPP: 0.12, DREH: 0.12, HERZ: 0.05, FEHLER: 0.1, KARTE: 0.08,
+  WALZE_LAUF: 0.05, WALZE_STOPP: 0.06, ZAEHL: 0.03, SEITE: 0.06, SPANNUNG: 0.25, BUCH: 0.3, FREISPIELE: 0.3, EXPANDIEREN: 0.3
 };
 // Grundpegel je Ton: Verlust- und Warnklaenge bewusst leiser als Gewinne, haeufige Klaenge dezent
-const PEGEL = { TEUFEL: 0.47, VERLUST: 0.5, RISIKO_VERLOREN: 0.5, HERZ: 0.58, STOPP: 0.65, FEHLER: 0.72 };
+const PEGEL = { TEUFEL: 0.47, VERLUST: 0.5, RISIKO_VERLOREN: 0.5, HERZ: 0.58, STOPP: 0.65, FEHLER: 0.72, WALZE_STOPP: 0.6, EXPANDIEREN: 1.7 };
 // Anzahl gleichzeitiger Wiedergaben je Ton
-const POOL = { MUENZE: 5, STOPP: 3, KNOPF: 3, CHIP: 5, CHIPS: 3, KARTE_GEBEN: 4, KUGEL_KLACK: 4, KUGEL_FACH: 4 };
+const POOL = { MUENZE: 5, STOPP: 3, KNOPF: 3, CHIP: 5, CHIPS: 3, KARTE_GEBEN: 4, KUGEL_KLACK: 4, KUGEL_FACH: 4, WALZE_STOPP: 5, ZAEHL: 3,
+  SEITE: 3, BUCH: 3, LINIE: 2 };
 
 function midi(n) {
   return 440 * Math.pow(2, (n - 69) / 12);
@@ -2655,6 +2658,109 @@ class Klang {
         for (let i = 0; i < akk.length; i++) {
           S(b, rate, 0.3, 1.2, midi(akk[i]), 0.08, BLECH, 0.03, 1.8, { lp: 2800 });
         }
+        return b;
+      }
+      case 'WALZE_STOPP':
+        // Walze rastet ein: weicher, tiefer Holzton mit kurzem Klick
+        b = Klang.puffer(0.2, rate);
+        S(b, rate, 0, 0.17, 150, 0.22, SINUS, 0.002, 26, { glide: 95 });
+        S(b, rate, 0, 0.12, midi(64), 0.035, MARIMBA, 0.002, 30);
+        R(b, rate, 0, 0.025, 0.06, 1500, 900, 1.2, 0.0008, 140, 31);
+        return b;
+      case 'WALZE_LAUF': {
+        // nahtlos wiederholbares, leises Schnurren der laufenden Walzen (1 s)
+        const n = Math.floor(rate), x = Math.floor(rate * 0.1);
+        const roh = new Float32Array(n + x);
+        R(roh, rate, 0, (n + x) / rate, 0.12, 420, 420, 1.1, 0.0001, 0, 32);
+        for (let k = 0; k < 15; k++) {
+          R(roh, rate, k / 14, 0.012, 0.025, 2300, 1800, 2, 0.0005, 260, 40 + k);
+        }
+        b = new Float32Array(n);
+        for (let i = 0; i < n; i++) {
+          b[i] = roh[i];
+        }
+        for (let i = 0; i < x; i++) {
+          const a = i / x;
+          b[i] = roh[i] * a + roh[n + i] * (1 - a);
+        }
+        return b;
+      }
+      case 'BUCH': {
+        // geheimnisvolles Glockenmotiv (phrygisch-dominant) fuer jedes gelandete Buch
+        b = Klang.puffer(1.1, rate);
+        const n = [76, 80, 83, 88];
+        for (let i = 0; i < n.length; i++) {
+          S(b, rate, i * 0.06, 0.9, midi(n[i]), 0.075, GLOCKE, 0.002, 3.4);
+        }
+        S(b, rate, 0, 0.9, midi(52), 0.09, WARM, 0.03, 3, { vib: 5, vibTiefe: 0.004 });
+        R(b, rate, 0.05, 0.6, 0.01, 6500, 9000, 2, 0.05, 4, 33);
+        return b;
+      }
+      case 'SPANNUNG': {
+        // Spannung, wenn noch ein Buch fehlt: zitternder Halbtonwechsel ueber einem Bordun (1 s, nahtlos)
+        const n = Math.floor(rate), x = Math.floor(rate * 0.12);
+        const roh = new Float32Array(n + x);
+        for (let k = 0; k < 9; k++) {
+          const t = k * 0.125;
+          S(roh, rate, t, 0.13, midi(k % 2 === 0 ? 76 : 77), 0.045, MARIMBA, 0.003, 9);
+        }
+        S(roh, rate, 0, (n + x) / rate, midi(40), 0.07, WARM, 0.05, 0.01, { lp: 500 });
+        R(roh, rate, 0, (n + x) / rate, 0.012, 5000, 5000, 3, 0.05, 0, 34);
+        b = new Float32Array(n);
+        for (let i = 0; i < n; i++) {
+          b[i] = roh[i];
+        }
+        for (let i = 0; i < x; i++) {
+          const a = i / x;
+          b[i] = roh[i] * a + roh[n + i] * (1 - a);
+        }
+        return b;
+      }
+      case 'ZAEHL':
+        b = Klang.puffer(0.07, rate);
+        S(b, rate, 0, 0.06, midi(93), 0.045, MARIMBA, 0.001, 55);
+        return b;
+      case 'SEITE':
+        b = Klang.puffer(0.14, rate);
+        R(b, rate, 0, 0.12, 0.13, 3600, 1400, 0.9, 0.006, 26, 35);
+        return b;
+      case 'LINIE': {
+        b = Klang.puffer(0.6, rate);
+        const n = [76, 80, 83, 88];
+        for (let i = 0; i < n.length; i++) {
+          S(b, rate, i * 0.045, 0.45, midi(n[i]), 0.075, MARIMBA, 0.002, 7);
+        }
+        return b;
+      }
+      case 'FREISPIELE': {
+        // aegyptisch gefaerbte Fanfare: E-Dur, F-Dur, E-Dur hoch, Glockenlauf in E phrygisch-dominant
+        b = Klang.puffer(2.8, rate);
+        const lp = { lp: 3000 };
+        const akk = [[64, 68, 71], [65, 69, 72], [64, 68, 71, 76]];
+        const zeit = [0, 0.3, 0.62];
+        for (let a = 0; a < akk.length; a++) {
+          const dauer = a === 2 ? 1.9 : 0.3;
+          for (let i = 0; i < akk[a].length; i++) {
+            S(b, rate, zeit[a], dauer, midi(akk[a][i]), 0.07, BLECH, 0.03, a === 2 ? 1.2 : 5, lp);
+          }
+          S(b, rate, zeit[a], dauer, midi(akk[a][0] - 12), 0.11, WARM, 0.02, a === 2 ? 1.4 : 6);
+          S(b, rate, zeit[a], 0.25, 70, 0.2, SINUS, 0.003, 14, { glide: 45 });
+        }
+        const lauf = [76, 77, 80, 81, 83, 84, 86, 88, 89, 92];
+        for (let i = 0; i < lauf.length; i++) {
+          S(b, rate, 0.66 + i * 0.055, 0.9, midi(lauf[i]), 0.045, GLOCKE, 0.002, 3.4);
+        }
+        R(b, rate, 0.6, 1.6, 0.01, 7000, 9500, 2, 0.3, 2, 36);
+        return b;
+      }
+      case 'EXPANDIEREN': {
+        // Symbol waechst ueber die ganze Walze: aufsteigender Hauch und heller Glanz
+        b = Klang.puffer(1.1, rate);
+        R(b, rate, 0, 0.75, 0.05, 400, 4200, 1.3, 0.35, 0.5, 37);
+        S(b, rate, 0, 0.8, midi(60), 0.07, WARM, 0.25, 1.2, { glide: midi(72) });
+        S(b, rate, 0, 0.8, midi(67), 0.05, WARM, 0.25, 1.2, { glide: midi(79) });
+        S(b, rate, 0.7, 0.4, midi(91), 0.05, GLOCKE, 0.002, 6);
+        S(b, rate, 0.74, 0.4, midi(95), 0.04, GLOCKE, 0.002, 6);
         return b;
       }
       default: {
@@ -3596,12 +3702,12 @@ class Konfiguration {
     return k;
   }
 
-  // Kalibriert mit Direktgewinnen: Original = 99,1 % bei optimalem Spiel, 89,8 % bei sofortiger Annahme
+  // Kalibriert mit Direktgewinnen: Original = 96,0 % bei optimalem Spiel, 90,8 % bei sofortiger Annahme
   static original() {
-    return Konfiguration.baue('Original', [7, 15, 34, 2, 15, 124], 500);
+    return Konfiguration.baue('Original', [7, 15, 34, 2, 16, 121], 500);
   }
   static grosszuegig() {
-    return Konfiguration.baue('Großzügig', [7, 15, 34, 2, 13, 124], 500);
+    return Konfiguration.baue('Großzügig', [7, 15, 34, 2, 15, 124], 500); // 99,1 %
   }
   static hart() {
     return Konfiguration.baue('Hart', [7, 15, 34, 2, 17, 124], 500);
@@ -3652,6 +3758,10 @@ class Konfiguration {
       k.risikoPlus = d.risikoPlus !== false;
     } catch (e) {
       return Konfiguration.original();
+    }
+    // alte Standard-Gewichte (99,1 %) auf den neuen Standard (96 %) umstellen
+    if (k.name === 'Original' && k.gewicht.join(',') === '7,15,34,2,15,124') {
+      k.gewicht = Konfiguration.original().gewicht;
     }
     k.pruefen();
     return k;
@@ -7282,6 +7392,8 @@ const SzeneRoulette = (function () {
     IST_ROT[n] = true;
   });
   const TEIL = 2 * Math.PI / 37;
+  // Kessel-Geometrie (Anteile des Radius): Zahlenring aussen, Faecher innen, Holzkonus in der Mitte
+  const RING_A = 0.70, RING_I = 0.565, FACH_I = 0.455, KUGEL_FACH_R = 0.51;
   const FRANZ = ['zéro', 'un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf', 'dix', 'onze', 'douze', 'treize',
     'quatorze', 'quinze', 'seize', 'dix-sept', 'dix-huit', 'dix-neuf', 'vingt', 'vingt et un', 'vingt-deux', 'vingt-trois',
     'vingt-quatre', 'vingt-cinq', 'vingt-six', 'vingt-sept', 'vingt-huit', 'vingt-neuf', 'trente', 'trente et un', 'trente-deux',
@@ -8077,7 +8189,7 @@ const SzeneRoulette = (function () {
       r = 0.855 - 0.11 * w * w;
     } else if (u < u3) {
       const w = (u - u2) / (u3 - u2);
-      r = 0.745 - 0.2 * w + 0.05 * Math.abs(Math.sin(w * Math.PI * 1.6)) * (1 - w);
+      r = 0.745 - 0.235 * w + 0.05 * Math.abs(Math.sin(w * Math.PI * 1.6)) * (1 - w);
       if (!P.klack) {
         P.klack = true;
         klang.spiele('KUGEL_KLACK', { zufall: 0.05 });
@@ -8085,7 +8197,7 @@ const SzeneRoulette = (function () {
     } else {
       const w = (u - u3) / (1 - u3);
       const huepf = Math.abs(Math.sin(Math.PI * 3.2 * w)) * Math.pow(1 - w, 1.5);
-      r = 0.545 + 0.04 * huepf;
+      r = KUGEL_FACH_R + 0.04 * huepf;
       phi += P.sprungA * Math.sin(Math.PI * 2.1 * w) * Math.pow(1 - w, 2);
       const tick = Math.floor(w * 3.2);
       if (tick > P.fachTicks && w < 0.95) {
@@ -8111,7 +8223,7 @@ const SzeneRoulette = (function () {
     }
     if (P.t >= P.T2) {
       K.plan = null;
-      K.kugelR = 0.545;
+      K.kugelR = KUGEL_FACH_R;
       K.landeIdx = P.idx;
       if (rollen) {
         rollen.stop();
@@ -8309,16 +8421,26 @@ const SzeneRoulette = (function () {
   }
 
   // ---------------------------------------------------------------- Zeichnen: Kessel
-  const kesselCache = { px: 0, schale: null, rotor: null };
+  // Kessel-Bilder in festen Groessenstufen (beim Zoomen wird nicht jedes Bild neu gerendert)
+  const KESSEL_STUFEN = [128, 192, 256, 320, 384, 448, 512, 640, 768, 896, 1024, 1280, 1536];
+  const kesselCache = new Map();
   function kesselBilder(px) {
-    px = Math.max(64, Math.round(px / 8) * 8);
-    if (kesselCache.px === px) {
-      return kesselCache;
+    let stufe = KESSEL_STUFEN[KESSEL_STUFEN.length - 1];
+    for (let i = 0; i < KESSEL_STUFEN.length; i++) {
+      if (KESSEL_STUFEN[i] >= px * 1.08) {
+        stufe = KESSEL_STUFEN[i];
+        break;
+      }
     }
-    kesselCache.px = px;
-    kesselCache.schale = baueSchale(px);
-    kesselCache.rotor = baueRotor(px);
-    return kesselCache;
+    let b = kesselCache.get(stufe);
+    if (!b) {
+      b = { px: stufe, schale: baueSchale(stufe), rotor: baueRotor(stufe) };
+      kesselCache.set(stufe, b);
+      if (kesselCache.size > 3) {
+        kesselCache.delete(kesselCache.keys().next().value);
+      }
+    }
+    return b;
   }
   function baueSchale(px) {
     const cv = neuesCanvas(px, px);
@@ -8417,29 +8539,38 @@ const SzeneRoulette = (function () {
       // Zahlenring
       g.fillStyle = css(f);
       g.beginPath();
-      g.arc(0, 0, 0.7, a0, a1);
-      g.arc(0, 0, 0.6, a1, a0, true);
+      g.arc(0, 0, RING_A, a0, a1);
+      g.arc(0, 0, RING_I, a1, a0, true);
       g.closePath();
       g.fill();
       // Fach (tiefer, dunkler)
-      const fg = g.createRadialGradient(0, 0, 0.48, 0, 0, 0.6);
+      const fg = g.createRadialGradient(0, 0, FACH_I, 0, 0, RING_I);
       fg.addColorStop(0, css(dunkler(f, 0.55)));
       fg.addColorStop(0.6, css(dunkler(f, 0.25)));
       fg.addColorStop(1, css(dunkler(f, 0.45)));
       g.fillStyle = fg;
       g.beginPath();
-      g.arc(0, 0, 0.6, a0, a1);
-      g.arc(0, 0, 0.48, a1, a0, true);
+      g.arc(0, 0, RING_I, a0, a1);
+      g.arc(0, 0, FACH_I, a1, a0, true);
       g.closePath();
       g.fill();
-      // Zahl (radial, Kopf nach aussen)
+      // Zahl (radial, Kopf nach aussen) – gross, mit dunkler Kontur, damit sie auch beim Drehen lesbar bleibt
+      // Schrift in echten Pixeln setzen: winzige Schriftgroessen mit grosser Skalierung verlieren die Zeichenabstaende
       g.save();
       g.rotate(i * TEIL + Math.PI / 2);
-      g.fillStyle = '#fff';
-      g.font = '0.064px ' + FAM_TITEL;
+      const k = px / 2;
+      g.scale(1 / k, 1 / k);
+      const zs = String(n);
+      g.font = ((zs.length > 1 ? 0.082 : 0.09) * k).toFixed(2) + 'px ' + FAM_TITEL;
       g.textAlign = 'center';
       g.textBaseline = 'middle';
-      g.fillText(String(n), 0, -0.652);
+      g.lineJoin = 'round';
+      g.lineWidth = 0.014 * k;
+      g.strokeStyle = 'rgba(0,0,0,0.55)';
+      const ty = (-(RING_A + RING_I) / 2 + 0.004) * k;
+      g.strokeText(zs, 0, ty);
+      g.fillStyle = '#fff';
+      g.fillText(zs, 0, ty);
       g.restore();
     }
     // Stege
@@ -8448,8 +8579,8 @@ const SzeneRoulette = (function () {
     for (let i = 0; i < 37; i++) {
       const a = (i - 0.5) * TEIL;
       g.beginPath();
-      g.moveTo(Math.cos(a) * 0.6, Math.sin(a) * 0.6);
-      g.lineTo(Math.cos(a) * 0.7, Math.sin(a) * 0.7);
+      g.moveTo(Math.cos(a) * RING_I, Math.sin(a) * RING_I);
+      g.lineTo(Math.cos(a) * RING_A, Math.sin(a) * RING_A);
       g.stroke();
     }
     g.strokeStyle = 'rgb(215,215,225)';
@@ -8457,25 +8588,25 @@ const SzeneRoulette = (function () {
     for (let i = 0; i < 37; i++) {
       const a = (i - 0.5) * TEIL;
       g.beginPath();
-      g.moveTo(Math.cos(a) * 0.475, Math.sin(a) * 0.475);
-      g.lineTo(Math.cos(a) * 0.605, Math.sin(a) * 0.605);
+      g.moveTo(Math.cos(a) * (FACH_I - 0.005), Math.sin(a) * (FACH_I - 0.005));
+      g.lineTo(Math.cos(a) * (RING_I + 0.005), Math.sin(a) * (RING_I + 0.005));
       g.stroke();
     }
     g.strokeStyle = 'rgb(236,200,110)';
     g.lineWidth = 0.008;
-    [0.7, 0.6].forEach(function (rr) {
+    [RING_A, RING_I].forEach(function (rr) {
       g.beginPath();
       g.arc(0, 0, rr, 0, Math.PI * 2);
       g.stroke();
     });
     // Konus aus Holz
-    const kg = g.createRadialGradient(-0.12, -0.14, 0.02, 0, 0, 0.48);
+    const kg = g.createRadialGradient(-0.12, -0.14, 0.02, 0, 0, FACH_I);
     kg.addColorStop(0, 'rgb(190,118,58)');
     kg.addColorStop(0.6, 'rgb(122,60,24)');
     kg.addColorStop(1, 'rgb(64,26,8)');
     g.fillStyle = kg;
     g.beginPath();
-    g.arc(0, 0, 0.475, 0, Math.PI * 2);
+    g.arc(0, 0, FACH_I, 0, Math.PI * 2);
     g.fill();
     g.strokeStyle = 'rgba(240,200,110,0.9)';
     g.lineWidth = 0.012;
@@ -8527,6 +8658,7 @@ const SzeneRoulette = (function () {
   /** Kessel zeichnen (auch fuer die Vorschau in der Spielauswahl). */
   function zeichneKessel(g, cx, cy, r, rotor, kugelWinkel, kugelR, sichtbar, gewinnIdx, aufl, zeit) {
     const bilder = kesselBilder(r * 2 * (aufl || 1));
+    g.imageSmoothingQuality = 'high';
     fuell(g, kreisP(cx + 6, cy + 10, r), C(0, 0, 0, 110));
     g.drawImage(bilder.schale, cx - r, cy - r, 2 * r, 2 * r);
     g.save();
@@ -8538,8 +8670,8 @@ const SzeneRoulette = (function () {
       const puls = 0.55 + 0.45 * Math.sin((zeit || 0) * 8);
       g.fillStyle = 'rgba(255,240,150,' + (0.25 + 0.3 * puls).toFixed(3) + ')';
       g.beginPath();
-      g.arc(0, 0, 0.705 * r, a0, a1);
-      g.arc(0, 0, 0.48 * r, a1, a0, true);
+      g.arc(0, 0, (RING_A + 0.005) * r, a0, a1);
+      g.arc(0, 0, FACH_I * r, a1, a0, true);
       g.closePath();
       g.fill();
       g.strokeStyle = 'rgba(255,230,120,' + (0.6 + 0.4 * puls).toFixed(3) + ')';
@@ -12121,9 +12253,2989 @@ const SzeneBlackjack = (function () {
   return szene;
 })();
 
+// ---- buch.js
+// ====================================================================================
+// buch.js – „Sonnenbuch“: Walzenspiel nach dem Vorbild von Book of Ra Magic (Novoline),
+// mit eigenen Symbolen und eigenem Namen. 5 Walzen × 3 Reihen, 1–10 Gewinnlinien,
+// das Sonnenbuch ist Joker und Scatter, 3 Bücher = 10 Freispiele mit expandierendem
+// Sondersymbol; jede Wiederholung bringt +10 Freispiele und ein weiteres Sondersymbol
+// (bis zu 9 gleichzeitig). Gewinne lassen sich wie an deutschen Automaten auf der
+// Risikoleiter oder mit der Karte (Rot/Schwarz) riskieren.
+// Auszahlungsquote: 95,03 % wie das Original (exakt berechnet, unabhängig von Linien und Einsatz).
+// ====================================================================================
+
+const SzeneBuch = (function () {
+  // ---------------------------------------------------------------- Symbole & Gewinnplan
+  const FALKE = 0, KATZE = 1, ANKH = 2, PYRAMIDE = 3, AS = 4, KOENIG = 5, DAME = 6, BUBE = 7, ZEHN = 8, BUCH = 9;
+  const NAMEN = ['Sonnenfalke', 'Katze', 'Ankh', 'Pyramide', 'Ass', 'König', 'Dame', 'Bube', 'Zehn', 'Sonnenbuch'];
+  // Auszahlung je Linieneinsatz für 0..5 gleiche Symbole von links
+  const PAY = [
+    [0, 0, 10, 100, 1000, 5000],
+    [0, 0, 5, 40, 400, 2000],
+    [0, 0, 5, 30, 100, 750],
+    [0, 0, 5, 30, 100, 750],
+    [0, 0, 0, 5, 40, 150],
+    [0, 0, 0, 5, 40, 150],
+    [0, 0, 0, 5, 25, 100],
+    [0, 0, 0, 5, 25, 100],
+    [0, 0, 0, 5, 25, 100]
+  ];
+  const SCAT = [0, 0, 0, 2, 20, 200]; // Bücher irgendwo, × Gesamteinsatz
+  const MIN_EXP = [2, 2, 2, 2, 3, 3, 3, 3, 3];
+  // Walzenbänder (exakt berechnet: 95,03 % Auszahlung, Freispiele ca. alle 197 Spiele)
+  const STREIFEN = [
+    [4, 2, 7, 1, 5, 4, 2, 7, 0, 5, 2, 3, 6, 8, 3, 5, 7, 9, 6, 7, 8, 2, 7, 4, 5, 6, 7, 8, 3, 6, 8, 4, 7, 6, 8],
+    [6, 3, 8, 6, 7, 8, 2, 5, 8, 1, 7, 2, 6, 7, 9, 8, 5, 2, 4, 6, 7, 0, 8, 5, 7, 4, 5, 1, 6, 4, 7, 6, 8, 7, 4, 5, 8, 4],
+    [6, 8, 1, 6, 7, 4, 6, 7, 1, 6, 5, 7, 6, 0, 7, 4, 8, 5, 7, 8, 5, 7, 2, 6, 5, 8, 4, 3, 5, 7, 4, 3, 8, 6, 9, 4],
+    [6, 5, 7, 3, 8, 7, 5, 2, 6, 4, 5, 9, 8, 0, 7, 6, 4, 5, 8, 4, 6, 7, 1, 8, 7, 6, 5, 1, 3, 4, 8, 5, 4, 8, 5, 6, 4, 3, 8, 7],
+    [5, 6, 8, 4, 5, 7, 2, 5, 7, 8, 1, 3, 2, 8, 6, 0, 9, 8, 6, 4, 2, 1, 6, 3, 4, 7, 3, 5, 7, 8, 4, 7]
+  ];
+  // Gewinnlinien (Reihe je Walze: 0 oben, 1 Mitte, 2 unten) wie bei den Novoline-10-Linien-Spielen
+  const LINIEN = [
+    [1, 1, 1, 1, 1], [0, 0, 0, 0, 0], [2, 2, 2, 2, 2], [0, 1, 2, 1, 0], [2, 1, 0, 1, 2],
+    [1, 2, 2, 2, 1], [1, 0, 0, 0, 1], [2, 2, 1, 0, 0], [0, 0, 1, 2, 2], [2, 1, 1, 1, 0]
+  ];
+  const LINIEN_FARBE = [C(255, 70, 60), C(255, 205, 40), C(70, 210, 90), C(70, 150, 255), C(225, 90, 255), C(255, 145, 40),
+    C(40, 220, 220), C(255, 105, 185), C(185, 225, 60), C(245, 245, 245)];
+  const LINIEN_WAHL = [1, 3, 5, 7, 9, 10];
+  const LINIENEINSATZ = [1, 2, 4, 5, 10, 20, 50]; // Cent je Linie
+  const LEITER_FAKTOR = [1, 2, 4, 8, 16, 32, 64, 128, 256, 500];
+  const RISIKO_GRENZE = 500; // × Gesamteinsatz
+  const KARTE_RUNDEN = 5;
+  const SPEICHER = 'casino.sonnenbuch.v1';
+
+  // ---------------------------------------------------------------- Zustand
+  const S = {
+    z: 'BEREIT', zeit: 0, zt: 0,
+    lbIdx: 4, linien: 10,
+    fenster: null, stops: [0, 0, 0, 0, 0],
+    ergebnis: null, gewinn: 0, gewinnAnzeige: 0, rundeOffen: 0,
+    kreditAnzeige: 0,
+    fs: null,
+    auto: false,
+    konf: { tempo: 'normal', spannung: true, fsAuto: true },
+    karten: [], karte: null, leiter: null, intro: null,
+    zeigeLinie: -1, linienT: 0, exp: null, expListe: [],
+    stat: { spiele: 0, einsatz: 0, gewinn: 0, groesster: 0, treffer: 0, fs: 0, fsBester: 0, karteGew: 0, karteVerl: 0, leiterGew: 0,
+      leiterVerl: 0, sonder: 0 },
+    ov: 'KEINS', dialog: null, optionen: null,
+    mx: -1, my: -1, dirty: false, geladen: false,
+    spannung: false, meldText: '', meldUnter: ''
+  };
+  const meld = new Meldungen();
+  const partikel = new Partikel();
+  const knoepfe = new KnopfGruppe();
+  const ovKnoepfe = new KnopfGruppe();
+  let LB = null;
+  let btn = {};
+  let laufTon = null, spannTon = null;
+  const walzen = [0, 1, 2, 3, 4].map(function (i) {
+    return { i: i, pos: Math.floor(Math.random() * STREIFEN[i].length), phase: 'steht', t: 0, p0: 0, pf: 0, dauer: 0, ziel: 0, stopZeit: 0, vel: 0,
+      vmax: 0, d: 0, o: 0 };
+  });
+
+  function lb() {
+    return LINIENEINSATZ[S.lbIdx];
+  }
+  function einsatz() {
+    return lb() * S.linien;
+  }
+  function fsEinsatz() {
+    return S.fs ? S.fs.lb * S.fs.linien : einsatz();
+  }
+  function tempoF() {
+    return S.konf.tempo === 'schnell' ? 0.6 : 1;
+  }
+
+  // ---------------------------------------------------------------- Ablaufplan
+  const P = { liste: [], ende: 0 };
+  function schritt(pause, fn) {
+    P.ende = Math.max(P.ende, S.zeit) + pause * tempoF();
+    P.liste.push({ t: P.ende, fn: fn });
+  }
+  function planLeeren() {
+    P.liste = [];
+    P.ende = S.zeit;
+  }
+  function planLaeuft() {
+    return P.liste.length > 0;
+  }
+
+  // ---------------------------------------------------------------- Spielmathematik
+  function fensterAus(stops) {
+    const f = [];
+    for (let i = 0; i < 5; i++) {
+      const st = STREIFEN[i], L = st.length;
+      f.push([st[stops[i] % L], st[(stops[i] + 1) % L], st[(stops[i] + 2) % L]]);
+    }
+    return f;
+  }
+  /** Linienwert: bestes Symbol mit Joker-Ersatz (mindestens ein echtes Symbol in der Reihe). */
+  function linienWert(t) {
+    let best = 0, bs = -1, bn = 0;
+    for (let s = 0; s < 9; s++) {
+      let n = 0, echt = false;
+      for (let i = 0; i < 5; i++) {
+        if (t[i] === s) {
+          n++;
+          echt = true;
+        } else if (t[i] === BUCH) {
+          n++;
+        } else {
+          break;
+        }
+      }
+      if (echt && PAY[s][n] > best) {
+        best = PAY[s][n];
+        bs = s;
+        bn = n;
+      }
+    }
+    return { wert: best, sym: bs, n: bn };
+  }
+  function bewerte(f, linien, lbW, sonder) {
+    const e = { linien: [], scatter: null, exp: [], summe: 0, buecher: 0 };
+    for (let l = 0; l < linien; l++) {
+      const t = [];
+      for (let i = 0; i < 5; i++) {
+        t.push(f[i][LINIEN[l][i]]);
+      }
+      const w = linienWert(t);
+      if (w.wert > 0) {
+        e.linien.push({ l: l, sym: w.sym, n: w.n, betrag: w.wert * lbW });
+        e.summe += w.wert * lbW;
+      }
+    }
+    const pos = [];
+    for (let i = 0; i < 5; i++) {
+      for (let r = 0; r < 3; r++) {
+        if (f[i][r] === BUCH) {
+          pos.push([i, r]);
+        }
+      }
+    }
+    e.buecher = pos.length;
+    const sb = SCAT[Math.min(5, pos.length)] * lbW * linien;
+    e.scatter = { n: pos.length, betrag: sb, pos: pos };
+    e.summe += sb;
+    for (let k = 0; k < sonder.length; k++) {
+      const s = sonder[k];
+      const w = [];
+      for (let i = 0; i < 5; i++) {
+        if (f[i].indexOf(s) >= 0) {
+          w.push(i);
+        }
+      }
+      if (w.length >= MIN_EXP[s]) {
+        const b = PAY[s][w.length] * lbW * linien;
+        e.exp.push({ sym: s, walzen: w, n: w.length, betrag: b });
+        e.summe += b;
+      }
+    }
+    return e;
+  }
+  let testStops = null, testSonder = null;
+  function zufallsStops() {
+    if (testStops && testStops.length) {
+      return testStops.shift().slice();
+    }
+    return STREIFEN.map(function (st) {
+      return Math.floor(zufall() * st.length);
+    });
+  }
+  function neuesSondersymbol(vorhanden) {
+    if (testSonder && testSonder.length) {
+      const t = testSonder.shift();
+      if (vorhanden.indexOf(t) < 0) {
+        return t;
+      }
+    }
+    const frei = [];
+    for (let s = 0; s < 9; s++) {
+      if (vorhanden.indexOf(s) < 0) {
+        frei.push(s);
+      }
+    }
+    if (!frei.length) {
+      return -1;
+    }
+    return frei[Math.floor(zufall() * frei.length)];
+  }
+
+  // ---------------------------------------------------------------- Speichern
+  function offenerBetrag() {
+    if (S.z === 'GEWINN' || S.z === 'KARTE' || S.z === 'LEITER') {
+      return S.karte && S.karte.phase === 'zeigen' ? S.karte.ergebnisWert : (S.leiter && S.leiter.ergebnisWert !== undefined
+        ? S.leiter.ergebnisWert : S.gewinn);
+    }
+    if (!S.fs && (S.z === 'DREHT' || S.z === 'ZEIGEN')) {
+      return S.rundeOffen;
+    }
+    return 0;
+  }
+  function speichern() {
+    try {
+      const d = {
+        lb: S.lbIdx, linien: S.linien, konf: S.konf, stat: S.stat, karten: S.karten.slice(0, 5),
+        fs: S.fs ? { rest: S.fs.rest, gesamt: S.fs.gesamt, nr: S.fs.nr, symbole: S.fs.symbole, gewinn: S.fs.gewinn, lb: S.fs.lb,
+          linien: S.fs.linien } : null
+      };
+      window.localStorage.setItem(SPEICHER, JSON.stringify(d));
+    } catch (e) {
+      // optional
+    }
+    const k = Konto.kredit;
+    Konto.kredit = k + offenerBetrag();
+    Konto.speichern();
+    Konto.kredit = k;
+    S.dirty = false;
+  }
+  function laden() {
+    let d = null;
+    try {
+      d = JSON.parse(window.localStorage.getItem(SPEICHER) || 'null');
+    } catch (e) {
+      d = null;
+    }
+    if (!d) {
+      return;
+    }
+    if (typeof d.lb === 'number') {
+      S.lbIdx = clampI(d.lb, 0, LINIENEINSATZ.length - 1);
+    }
+    if (typeof d.linien === 'number' && LINIEN_WAHL.indexOf(d.linien) >= 0) {
+      S.linien = d.linien;
+    }
+    if (d.konf) {
+      if (d.konf.tempo === 'schnell' || d.konf.tempo === 'normal') {
+        S.konf.tempo = d.konf.tempo;
+      }
+      S.konf.spannung = d.konf.spannung !== false;
+      S.konf.fsAuto = d.konf.fsAuto !== false;
+    }
+    if (d.stat) {
+      Object.keys(S.stat).forEach(function (k) {
+        if (typeof d.stat[k] === 'number' && isFinite(d.stat[k])) {
+          S.stat[k] = d.stat[k];
+        }
+      });
+    }
+    if (Array.isArray(d.karten)) {
+      S.karten = d.karten.filter(function (c) {
+        return typeof c === 'number' && c >= 0 && c < 52;
+      }).slice(0, 5);
+    }
+    if (d.fs && typeof d.fs.rest === 'number' && Array.isArray(d.fs.symbole)) {
+      S.fs = {
+        rest: clampI(d.fs.rest, 0, 9999), gesamt: Math.max(10, d.fs.gesamt | 0), nr: d.fs.nr | 0,
+        symbole: d.fs.symbole.filter(function (s) {
+          return s >= 0 && s < 9;
+        }).slice(0, 9), gewinn: Math.max(0, Math.round(d.fs.gewinn || 0)),
+        lb: LINIENEINSATZ.indexOf(d.fs.lb) >= 0 ? d.fs.lb : lb(), linien: LINIEN_WAHL.indexOf(d.fs.linien) >= 0 ? d.fs.linien : S.linien
+      };
+      if (!S.fs.symbole.length) {
+        S.fs.symbole.push(neuesSondersymbol([]));
+      }
+    }
+  }
+
+  // ---------------------------------------------------------------- Walzen
+  // Walzenmechanik wie am Automaten: kurzer Ruck nach oben, schneller gleichmäßiger Lauf,
+  // dann Abbremsen mit gleichbleibender Verzögerung, kleines Überschwingen und Einrasten.
+  const V_LAUF = 23;          // Symbole pro Sekunde im Lauf
+  const RUCK = 0.26;          // Ruck nach oben beim Start (Symbolhöhen)
+  const RUCK_T = 0.09;        // Dauer des Rucks
+  const ANLAUF_T = 0.13;      // Beschleunigung auf volle Geschwindigkeit
+  const UEBERSCHWUNG = 0.2;   // Walze läuft beim Halten etwas über das Ziel hinaus
+  const BREMSWEG = 0.17;      // Bremsweg in Sekunden Laufzeit (ca. 4 Symbole)
+  const FEDER_T = 0.34;       // Einrasten (gedämpfte Feder)
+  function walzenStarten(stops, schnell) {
+    const basis = (schnell ? 0.42 : 0.55) * tempoF();
+    const abst = (schnell ? 0.13 : 0.18) * tempoF();
+    for (let i = 0; i < 5; i++) {
+      const w = walzen[i];
+      w.ziel = stops[i];
+      w.phase = 'start';
+      w.t = -i * 0.03;
+      w.p0 = w.pos;
+      w.vel = 0;
+      w.ruckFertig = false;
+      w.vmax = V_LAUF * (S.konf.tempo === 'schnell' ? 1.2 : 1);
+      w.stopZeit = S.zeit + basis + i * abst;
+    }
+    S.spannung = false;
+    if (laufTon) {
+      laufTon.stop();
+    }
+    laufTon = klang.schleife('WALZE_LAUF');
+    laufTon.setze(0.4, 1);
+  }
+  function walzeStoppen(w) {
+    const L = STREIFEN[w.i].length;
+    const o = UEBERSCHWUNG;
+    const dMin = w.vmax * BREMSWEG;
+    let p0 = w.pos;
+    // gebremst wird bis über das Ziel hinaus (pf - o), danach federt die Walze auf pf zurück
+    const pf = w.ziel + L * Math.floor((p0 + o - dMin - w.ziel) / L);
+    let d = p0 + o - pf;
+    // Solange die Walze unscharf läuft, darf sie um ganze Symbole springen: so ist der Bremsweg immer gleich lang
+    const sprung = Math.floor(d - dMin);
+    if (sprung > 0) {
+      w.pos -= sprung;
+      p0 = w.pos;
+      d -= sprung;
+    }
+    w.p0 = p0;
+    w.pf = pf;
+    w.d = d;
+    w.o = o;
+    w.dauer = 2 * d / w.vmax; // gleichmäßige Verzögerung: Startgeschwindigkeit = Laufgeschwindigkeit
+    w.t = 0;
+    w.phase = 'brems';
+  }
+  function walzenSchnellStopp() {
+    let k = 0;
+    for (let i = 0; i < 5; i++) {
+      const w = walzen[i];
+      if (w.phase === 'lauf' || w.phase === 'start') {
+        w.stopZeit = Math.min(w.stopZeit, S.zeit + 0.06 * k);
+        k++;
+      }
+    }
+  }
+  function alleStehen() {
+    return walzen.every(function (w) {
+      return w.phase === 'steht';
+    });
+  }
+  function gelandet(w) {
+    return w.phase === 'steht' || w.phase === 'feder';
+  }
+  function buecherSichtbar(bis) {
+    let n = 0;
+    for (let i = 0; i <= bis; i++) {
+      if (!gelandet(walzen[i])) {
+        continue;
+      }
+      for (let r = 0; r < 3; r++) {
+        if (S.fenster[i][r] === BUCH) {
+          n++;
+        }
+      }
+    }
+    return n;
+  }
+  function walzenUpdate(dt) {
+    let lauf = 0;
+    for (let i = 0; i < 5; i++) {
+      const w = walzen[i];
+      const L = STREIFEN[i].length;
+      if (w.phase === 'start') {
+        w.t += dt;
+        if (w.t < 0) {
+          continue;
+        }
+        if (w.t < RUCK_T) {
+          w.pos = w.p0 + RUCK * Math.sin(Math.PI / 2 * w.t / RUCK_T);
+          w.vel = 0;
+        } else {
+          if (!w.ruckFertig) {
+            w.ruckFertig = true;
+            w.pos = w.p0 + RUCK;
+          }
+          w.vel = Math.min(w.vmax, w.vel + w.vmax / ANLAUF_T * dt);
+          w.pos -= w.vel * dt;
+          if (w.vel >= w.vmax) {
+            w.phase = 'lauf';
+          }
+        }
+      } else if (w.phase === 'lauf') {
+        w.vel = w.vmax;
+        w.pos -= w.vel * dt;
+        if (w.pos < -1000) {
+          w.pos += L * 60;
+        }
+        if (S.zeit >= w.stopZeit) {
+          walzeStoppen(w);
+        }
+      } else if (w.phase === 'brems') {
+        w.t += dt;
+        const u = Math.min(1, w.t / w.dauer);
+        w.pos = w.p0 - w.d * (1 - (1 - u) * (1 - u));
+        w.vel = (2 * w.d / w.dauer) * (1 - u);
+        if (u >= 1) {
+          w.phase = 'feder';
+          w.t = 0;
+          w.vel = 0;
+          walzeEingerastet(w);
+        }
+      } else if (w.phase === 'feder') {
+        w.t += dt;
+        const off = -w.o * Math.cos(2 * Math.PI * 4.6 * w.t) * Math.exp(-13 * w.t);
+        w.pos = w.pf + off;
+        if (w.t >= FEDER_T) {
+          w.pos = ((w.ziel % L) + L) % L;
+          w.phase = 'steht';
+          if (alleStehen()) {
+            alleGestoppt();
+          }
+        }
+      }
+      if (w.phase === 'lauf' || w.phase === 'start') {
+        lauf++;
+      }
+    }
+    if (laufTon) {
+      laufTon.setze(lauf > 0 ? 0.18 + 0.05 * lauf : 0, 0.92 + 0.03 * lauf);
+    }
+  }
+  /** Die Walze rastet ein (Ende des Bremsens): Klang, Bücher, Spannung. */
+  function walzeEingerastet(w) {
+    klang.spiele('WALZE_STOPP', { zufall: 0.04, gain: 0.85 });
+    w.einrastZeit = S.zeit;
+    let buchHier = false;
+    for (let r = 0; r < 3; r++) {
+      if (S.fenster[w.i][r] === BUCH) {
+        buchHier = true;
+      }
+    }
+    const n = buecherSichtbar(w.i);
+    if (buchHier) {
+      klang.spiele('BUCH', { rate: [1, 1, 1.12, 1.26, 1.41, 1.5][Math.min(5, n)], gain: 0.85 });
+      for (let r = 0; r < 3; r++) {
+        if (S.fenster[w.i][r] === BUCH) {
+          const p = zellMitte(w.i, r);
+          partikel.funken(p[0], p[1], 8, GELB, 90);
+        }
+      }
+    }
+    // Spannung: zwei Bücher liegen, die restlichen Walzen laufen länger
+    if (S.konf.spannung && n >= 2 && w.i < 4 && !S.spannung) {
+      S.spannung = true;
+      let t = S.zeit + 0.55 * tempoF();
+      for (let k = w.i + 1; k < 5; k++) {
+        walzen[k].stopZeit = Math.max(walzen[k].stopZeit, t);
+        t += 0.8 * tempoF();
+      }
+      if (spannTon) {
+        spannTon.stop();
+      }
+      spannTon = klang.schleife('SPANNUNG');
+      spannTon.setze(0.55, 1);
+    }
+    // die Spannung endet, sobald die letzte Walze hält
+    if (w.i === 4 && spannTon) {
+      spannTon.stop();
+      spannTon = null;
+    }
+  }
+  function alleGestoppt() {
+    if (laufTon) {
+      laufTon.stop();
+      laufTon = null;
+    }
+    if (spannTon) {
+      spannTon.stop();
+      spannTon = null;
+    }
+    S.spannung = false;
+    nachDrehung();
+  }
+
+  // ---------------------------------------------------------------- Spielablauf
+  function kannStarten() {
+    return S.z === 'BEREIT' && S.ov === 'KEINS' && !planLaeuft();
+  }
+  function starte() {
+    if (S.z === 'GEWINN') {
+      annehmen(true);
+      return;
+    }
+    if (S.z === 'DREHT') {
+      walzenSchnellStopp();
+      return;
+    }
+    if (S.z === 'ZEIGEN' || S.z === 'EXP') {
+      // Anzeige abkürzen
+      if (!S.fs) {
+        planLeeren();
+        S.zaehlen = null;
+        S.gewinnAnzeige = S.gewinn = S.ergebnis ? S.ergebnis.summe : 0;
+        S.rundeOffen = 0;
+        if (S.gewinn > 0) {
+          gewinnAngebot();
+        } else {
+          rundeEnde();
+        }
+      }
+      return;
+    }
+    if (S.z === 'FS_WARTEN') {
+      freispielDrehen();
+      return;
+    }
+    if (!kannStarten()) {
+      return;
+    }
+    const E = einsatz();
+    if (Konto.kredit < E) {
+      S.auto = false;
+      klang.spiele('FEHLER');
+      meld.neu(Konto.kredit <= 0 ? 'GUTHABEN LEER' : 'ZU WENIG GUTHABEN', 'Oben rechts € antippen oder Einsatz senken', ORANGE, 1.8);
+      return;
+    }
+    Konto.kredit -= E;
+    S.stat.spiele++;
+    S.stat.einsatz += E;
+    S.stops = zufallsStops();
+    S.fenster = fensterAus(S.stops);
+    const e = bewerte(S.fenster, S.linien, lb(), []);
+    S.ergebnis = e;
+    S.gewinn = 0;
+    S.gewinnAnzeige = 0;
+    S.expListe = [];
+    S.exp = null;
+    S.zeigeLinie = -1;
+    if (e.summe > 0) {
+      S.stat.treffer++;
+    }
+    if (e.scatter.n >= 3) {
+      // Freispiele: der Gewinn dieses Spiels zählt schon zum Freispielgewinn
+      S.fs = { rest: 10, gesamt: 10, nr: 0, symbole: [neuesSondersymbol([])], gewinn: e.summe, lb: lb(), linien: S.linien, neu: true };
+      S.rundeOffen = 0;
+      S.stat.fs++;
+    } else {
+      S.rundeOffen = e.summe;
+    }
+    S.z = 'DREHT';
+    S.zt = 0;
+    S.dirty = true;
+    speichern();
+    walzenStarten(S.stops, false);
+  }
+  function freispielDrehen() {
+    const fs = S.fs;
+    if (!fs || fs.rest <= 0) {
+      return;
+    }
+    planLeeren();
+    S.stops = zufallsStops();
+    S.fenster = fensterAus(S.stops);
+    const e = bewerte(S.fenster, fs.linien, fs.lb, fs.symbole);
+    S.ergebnis = e;
+    S.expListe = [];
+    S.exp = null;
+    S.zeigeLinie = -1;
+    S.zaehlen = null;
+    S.gewinnAnzeige = fs.gewinn;
+    fs.rest--;
+    fs.nr++;
+    fs.gewinn += e.summe;
+    fs.neuesSymbol = -1;
+    if (e.scatter.n >= 3) {
+      fs.rest += 10;
+      fs.gesamt += 10;
+      if (fs.symbole.length < 9) {
+        fs.neuesSymbol = neuesSondersymbol(fs.symbole);
+        fs.symbole.push(fs.neuesSymbol);
+      }
+    }
+    S.z = 'DREHT';
+    S.zt = 0;
+    S.dirty = true;
+    speichern();
+    walzenStarten(S.stops, true);
+  }
+  function nachDrehung() {
+    const e = S.ergebnis;
+    S.z = 'ZEIGEN';
+    S.zt = 0;
+    planLeeren();
+    const fs = S.fs;
+    const basisSumme = e.summe - e.exp.reduce(function (a, x) {
+      return a + x.betrag;
+    }, 0);
+    // 1) Liniengewinne und Scatter
+    if (basisSumme > 0) {
+      const anzahl = e.linien.length + (e.scatter.betrag > 0 ? 1 : 0);
+      const E = fs ? fs.lb * fs.linien : einsatz();
+      gewinnKlang(basisSumme, E);
+      S.zeigeLinie = -2; // alle zugleich
+      S.linienT = S.zeit;
+      zaehleAuf(basisSumme, Math.min(1.6, 0.45 + 0.25 * anzahl));
+      schritt(0.7, function () {
+        S.zeigeLinie = 0;
+        S.linienT = S.zeit;
+      });
+      schritt(Math.min(2.4, 0.75 * anzahl), function () {});
+    }
+    // 2) Freispiele ausgelöst (im Grundspiel)
+    if (!fs || fs.nr === 0) {
+      if (fs && fs.neu) {
+        schritt(0.4, function () {
+          S.zeigeLinie = -1;
+          buecherFeiern();
+        });
+        schritt(1.4, function () {
+          introStarten(fs.symbole[0], true);
+        });
+        return;
+      }
+      schritt(basisSumme > 0 ? 0.1 : 0.05, function () {
+        S.zeigeLinie = basisSumme > 0 ? 0 : -1;
+        S.gewinn = basisSumme;
+        S.rundeOffen = 0;
+        if (basisSumme > 0) {
+          gewinnAngebot();
+        } else {
+          rundeEnde();
+        }
+      });
+      return;
+    }
+    // 3) Freispiel: Expansionen nacheinander
+    e.exp.forEach(function (x) {
+      schritt(0.35, function () {
+        S.zeigeLinie = -1;
+        S.exp = { sym: x.sym, walzen: x.walzen, t0: S.zeit, betrag: x.betrag, n: x.n };
+        S.z = 'EXP';
+        klang.spiele('EXPANDIEREN');
+      });
+      schritt(0.9, function () {
+        zaehleAuf(x.betrag, 0.9);
+        gewinnKlang(x.betrag, fs.lb * fs.linien);
+        S.stat.sonder++;
+      });
+      schritt(1.7, function () {
+        S.expListe.push(S.exp);
+        S.exp = null;
+      });
+    });
+    // 4) Wiederholung
+    if (e.scatter.n >= 3) {
+      schritt(0.4, function () {
+        S.zeigeLinie = -1;
+        buecherFeiern();
+        meld.neu('+10 FREISPIELE', fs.neuesSymbol >= 0 ? 'Ein weiteres Sondersymbol!' : 'Alle Symbole sind schon Sondersymbole', GOLD, 2.0);
+      });
+      if (fs.neuesSymbol >= 0) {
+        schritt(1.6, function () {
+          introStarten(fs.neuesSymbol, false);
+        });
+        return;
+      }
+      schritt(1.6, function () {});
+    }
+    schritt(0.5, naechstesFreispiel);
+  }
+  function naechstesFreispiel() {
+    const fs = S.fs;
+    if (!fs) {
+      return;
+    }
+    if (fs.rest <= 0) {
+      freispieleEnde();
+      return;
+    }
+    S.z = 'FS_WARTEN';
+    S.zt = 0;
+    if (S.konf.fsAuto || S.auto) {
+      schritt(0.55, function () {
+        if (S.z === 'FS_WARTEN' && S.ov === 'KEINS') {
+          freispielDrehen();
+        }
+      });
+    }
+  }
+  function freispieleEnde() {
+    const fs = S.fs;
+    S.z = 'FS_ENDE';
+    S.zt = 0;
+    S.zeigeLinie = -1;
+    S.expListe = [];
+    const g = fs.gewinn;
+    const E = fs.lb * fs.linien;
+    S.stat.fsBester = Math.max(S.stat.fsBester, g);
+    meld.neu('FREISPIELE ENDE', euro(g) + ' Gewinn', GOLD, 2.4);
+    gewinnKlang(Math.max(g, E * 30), E);
+    if (g >= E * 20) {
+      partikel.muenzen(LB.walzen.x + LB.walzen.cw * 2.5, LB.walzen.y + LB.walzen.rh * 1.5, 36, 1.2);
+    }
+    schritt(2.6, function () {
+      S.fs = null;
+      S.gewinn = g;
+      S.gewinnAnzeige = g;
+      S.dirty = true;
+      if (g > 0) {
+        gewinnAngebot();
+      } else {
+        rundeEnde();
+      }
+    });
+  }
+  function introStarten(sym, erstesMal) {
+    S.z = 'INTRO';
+    S.zt = 0;
+    const folge = [];
+    let t = 0, d = 0.06;
+    while (t < 2.0) {
+      let s;
+      do {
+        s = Math.floor(Math.random() * 9);
+      } while (folge.length && folge[folge.length - 1].s === s);
+      folge.push({ t: t, s: s });
+      t += d;
+      d *= 1.11;
+    }
+    folge.push({ t: t, s: sym });
+    S.intro = { sym: sym, t0: S.zeit, folge: folge, ende: t, erstes: erstesMal, tick: -1 };
+    if (erstesMal) {
+      klang.spiele('FREISPIELE');
+      meld.neu('10 FREISPIELE', 'mit Sondersymbol', GOLD, 2.0);
+    } else {
+      klang.spiele('BUCH', { rate: 1.12 });
+    }
+  }
+  function introFertig() {
+    const fs = S.fs;
+    S.intro = null;
+    if (fs) {
+      fs.neu = false;
+    }
+    S.dirty = true;
+    naechstesFreispiel();
+  }
+  function buecherFeiern() {
+    const e = S.ergebnis;
+    e.scatter.pos.forEach(function (p, k) {
+      const m = zellMitte(p[0], p[1]);
+      partikel.funken(m[0], m[1], 14, GELB, 140);
+      partikel.sterne(m[0] - 50, m[1] - 50, 100, 100, 4, GELB_HELL);
+    });
+    klang.spiele('BUCH', { rate: 1.26 });
+    S.buchFeier = S.zeit;
+  }
+  function gewinnKlang(betrag, E) {
+    const f = betrag / Math.max(1, E);
+    if (f >= 50) {
+      klang.spiele('GEWINN_GROSS');
+    } else if (f >= 8) {
+      klang.spiele('GEWINN_MITTEL');
+    } else if (f >= 2) {
+      klang.spiele('GEWINN_KLEIN');
+    } else {
+      klang.spiele('LINIE', { gain: 0.8 });
+    }
+  }
+  function zaehleAuf(betrag, dauer) {
+    S.zaehlen = { von: S.gewinnAnzeige, bis: S.gewinnAnzeige + betrag, t0: S.zeit, dauer: dauer * tempoF(), tick: 0 };
+  }
+  function gewinnAngebot() {
+    S.z = 'GEWINN';
+    S.zt = 0;
+    S.karte = null;
+    S.leiter = null;
+    S.kartenRunde = 0;
+    S.dirty = true;
+    const E = einsatz();
+    if (S.gewinn >= E * 50) {
+      partikel.muenzen(LB.walzen.x + LB.walzen.cw * 2.5, LB.walzen.y + LB.walzen.rh * 1.5, 30, 1.1);
+    }
+    if (S.auto) {
+      schritt(1.4, function () {
+        if (S.z === 'GEWINN' && S.auto) {
+          annehmen(true);
+        }
+      });
+    }
+  }
+  function rundeEnde() {
+    S.z = 'BEREIT';
+    S.zt = 0;
+    S.karte = null;
+    S.leiter = null;
+    S.dirty = true;
+    if (S.auto) {
+      schritt(0.45, function () {
+        if (S.auto && S.z === 'BEREIT') {
+          starte();
+        }
+      });
+    }
+  }
+  function annehmen(weiter) {
+    if (!(S.z === 'GEWINN' || S.z === 'KARTE' || S.z === 'LEITER')) {
+      return;
+    }
+    let g = S.gewinn;
+    if (S.z === 'LEITER' && S.leiter) {
+      g = S.leiter.wert;
+    }
+    planLeeren();
+    if (g > 0) {
+      Konto.kredit += g;
+      S.stat.gewinn += g;
+      S.stat.groesster = Math.max(S.stat.groesster, g);
+      klang.spiele('CASHOUT', { gain: 0.8 });
+      S.gutschrift = { betrag: g, t0: S.zeit };
+    }
+    S.gewinn = 0;
+    S.gewinnAnzeige = 0;
+    S.zeigeLinie = -1;
+    S.z = 'BEREIT';
+    S.karte = null;
+    S.leiter = null;
+    S.dirty = true;
+    speichern();
+    if (weiter && Konto.kredit >= einsatz()) {
+      schritt(0.25, function () {
+        if (S.z === 'BEREIT') {
+          starte();
+        }
+      });
+    } else if (S.auto) {
+      rundeEnde();
+    }
+  }
+
+  // ---------------------------------------------------------------- Risiko: Karte
+  function karteErlaubt() {
+    return S.z === 'GEWINN' && S.gewinn > 0 && S.gewinn * 2 <= RISIKO_GRENZE * einsatz() && (S.kartenRunde || 0) < KARTE_RUNDEN;
+  }
+  function karteStarten() {
+    if (!karteErlaubt() && !(S.z === 'KARTE' && S.karte && S.karte.phase === 'wahl')) {
+      if (S.z === 'GEWINN') {
+        klang.spiele('FEHLER');
+        meld.neu('KEIN RISIKO', S.gewinn * 2 > RISIKO_GRENZE * einsatz() ? 'Grenze erreicht' : 'Höchstens 5 Runden', ORANGE, 1.4);
+      }
+      return;
+    }
+    S.auto = false;
+    planLeeren();
+    S.zeigeLinie = -1;
+    S.z = 'KARTE';
+    S.zt = 0;
+    S.karte = { phase: 'wahl', t0: S.zeit, c: -1, wahl: '', tick: 0 };
+    S.dirty = true;
+  }
+  function karteWaehlen(rot) {
+    if (S.z !== 'KARTE' || !S.karte || S.karte.phase !== 'wahl') {
+      return;
+    }
+    const c = Math.floor(zufall() * 52);
+    const istRot = karteFarbe(c) === 1 || karteFarbe(c) === 2;
+    const k = S.karte;
+    k.c = c;
+    k.phase = 'zeigen';
+    k.t0 = S.zeit;
+    k.wahl = rot ? 'ROT' : 'SCHWARZ';
+    k.richtig = istRot === rot;
+    k.ergebnisWert = k.richtig ? S.gewinn * 2 : 0;
+    S.karten.unshift(c);
+    S.karten = S.karten.slice(0, 5);
+    klang.spiele('KARTE_DREHEN');
+    S.kartenRunde = (S.kartenRunde || 0) + 1;
+    S.dirty = true;
+    schritt(0.35, function () {
+      if (k.richtig) {
+        S.gewinn *= 2;
+        S.gewinnAnzeige = S.gewinn;
+        S.stat.karteGew++;
+        klang.spiele('RISIKO_GEWONNEN');
+        meld.neu('RICHTIG!', euro(S.gewinn), GRUEN, 1.1);
+      } else {
+        S.gewinn = 0;
+        S.gewinnAnzeige = 0;
+        S.stat.karteVerl++;
+        klang.spiele('RISIKO_VERLOREN');
+        meld.neu('VERLOREN', 'Die Karte war ' + (istRot ? 'rot' : 'schwarz'), ROT, 1.3);
+      }
+    });
+    schritt(1.0, function () {
+      S.karte.ergebnisWert = undefined;
+      if (k.richtig) {
+        if (S.gewinn * 2 <= RISIKO_GRENZE * einsatz() && S.kartenRunde < KARTE_RUNDEN) {
+          S.karte = { phase: 'wahl', t0: S.zeit, c: -1, wahl: '', tick: 0 };
+        } else {
+          S.z = 'GEWINN';
+          S.karte = null;
+          meld.neu('GRENZE ERREICHT', 'Gewinn annehmen oder Leiter', C(40, 110, 200), 1.4);
+        }
+      } else {
+        S.karte = null;
+        S.z = 'BEREIT';
+        S.dirty = true;
+        speichern();
+      }
+    });
+  }
+
+  // ---------------------------------------------------------------- Risiko: Leiter
+  function leiterWerte(E) {
+    return LEITER_FAKTOR.map(function (f) {
+      return f * E;
+    });
+  }
+  function leiterErlaubt() {
+    return S.z === 'GEWINN' && S.gewinn > 0 && S.gewinn < LEITER_FAKTOR[LEITER_FAKTOR.length - 1] * einsatz();
+  }
+  function leiterStufeVon(wert, werte) {
+    let j = -1;
+    for (let k = 0; k < werte.length; k++) {
+      if (werte[k] <= wert) {
+        j = k;
+      }
+    }
+    return j;
+  }
+  function leiterStarten() {
+    if (!leiterErlaubt()) {
+      if (S.z === 'GEWINN') {
+        klang.spiele('FEHLER');
+        meld.neu('KEINE LEITER', 'Gewinn liegt schon über der Leiter', ORANGE, 1.4);
+      }
+      return;
+    }
+    S.auto = false;
+    planLeeren();
+    S.zeigeLinie = -1;
+    const werte = leiterWerte(einsatz());
+    const j = leiterStufeVon(S.gewinn, werte);
+    S.z = 'LEITER';
+    S.zt = 0;
+    S.leiter = { werte: werte, wert: S.gewinn, stufe: j, ziel: j + 1, t0: S.zeit, phase: 'lauf', blink: 0, letzt: -1 };
+    klang.spiele('RISIKO_HOCH');
+    S.dirty = true;
+  }
+  function leiterStopp() {
+    const Lr = S.leiter;
+    if (S.z !== 'LEITER' || !Lr || Lr.phase !== 'lauf') {
+      return;
+    }
+    const zielWert = Lr.werte[Lr.ziel];
+    const p = Lr.wert / zielWert; // fair: Erwartungswert bleibt gleich (50 : 50 bei glatten Stufen)
+    const gewonnen = zufall() < p;
+    Lr.phase = 'ergebnis';
+    Lr.gewonnen = gewonnen;
+    Lr.t0 = S.zeit;
+    Lr.ergebnisWert = gewonnen ? zielWert : 0;
+    S.dirty = true;
+    if (gewonnen) {
+      Lr.wert = zielWert;
+      Lr.stufe = Lr.ziel;
+      S.gewinn = zielWert;
+      S.gewinnAnzeige = zielWert;
+      S.stat.leiterGew++;
+      klang.spiele(Klang.stufe(Lr.stufe + 1));
+      const R = leiterRungen();
+      const r = R[Lr.stufe];
+      partikel.funken(r.x + r.w / 2, r.y + r.h / 2, 12, GELB, 120);
+      if (Lr.stufe >= Lr.werte.length - 1) {
+        schritt(0.6, function () {
+          klang.spiele('JACKPOT');
+          meld.neu('LEITER GESCHAFFT', euro(Lr.wert), GOLD, 2.0);
+          partikel.muenzen(r.x + r.w / 2, r.y + r.h / 2, 40, 1.2);
+        });
+        schritt(1.6, function () {
+          annehmen(false);
+        });
+        return;
+      }
+      schritt(0.55, function () {
+        Lr.ziel = Lr.stufe + 1;
+        Lr.phase = 'lauf';
+        Lr.ergebnisWert = undefined;
+        Lr.t0 = S.zeit;
+      });
+    } else {
+      Lr.wert = 0;
+      S.gewinn = 0;
+      S.gewinnAnzeige = 0;
+      S.stat.leiterVerl++;
+      klang.spiele('RISIKO_VERLOREN');
+      meld.neu('LEITER VERLOREN', '', ROT, 1.2);
+      schritt(1.2, function () {
+        S.leiter = null;
+        S.z = 'BEREIT';
+        speichern();
+      });
+    }
+  }
+
+  // ---------------------------------------------------------------- Einsatz
+  function einsatzAendern(d) {
+    if (S.z !== 'BEREIT' || S.fs) {
+      return;
+    }
+    S.lbIdx = clampI(S.lbIdx + d, 0, LINIENEINSATZ.length - 1);
+    klang.spiele('KNOPF');
+    S.dirty = true;
+  }
+  function linienAendern() {
+    if (S.z !== 'BEREIT' || S.fs) {
+      return;
+    }
+    const i = LINIEN_WAHL.indexOf(S.linien);
+    S.linien = LINIEN_WAHL[(i + 1) % LINIEN_WAHL.length];
+    S.linienZeigen = S.zeit;
+    S.dirty = true;
+  }
+
+  // ---------------------------------------------------------------- Layout
+  function layoutQuer() {
+    const L = { hoch: false, W: 1280, H: 800 };
+    L.walzen = { x: 150, y: 120, cw: 150, rh: 126 };
+    L.marker = { links: 116, rechts: 906, w: 28, h: 21 };
+    L.fsLeiste = { x: 340, y: 64, w: 560, h: 32 };
+    L.meldungY = 532;
+    L.unten = { x: 16, y: 556, w: 962, h: 234 };
+    L.guth = { x: 32, y: 570, w: 220, h: 64 };
+    L.eins = { x: 264, y: 570, w: 220, h: 64 };
+    L.gew = { x: 496, y: 570, w: 220, h: 64 };
+    L.start = { x: 812, y: 588, d: 130 };
+    L.reihe2 = 650;
+    L.aktion = { x: 32, y: 712, w: 684, h: 62, quer: true };
+    L.leiter = { x: 992, y: 84, w: 272, h: 706 };
+    return L;
+  }
+  function layoutHoch(H) {
+    const L = { hoch: true, W: 720, H: H };
+    L.walzen = { x: 42, y: 138, cw: 127, rh: 112 };
+    L.marker = { links: 10, rechts: 684, w: 26, h: 19 };
+    L.fsLeiste = { x: 42, y: 80, w: 635, h: 34 };
+    L.meldungY = 510;
+    const mitteY = 540;
+    const mitteH = H - 186 - mitteY - 6;
+    L.mitte = { x: 12, y: mitteY, w: 696, h: mitteH };
+    L.gew = { x: 24, y: mitteY + 12, w: 418, h: 80 };
+    L.aktion = { x: 24, y: mitteY + 110, w: 418, h: 62, quer: false };
+    L.leiter = { x: 454, y: mitteY, w: 254, h: mitteH };
+    L.unten = { x: 12, y: H - 180, w: 696, h: 172 };
+    L.guth = { x: 24, y: H - 166, w: 270, h: 64 };
+    L.eins = { x: 304, y: H - 166, w: 240, h: 64 };
+    L.start = { x: 570, y: H - 172, d: 124 };
+    L.reihe2 = H - 88;
+    return L;
+  }
+  function zellMitte(i, r) {
+    const W = LB.walzen;
+    return [W.x + (i + 0.5) * W.cw, W.y + (r + 0.5) * W.rh];
+  }
+  function leiterRungen() {
+    const Lp = LB.leiter;
+    const kopf = LB.hoch ? 52 : 76;
+    const fuss = LB.hoch ? 50 : 62;
+    const n = LEITER_FAKTOR.length;
+    const verf = Lp.h - kopf - fuss;
+    const sh = verf / n;
+    const h = Math.min(46, sh - 6);
+    const R = [];
+    for (let k = 0; k < n; k++) {
+      R.push({ x: Lp.x + 16, y: Lp.y + kopf + (n - 1 - k) * sh + (sh - h) / 2, w: Lp.w - 32, h: h });
+    }
+    R.null = { x: Lp.x + 16, y: Lp.y + Lp.h - fuss + 8, w: Lp.w - 32, h: Math.min(40, fuss - 16) };
+    return R;
+  }
+
+  function baueKnoepfe() {
+    knoepfe.leeren();
+    btn = {};
+    const I = LB.hoch ? { y: 20, x0: 666, d: -48 } : { y: 20, x0: 1220, d: -48 };
+    const icons = [
+      ['ton', 'TON_AN', function () {
+        tonUmschalten();
+      }],
+      ['stat', 'STATISTIK', function () {
+        oeffne('STATISTIK');
+      }],
+      ['hilfe', 'INFO', function () {
+        oeffne('HILFE');
+      }],
+      ['regeln', 'ZAHNRAD', function () {
+        oeffne('REGELN');
+      }],
+      ['geld', 'GELD', function () {
+        oeffne('GUTHABEN');
+      }],
+      ['lobby', 'LOBBY', function () {
+        if (verlassenErlaubt()) {
+          wechsleSzene('lobby');
+        } else {
+          meld.neu('NICHT JETZT', S.fs ? 'Erst die Freispiele beenden' : 'Erst das Spiel beenden', ORANGE, 1.4);
+        }
+      }]
+    ];
+    for (let i = 0; i < icons.length; i++) {
+      btn[icons[i][0]] = knoepfe.add(new Knopf('', I.x0 + i * I.d, I.y, 40, 40, i === 5 ? C(255, 214, 90) : CREME, icons[i][2])
+        .setIcon(icons[i][1]));
+    }
+    const St = LB.start;
+    btn.start = knoepfe.add(new Knopf('START', St.x, St.y, St.d, St.d, C(40, 190, 70), function () {
+      starte();
+    }).setArt('RUND').setUnter(Knopf.touch ? 'TIPPEN' : 'LEERTASTE'));
+    btn.start.schrift = 24;
+    btn.start.still = true;
+    const y2 = LB.reihe2;
+    const x2 = LB.hoch ? 24 : 32;
+    btn.minus = knoepfe.add(new Knopf('', x2, y2, 46, 46, CREME, function () {
+      einsatzAendern(-1);
+    }).setIcon('MINUS'));
+    btn.plus = knoepfe.add(new Knopf('', x2 + 56, y2, 46, 46, CREME, function () {
+      einsatzAendern(1);
+    }).setIcon('PLUS'));
+    btn.minus.still = btn.plus.still = true;
+    btn.linien = knoepfe.add(new Knopf('10 LINIEN', x2 + 116, y2 + 4, LB.hoch ? 132 : 140, 38, C(70, 150, 255), linienAendern).setArt('CHIP'));
+    btn.auto = knoepfe.add(new Knopf('AUTO START', x2 + (LB.hoch ? 258 : 266), y2 + 4, LB.hoch ? 140 : 150, 38, C(255, 146, 0), function () {
+      S.auto = !S.auto;
+      if (S.auto && S.z === 'BEREIT') {
+        starte();
+      } else if (S.auto && S.z === 'GEWINN') {
+        annehmen(true);
+      }
+    }).setArt('CHIP'));
+    if (!LB.hoch) {
+      btn.plan = knoepfe.add(new Knopf('GEWINNPLAN', x2 + 426, y2 + 4, 150, 38, C(150, 80, 255), function () {
+        oeffne('HILFE');
+      }).setArt('CHIP'));
+    } else {
+      btn.plan = knoepfe.add(new Knopf('GEWINNPLAN', x2 + 408, y2 + 4, 0, 0, C(150, 80, 255), function () {
+        oeffne('HILFE');
+      }).setArt('CHIP'));
+      btn.plan.sichtbar = false;
+    }
+    // Aktionsknöpfe (je nach Zustand sichtbar)
+    const A = LB.aktion;
+    const slot = function (k, breiteS) {
+      if (A.quer) {
+        const w = (A.w - 2 * 12) / 3;
+        return [A.x + k * (w + 12), A.y, w * (breiteS || 1) + 12 * ((breiteS || 1) - 1), A.h];
+      }
+      return [A.x, A.y + k * (A.h + 12), A.w, A.h];
+    };
+    const mach = function (name, k, txt, farbe, fn, unter, breiteS) {
+      const s = slot(k, breiteS);
+      const b = knoepfe.add(new Knopf(txt, s[0], s[1], s[2], s[3], farbe, fn));
+      b.schrift = LB.hoch ? 24 : 21;
+      if (unter && !Knopf.touch) {
+        b.setUnter(unter);
+      }
+      btn[name] = b;
+      return b;
+    };
+    mach('risiko', 0, 'RISIKO', C(210, 40, 40), karteStarten, 'Karte · R');
+    mach('leiter', 1, 'LEITER', C(40, 120, 220), leiterStarten, 'Risikoleiter · L');
+    mach('nehmen', 2, 'ANNEHMEN', C(40, 170, 70), function () {
+      annehmen(false);
+    }, 'N / ↓');
+    mach('rot', 0, 'ROT', C(210, 30, 40), function () {
+      karteWaehlen(true);
+    }, '←');
+    mach('schwarz', 1, 'SCHWARZ', C(40, 40, 50), function () {
+      karteWaehlen(false);
+    }, '→');
+    mach('nehmenK', 2, 'ANNEHMEN', C(40, 170, 70), function () {
+      annehmen(false);
+    }, 'N / ↓');
+    mach('stopp', 0, 'STOPP', C(255, 140, 0), leiterStopp, 'Leertaste / ↑', A.quer ? 2 : 1);
+    mach('nehmenL', A.quer ? 2 : 1, 'ANNEHMEN', C(40, 170, 70), function () {
+      annehmen(false);
+    }, 'N / ↓');
+    ['risiko', 'leiter', 'nehmen', 'rot', 'schwarz', 'nehmenK', 'stopp', 'nehmenL'].forEach(function (k) {
+      btn[k].sichtbar = false;
+    });
+    btn.rot.still = btn.schwarz.still = btn.stopp.still = true;
+  }
+
+  function verlassenErlaubt() {
+    return (S.z === 'BEREIT' || S.z === 'GEWINN') && !S.fs && !planLaeuft();
+  }
+
+  // ---------------------------------------------------------------- Update
+  function update(dt) {
+    S.zeit += dt;
+    S.zt += dt;
+    meld.update(dt);
+    partikel.update(dt);
+    while (P.liste.length && P.liste[0].t <= S.zeit) {
+      const s = P.liste.shift();
+      s.fn();
+    }
+    walzenUpdate(dt);
+    // Gewinn zählen
+    if (S.zaehlen) {
+      const Z = S.zaehlen;
+      const u = clamp01((S.zeit - Z.t0) / Math.max(0.01, Z.dauer));
+      S.gewinnAnzeige = Math.round(Z.von + (Z.bis - Z.von) * u);
+      if (S.zeit - Z.tick > 0.07 && u < 1) {
+        Z.tick = S.zeit;
+        klang.spiele('ZAEHL', { rate: 1 + 0.5 * u, gain: 0.6 });
+      }
+      if (u >= 1) {
+        S.zaehlen = null;
+      }
+    }
+    // Guthaben-Anzeige
+    const d = Konto.kredit - S.kreditAnzeige;
+    S.kreditAnzeige = Math.abs(d) < 1 ? Konto.kredit : S.kreditAnzeige + d * Math.min(1, dt * 7);
+    // Intro (Sondersymbol-Wahl)
+    if (S.intro) {
+      const I = S.intro;
+      const t = S.zeit - I.t0;
+      let k = -1;
+      for (let i = 0; i < I.folge.length; i++) {
+        if (I.folge[i].t <= t) {
+          k = i;
+        }
+      }
+      if (k !== I.tick && t < I.ende + 0.01) {
+        I.tick = k;
+        klang.spiele('SEITE', { zufall: 0.1, gain: 0.7 });
+      }
+      if (t >= I.ende && !I.gelandet) {
+        I.gelandet = true;
+        klang.spiele('GEWINN_MITTEL');
+      }
+      if (t > I.ende + 1.6) {
+        introFertig();
+      }
+    }
+    // Leiter-Blinklicht
+    if (S.leiter && S.leiter.phase === 'lauf') {
+      const b = Math.floor((S.zeit - S.leiter.t0) / 0.3) % 2;
+      if (b !== S.leiter.letzt) {
+        S.leiter.letzt = b;
+        klang.spiele(b === 0 ? 'RISIKO_HOCH' : 'RISIKO_TIEF', { gain: 0.6 });
+      }
+    }
+    if (S.karte && S.karte.phase === 'wahl') {
+      const b = Math.floor((S.zeit - S.karte.t0) / 0.28) % 2;
+      if (b !== S.karte.letzt) {
+        S.karte.letzt = b;
+        klang.spiele(b === 0 ? 'RISIKO_HOCH' : 'RISIKO_TIEF', { gain: 0.45 });
+      }
+    }
+    // Linien weiterschalten
+    if (S.zeigeLinie >= 0 && S.ergebnis) {
+      const n = S.ergebnis.linien.length + (S.ergebnis.scatter.betrag > 0 ? 1 : 0);
+      if (n > 0 && S.zeit - S.linienT > 0.9) {
+        S.linienT = S.zeit;
+        S.zeigeLinie = (S.zeigeLinie + 1) % n;
+      }
+    }
+    // Knöpfe
+    const z = S.z;
+    const bereit = z === 'BEREIT' && !S.fs;
+    btn.start.aktiv = bereit || z === 'GEWINN' || z === 'DREHT' || z === 'FS_WARTEN' || (z === 'ZEIGEN' && !S.fs);
+    btn.start.text = z === 'DREHT' ? 'STOPP' : 'START';
+    btn.start.puls = bereit || z === 'FS_WARTEN';
+    btn.start.farbe = z === 'GEWINN' ? C(40, 150, 220) : C(40, 190, 70);
+    btn.minus.aktiv = bereit && S.lbIdx > 0;
+    btn.plus.aktiv = bereit && S.lbIdx < LINIENEINSATZ.length - 1;
+    btn.linien.aktiv = bereit;
+    btn.linien.text = S.linien + (S.linien === 1 ? ' LINIE' : ' LINIEN');
+    btn.auto.gewaehlt = S.auto;
+    btn.ton.icon = klang.an ? 'TON_AN' : 'TON_AUS';
+    const ruhe = verlassenErlaubt();
+    btn.lobby.aktiv = ruhe;
+    btn.geld.aktiv = bereit && !planLaeuft();
+    btn.regeln.aktiv = bereit;
+    const gew = z === 'GEWINN';
+    btn.risiko.sichtbar = btn.leiter.sichtbar = btn.nehmen.sichtbar = gew;
+    btn.risiko.aktiv = karteErlaubt();
+    btn.leiter.aktiv = leiterErlaubt();
+    btn.risiko.puls = btn.risiko.aktiv && !Stil.sparmodus;
+    const kw = z === 'KARTE' && S.karte && S.karte.phase === 'wahl';
+    btn.rot.sichtbar = btn.schwarz.sichtbar = btn.nehmenK.sichtbar = z === 'KARTE';
+    btn.rot.aktiv = btn.schwarz.aktiv = btn.nehmenK.aktiv = kw;
+    const lw = z === 'LEITER' && S.leiter && S.leiter.phase === 'lauf';
+    btn.stopp.sichtbar = btn.nehmenL.sichtbar = z === 'LEITER';
+    btn.stopp.aktiv = btn.nehmenL.aktiv = lw;
+    btn.stopp.puls = lw;
+    knoepfe.update(dt, S.mx, S.my, S.ov === 'KEINS');
+    ovKnoepfe.update(dt, S.mx, S.my, true);
+    if (S.optionen) {
+      S.optionen.update(dt, S.mx, S.my);
+    }
+  }
+
+  // ---------------------------------------------------------------- Symbolgrafik (eigene Motive)
+  const bildCache = new Map();
+  function symbolBild(s, px, unscharf) {
+    px = Math.max(16, Math.round(px));
+    const key = s + '_' + px + (unscharf ? 'u' : '');
+    let b = bildCache.get(key);
+    if (b) {
+      return b;
+    }
+    if (bildCache.size > 160) {
+      bildCache.clear();
+    }
+    if (unscharf) {
+      const basis = symbolBild(s, px, false);
+      b = neuesCanvas(px, px);
+      const g = b.getContext('2d');
+      // weiche vertikale Bewegungsunschärfe: viele Kopien, gleich gewichtet gemittelt,
+      // Versatz quadratisch verteilt (mehr Gewicht in der Mitte)
+      const n = 22;
+      for (let k = 0; k < n; k++) {
+        const t = (k + 0.5) / n * 2 - 1;
+        const off = Math.sign(t) * t * t * px * 0.34;
+        g.globalAlpha = 1 / (k + 1);
+        g.drawImage(basis, 0, off);
+      }
+      bildCache.set(key, b);
+      return b;
+    }
+    b = neuesCanvas(px, px);
+    const g = b.getContext('2d');
+    g.scale(px / 100, px / 100);
+    zeichneMotiv(g, s);
+    bildCache.set(key, b);
+    return b;
+  }
+  function konturFuell(g, p, farbe, kontur) {
+    g.fillStyle = farbe;
+    g.fill(p);
+    g.lineJoin = 'round';
+    g.lineWidth = kontur || 3.5;
+    g.strokeStyle = css(KONTUR);
+    g.stroke(p);
+  }
+  function zeichneMotiv(g, s) {
+    switch (s) {
+      case BUCH: motivBuch(g); break;
+      case FALKE: motivFalke(g); break;
+      case KATZE: motivKatze(g); break;
+      case ANKH: motivAnkh(g); break;
+      case PYRAMIDE: motivPyramide(g); break;
+      default: motivKarte(g, s); break;
+    }
+  }
+  function motivBuch(g) {
+    glow(g, 50, 52, 50, C(255, 200, 60, 120));
+    g.save();
+    g.translate(50, 53);
+    g.rotate(-0.09);
+    // Seitenblock
+    const seiten = rrP(-27, -36, 64, 80, 10);
+    konturFuell(g, seiten, gp(g, 0, -36, C(255, 248, 228), 0, 44, C(226, 206, 160)), 3);
+    g.strokeStyle = 'rgba(150,120,70,0.5)';
+    g.lineWidth = 1;
+    for (let k = 0; k < 6; k++) {
+      g.beginPath();
+      g.moveTo(31 + k * 0.8, -30 + k * 1.5);
+      g.lineTo(31 + k * 0.8, 38 - k * 1.2);
+      g.stroke();
+    }
+    // Einband
+    const deckel = rrP(-36, -42, 66, 82, 12);
+    konturFuell(g, deckel, gp(g, -36, -42, C(214, 40, 44), 30, 40, C(104, 8, 16)), 3.5);
+    // Buchrücken mit Bünden
+    g.save();
+    g.clip(deckel);
+    g.fillStyle = 'rgba(60,0,8,0.45)';
+    g.fillRect(-36, -42, 13, 82);
+    g.fillStyle = css(C(240, 186, 60));
+    g.fillRect(-36, -31, 13, 4);
+    g.fillRect(-36, 26, 13, 4);
+    g.restore();
+    // Goldene Ecken
+    g.fillStyle = gp(g, 0, -42, C(255, 236, 140), 0, 40, C(196, 128, 20));
+    [[30, -42, -1, 1], [30, 40, -1, -1]].forEach(function (e) {
+      g.beginPath();
+      g.moveTo(e[0], e[1]);
+      g.lineTo(e[0] + 15 * e[2], e[1]);
+      g.lineTo(e[0], e[1] + 15 * e[3]);
+      g.closePath();
+      g.fill();
+      g.strokeStyle = css(KONTUR);
+      g.lineWidth = 1.5;
+      g.stroke();
+    });
+    // Goldrahmen und Sonnenzeichen
+    g.strokeStyle = css(C(244, 196, 70));
+    g.lineWidth = 2.2;
+    g.stroke(rrP(-18, -35, 41, 68, 8));
+    const cx = 2.5, cy = -1;
+    g.fillStyle = gp(g, 0, cy - 22, C(255, 240, 150), 0, cy + 22, C(214, 140, 20));
+    g.beginPath();
+    for (let k = 0; k < 12; k++) {
+      const a = k * Math.PI / 6;
+      g.moveTo(cx + Math.cos(a - 0.17) * 10, cy + Math.sin(a - 0.17) * 10);
+      g.lineTo(cx + Math.cos(a) * 19, cy + Math.sin(a) * 19);
+      g.lineTo(cx + Math.cos(a + 0.17) * 10, cy + Math.sin(a + 0.17) * 10);
+      g.closePath();
+    }
+    g.fill();
+    g.strokeStyle = css(KONTUR);
+    g.lineWidth = 1.2;
+    g.stroke();
+    g.beginPath();
+    g.arc(cx, cy, 10.5, 0, Math.PI * 2);
+    g.fill();
+    g.strokeStyle = css(KONTUR);
+    g.lineWidth = 1.6;
+    g.stroke();
+    g.fillStyle = css(C(200, 30, 30));
+    g.beginPath();
+    g.arc(cx, cy, 4.2, 0, Math.PI * 2);
+    g.fill();
+    // Glanz
+    g.save();
+    g.clip(deckel);
+    g.fillStyle = 'rgba(255,255,255,0.18)';
+    g.beginPath();
+    g.ellipse(-12, -30, 30, 10, -0.5, 0, Math.PI * 2);
+    g.fill();
+    g.restore();
+    g.restore();
+  }
+  function motivFalke(g) {
+    // Sonnenscheibe hinter dem Kopf
+    const scheibe = kreisP(56, 34, 25);
+    konturFuell(g, scheibe, radial(g, 50, 26, 30, [[0, C(255, 170, 60)], [0.7, C(226, 60, 20)], [1, C(150, 20, 10)]]), 3);
+    g.strokeStyle = 'rgba(255,220,120,0.8)';
+    g.lineWidth = 2;
+    g.beginPath();
+    g.arc(56, 34, 21, 0, Math.PI * 2);
+    g.stroke();
+    // Kopf im Profil (blickt nach rechts)
+    const kopf = new Path2D();
+    kopf.moveTo(24, 96);
+    kopf.bezierCurveTo(18, 74, 20, 52, 28, 38);
+    kopf.bezierCurveTo(34, 24, 48, 16, 62, 19);
+    kopf.bezierCurveTo(70, 21, 76, 26, 80, 32);
+    kopf.lineTo(70, 50);
+    kopf.bezierCurveTo(66, 58, 66, 64, 70, 72);
+    kopf.bezierCurveTo(74, 82, 76, 90, 76, 96);
+    kopf.closePath();
+    konturFuell(g, kopf, gp(g, 0, 18, C(255, 220, 110), 0, 96, C(170, 104, 24)), 3.5);
+    // Halsstreifen (Lapislazuli)
+    g.save();
+    g.clip(kopf);
+    g.lineWidth = 5;
+    for (let k = 0; k < 6; k++) {
+      g.strokeStyle = k % 2 === 0 ? 'rgba(40,80,190,0.85)' : 'rgba(255,230,140,0.7)';
+      g.beginPath();
+      g.moveTo(16, 70 + k * 6);
+      g.quadraticCurveTo(46, 62 + k * 6, 80, 72 + k * 6);
+      g.stroke();
+    }
+    g.restore();
+    // Schnabel
+    const schnabel = new Path2D();
+    schnabel.moveTo(66, 24);
+    schnabel.bezierCurveTo(76, 24, 86, 30, 90, 40);
+    schnabel.bezierCurveTo(92, 47, 88, 54, 83, 55);
+    schnabel.bezierCurveTo(84, 49, 82, 46, 76, 46);
+    schnabel.lineTo(68, 44);
+    schnabel.closePath();
+    konturFuell(g, schnabel, gp(g, 66, 24, C(255, 214, 70), 90, 55, C(206, 140, 20)), 3);
+    const spitze = new Path2D();
+    spitze.moveTo(86, 41);
+    spitze.bezierCurveTo(90, 46, 88, 53, 83, 55);
+    spitze.bezierCurveTo(84, 50, 84, 46, 86, 41);
+    g.fillStyle = css(C(60, 36, 16));
+    g.fill(spitze);
+    // Auge mit Falkenzeichnung
+    g.fillStyle = '#fff';
+    g.beginPath();
+    g.arc(58, 34, 6.5, 0, Math.PI * 2);
+    g.fill();
+    g.strokeStyle = css(KONTUR);
+    g.lineWidth = 2;
+    g.stroke();
+    g.fillStyle = css(C(30, 20, 10));
+    g.beginPath();
+    g.arc(59.5, 34, 3.6, 0, Math.PI * 2);
+    g.fill();
+    g.fillStyle = '#fff';
+    g.beginPath();
+    g.arc(60.8, 32.6, 1.3, 0, Math.PI * 2);
+    g.fill();
+    g.strokeStyle = css(KONTUR);
+    g.lineWidth = 3.4;
+    g.lineCap = 'round';
+    g.beginPath();
+    g.moveTo(50, 31);
+    g.quadraticCurveTo(54, 27, 66, 30);
+    g.moveTo(56, 41);
+    g.quadraticCurveTo(52, 52, 55, 60);
+    g.quadraticCurveTo(60, 66, 63, 60);
+    g.stroke();
+    g.lineCap = 'butt';
+    // Glanz
+    g.fillStyle = 'rgba(255,255,255,0.22)';
+    g.beginPath();
+    g.ellipse(38, 34, 9, 15, -0.5, 0, Math.PI * 2);
+    g.fill();
+  }
+  function motivKatze(g) {
+    glow(g, 50, 54, 46, C(80, 150, 255, 70));
+    const sil = new Path2D();
+    // Ohren und Kopf
+    sil.moveTo(37, 27);
+    sil.lineTo(36, 6);
+    sil.lineTo(47, 17);
+    sil.quadraticCurveTo(50, 16, 53, 17);
+    sil.lineTo(64, 6);
+    sil.lineTo(63, 27);
+    sil.bezierCurveTo(64, 36, 60, 41, 57, 43);
+    // Körper
+    sil.bezierCurveTo(70, 52, 72, 76, 68, 92);
+    sil.lineTo(32, 92);
+    sil.bezierCurveTo(28, 76, 30, 52, 43, 43);
+    sil.bezierCurveTo(40, 41, 36, 36, 37, 27);
+    sil.closePath();
+    // Schwanz
+    const schwanz = new Path2D();
+    schwanz.moveTo(66, 90);
+    schwanz.bezierCurveTo(80, 92, 90, 84, 86, 74);
+    schwanz.bezierCurveTo(84, 70, 79, 71, 80, 75);
+    g.lineCap = 'round';
+    g.lineWidth = 11;
+    g.strokeStyle = css(KONTUR);
+    g.stroke(schwanz);
+    g.lineWidth = 6.5;
+    g.strokeStyle = css(C(30, 34, 52));
+    g.stroke(schwanz);
+    g.lineCap = 'butt';
+    konturFuell(g, sil, gp(g, 30, 10, C(64, 72, 108), 70, 92, C(14, 14, 24)), 3.5);
+    // Lichtkante
+    g.save();
+    g.clip(sil);
+    g.strokeStyle = 'rgba(140,180,255,0.35)';
+    g.lineWidth = 3;
+    g.beginPath();
+    g.moveTo(40, 46);
+    g.bezierCurveTo(32, 58, 31, 76, 34, 92);
+    g.stroke();
+    g.restore();
+    // Vorderbeine
+    g.strokeStyle = 'rgba(0,0,0,0.55)';
+    g.lineWidth = 2;
+    g.beginPath();
+    g.moveTo(46, 62);
+    g.lineTo(45, 91);
+    g.moveTo(54, 62);
+    g.lineTo(55, 91);
+    g.stroke();
+    // Halskragen aus Gold mit Lapisperlen
+    const kragen = new Path2D();
+    kragen.moveTo(40, 41);
+    kragen.quadraticCurveTo(50, 50, 60, 41);
+    kragen.lineTo(62, 47);
+    kragen.quadraticCurveTo(50, 59, 38, 47);
+    kragen.closePath();
+    konturFuell(g, kragen, gp(g, 0, 41, C(255, 230, 120), 0, 57, C(200, 130, 20)), 2);
+    g.fillStyle = css(C(40, 90, 200));
+    for (let k = 0; k < 5; k++) {
+      const t = (k + 0.5) / 5;
+      const x = 39.5 + t * 21;
+      const y = 47 + Math.sin(t * Math.PI) * 6;
+      g.beginPath();
+      g.arc(x, y, 1.8, 0, Math.PI * 2);
+      g.fill();
+    }
+    // Augen
+    [[44, 28], [56, 28]].forEach(function (a) {
+      const auge = new Path2D();
+      auge.moveTo(a[0] - 5, a[1]);
+      auge.quadraticCurveTo(a[0], a[1] - 4.5, a[0] + 5, a[1]);
+      auge.quadraticCurveTo(a[0], a[1] + 4.5, a[0] - 5, a[1]);
+      g.fillStyle = gp(g, 0, a[1] - 4, C(190, 255, 120), 0, a[1] + 4, C(60, 170, 40));
+      g.fill(auge);
+      g.fillStyle = '#000';
+      g.beginPath();
+      g.ellipse(a[0], a[1], 1.1, 3.4, 0, 0, Math.PI * 2);
+      g.fill();
+    });
+    // Nase und Ohrring
+    g.fillStyle = css(C(220, 140, 150));
+    g.beginPath();
+    g.moveTo(48, 34);
+    g.lineTo(52, 34);
+    g.lineTo(50, 36.5);
+    g.closePath();
+    g.fill();
+    g.strokeStyle = css(C(255, 210, 80));
+    g.lineWidth = 2;
+    g.beginPath();
+    g.arc(63, 24, 3.2, 0, Math.PI * 2);
+    g.stroke();
+  }
+  function motivAnkh(g) {
+    const linie = function (w, farbe) {
+      g.lineWidth = w;
+      g.strokeStyle = farbe;
+      g.lineCap = 'round';
+      g.lineJoin = 'round';
+      g.beginPath();
+      g.ellipse(50, 26, 12.5, 16, 0, 0, Math.PI * 2);
+      g.moveTo(22, 49);
+      g.lineTo(78, 49);
+      g.moveTo(50, 44);
+      g.lineTo(50, 90);
+      g.stroke();
+    };
+    glow(g, 50, 50, 46, C(255, 210, 80, 80));
+    linie(17, css(KONTUR));
+    linie(11, gp(g, 0, 8, C(255, 236, 140), 0, 92, C(196, 120, 16)));
+    linie(4, css(C(40, 200, 200)));
+    // Fuß verbreitert
+    const fuss = new Path2D();
+    fuss.moveTo(43, 80);
+    fuss.lineTo(57, 80);
+    fuss.lineTo(62, 93);
+    fuss.lineTo(38, 93);
+    fuss.closePath();
+    konturFuell(g, fuss, gp(g, 0, 80, C(255, 226, 120), 0, 93, C(190, 116, 16)), 3);
+    g.fillStyle = 'rgba(255,255,255,0.5)';
+    g.beginPath();
+    g.ellipse(43, 18, 3, 6, -0.4, 0, Math.PI * 2);
+    g.fill();
+    g.lineCap = 'butt';
+  }
+  function motivPyramide(g) {
+    // Sand
+    g.fillStyle = gp(g, 0, 80, C(240, 196, 110), 0, 98, C(190, 130, 60));
+    g.beginPath();
+    g.ellipse(50, 90, 48, 9, 0, 0, Math.PI * 2);
+    g.fill();
+    const apex = [52, 12], links = [6, 84], vorne = [60, 92], rechts = [95, 80];
+    const lf = new Path2D();
+    lf.moveTo(apex[0], apex[1]);
+    lf.lineTo(links[0], links[1]);
+    lf.lineTo(vorne[0], vorne[1]);
+    lf.closePath();
+    const rf = new Path2D();
+    rf.moveTo(apex[0], apex[1]);
+    rf.lineTo(vorne[0], vorne[1]);
+    rf.lineTo(rechts[0], rechts[1]);
+    rf.closePath();
+    g.fillStyle = gp(g, 0, 12, C(255, 222, 140), 0, 92, C(222, 160, 76));
+    g.fill(lf);
+    g.fillStyle = gp(g, 0, 12, C(200, 140, 66), 0, 92, C(150, 92, 40));
+    g.fill(rf);
+    // Steinreihen
+    g.strokeStyle = 'rgba(110,60,20,0.45)';
+    g.lineWidth = 1.2;
+    for (let k = 1; k < 7; k++) {
+      const u = k / 7;
+      const a = [apex[0] + (links[0] - apex[0]) * u, apex[1] + (links[1] - apex[1]) * u];
+      const b = [apex[0] + (vorne[0] - apex[0]) * u, apex[1] + (vorne[1] - apex[1]) * u];
+      const c = [apex[0] + (rechts[0] - apex[0]) * u, apex[1] + (rechts[1] - apex[1]) * u];
+      g.beginPath();
+      g.moveTo(a[0], a[1]);
+      g.lineTo(b[0], b[1]);
+      g.lineTo(c[0], c[1]);
+      g.stroke();
+    }
+    // goldene Spitze
+    const kappe = new Path2D();
+    const u = 0.22;
+    kappe.moveTo(apex[0], apex[1]);
+    kappe.lineTo(apex[0] + (links[0] - apex[0]) * u, apex[1] + (links[1] - apex[1]) * u);
+    kappe.lineTo(apex[0] + (vorne[0] - apex[0]) * u, apex[1] + (vorne[1] - apex[1]) * u);
+    kappe.lineTo(apex[0] + (rechts[0] - apex[0]) * u, apex[1] + (rechts[1] - apex[1]) * u);
+    kappe.closePath();
+    g.fillStyle = gp(g, 0, 12, C(255, 250, 190), 0, 30, C(236, 170, 30));
+    g.fill(kappe);
+    g.lineJoin = 'round';
+    g.lineWidth = 3.5;
+    g.strokeStyle = css(KONTUR);
+    g.beginPath();
+    g.moveTo(apex[0], apex[1]);
+    g.lineTo(links[0], links[1]);
+    g.lineTo(vorne[0], vorne[1]);
+    g.lineTo(rechts[0], rechts[1]);
+    g.closePath();
+    g.moveTo(apex[0], apex[1]);
+    g.lineTo(vorne[0], vorne[1]);
+    g.stroke();
+    glow(g, apex[0], apex[1] + 4, 14, C(255, 250, 200, 160));
+    g.strokeStyle = 'rgba(255,255,255,0.9)';
+    g.lineWidth = 1.6;
+    g.beginPath();
+    g.moveTo(apex[0] - 7, apex[1] + 2);
+    g.lineTo(apex[0] + 7, apex[1] + 2);
+    g.moveTo(apex[0], apex[1] - 5);
+    g.lineTo(apex[0], apex[1] + 9);
+    g.stroke();
+  }
+  const KARTEN_TEXT = { 4: 'A', 5: 'K', 6: 'Q', 7: 'J', 8: '10' };
+  const KARTEN_FARBE = { 4: [C(255, 120, 110), C(190, 20, 30)], 5: [C(220, 150, 255), C(110, 40, 190)], 6: [C(130, 200, 255), C(30, 90, 200)],
+    7: [C(150, 240, 130), C(30, 140, 50)], 8: [C(255, 210, 110), C(210, 110, 10)] };
+  function motivKarte(g, s) {
+    const t = KARTEN_TEXT[s];
+    const fs = t.length > 1 ? 58 : 72;
+    g.font = (fs * 1.04).toFixed(1) + 'px ' + FAM_TITEL;
+    g.textAlign = 'center';
+    g.textBaseline = 'alphabetic';
+    const y = 50 + fs * 0.36;
+    g.lineJoin = 'round';
+    g.lineWidth = 10;
+    g.strokeStyle = css(KONTUR);
+    g.strokeText(t, 50, y);
+    const f = KARTEN_FARBE[s];
+    g.fillStyle = gp(g, 0, y - fs * 0.75, f[0], 0, y, f[1]);
+    g.fillText(t, 50, y);
+    g.lineWidth = 2;
+    g.strokeStyle = 'rgba(255,255,255,0.55)';
+    g.strokeText(t, 50, y - 1);
+  }
+
+  // ---------------------------------------------------------------- Hintergrund
+  let hgCache = null, hgKey = '';
+  function hintergrund(g, cw, ch) {
+    const key = cw + 'x' + ch + (Stil.sparmodus ? 's' : '');
+    if (!hgCache || hgKey !== key) {
+      hgCache = neuesCanvas(cw, ch);
+      const h = hgCache.getContext('2d');
+      const gr = h.createRadialGradient(cw / 2, ch * 0.4, 0, cw / 2, ch * 0.4, Math.max(cw, ch) * 0.8);
+      gr.addColorStop(0, 'rgb(40,46,96)');
+      gr.addColorStop(0.55, 'rgb(18,20,50)');
+      gr.addColorStop(1, 'rgb(6,6,18)');
+      h.fillStyle = gr;
+      h.fillRect(0, 0, cw, ch);
+      // Sterne
+      const r = seedZufall(77);
+      for (let i = 0; i < 160; i++) {
+        h.fillStyle = 'rgba(255,240,200,' + (0.15 + r() * 0.5).toFixed(2) + ')';
+        const s = r() * 1.6 + 0.4;
+        h.fillRect(r() * cw, r() * ch, s, s);
+      }
+      // feine Zeichenbänder (eigene, hieroglyphenartige Ornamente)
+      const band = Math.max(26, ch / 30);
+      h.globalAlpha = 0.08;
+      h.strokeStyle = 'rgb(255,214,120)';
+      h.lineWidth = Math.max(1, band * 0.06);
+      for (let y = band; y < ch; y += band * 3.2) {
+        for (let x = 0; x < cw; x += band * 1.2) {
+          const k = Math.floor((x / band + y / band) * 7.3) % 4;
+          h.beginPath();
+          if (k === 0) {
+            h.arc(x + band * 0.5, y, band * 0.25, 0, Math.PI * 2);
+          } else if (k === 1) {
+            h.moveTo(x + band * 0.2, y);
+            h.quadraticCurveTo(x + band * 0.4, y - band * 0.25, x + band * 0.6, y);
+            h.quadraticCurveTo(x + band * 0.8, y + band * 0.25, x + band, y);
+          } else if (k === 2) {
+            h.moveTo(x + band * 0.5, y - band * 0.3);
+            h.lineTo(x + band * 0.5, y + band * 0.3);
+            h.moveTo(x + band * 0.25, y - band * 0.05);
+            h.lineTo(x + band * 0.75, y - band * 0.05);
+          } else {
+            h.moveTo(x + band * 0.2, y + band * 0.25);
+            h.lineTo(x + band * 0.5, y - band * 0.3);
+            h.lineTo(x + band * 0.8, y + band * 0.25);
+          }
+          h.stroke();
+        }
+      }
+      h.globalAlpha = 1;
+      hgKey = key;
+    }
+    g.drawImage(hgCache, 0, 0);
+  }
+
+  // ---------------------------------------------------------------- Zeichnen: Walzen
+  function zeichneWalzen(g) {
+    const W = LB.walzen;
+    const breiteG = W.cw * 5, hoeheG = W.rh * 3;
+    // Tempelrahmen
+    const M = LB.marker;
+    const rx = M.links - 8, rw = M.rechts + M.w + 8 - rx;
+    const rahmen = rrP(rx, W.y - 16, rw, hoeheG + 32, 28);
+    fuell(g, rrP(rx + 6, W.y - 8, rw, hoeheG + 32, 28), C(0, 0, 0, 120));
+    g.fillStyle = gp(g, 0, W.y - 16, C(236, 190, 110), 0, W.y + hoeheG + 16, C(150, 96, 40));
+    g.fill(rahmen);
+    rand(g, rahmen, KONTUR, 3.5);
+    strich(g, 2);
+    g.strokeStyle = 'rgba(255,240,190,0.6)';
+    g.stroke(rrP(rx + 6, W.y - 9, rw - 12, hoeheG + 18, 20));
+    // Ornamentband oben und unten auf dem Rahmen
+    g.fillStyle = 'rgba(110,60,20,0.35)';
+    for (let x = rx + 24; x < rx + rw - 24; x += 18) {
+      g.fillRect(x, W.y - 12, 8, 3);
+      g.fillRect(x + 4, W.y + hoeheG + 9, 8, 3);
+    }
+    // Walzenhintergrund
+    const innen = rectP(W.x, W.y, breiteG, hoeheG);
+    g.save();
+    g.clip(innen);
+    for (let i = 0; i < 5; i++) {
+      const x = W.x + i * W.cw;
+      g.fillStyle = gp(g, 0, W.y, C(30, 36, 82), 0, W.y + hoeheG, C(10, 12, 34));
+      g.fillRect(x, W.y, W.cw, hoeheG);
+      const sp = S.spannung && walzen[i].phase !== 'steht';
+      if (sp) {
+        const puls = 0.5 + 0.5 * Math.sin(S.zeit * 10);
+        g.fillStyle = 'rgba(255,200,60,' + (0.12 + 0.12 * puls).toFixed(3) + ')';
+        g.fillRect(x, W.y, W.cw, hoeheG);
+      }
+    }
+    // Symbole
+    const gr = Math.min(W.cw * 0.8, W.rh * 0.92);
+    const px = gr * aufloesung;
+    const expW = S.exp ? S.exp.walzen : null;
+    for (let i = 0; i < 5; i++) {
+      const w = walzen[i];
+      const st = STREIFEN[i], L = st.length;
+      const x = W.x + i * W.cw;
+      if (expW && expW.indexOf(i) >= 0) {
+        continue;
+      }
+      // Bewegungsunschärfe gleitend nach Geschwindigkeit (kein harter Wechsel beim Bremsen)
+      const blur = Stil.sparmodus ? 0 : clamp01((Math.abs(w.vel || 0) - 5) / 10);
+      const landPop = w.einrastZeit !== undefined && S.zeit - w.einrastZeit < 0.4 ? (S.zeit - w.einrastZeit) / 0.4 : -1;
+      const basis = Math.floor(w.pos);
+      const frac = w.pos - basis;
+      for (let r = -1; r <= 3; r++) {
+        const idx = ((basis + r) % L + L) % L;
+        const s = st[idx];
+        const y = W.y + (r - frac) * W.rh;
+        const cx = x + W.cw / 2, cy = y + W.rh / 2;
+        if (cy < W.y - W.rh || cy > W.y + hoeheG + W.rh) {
+          continue;
+        }
+        let sk = 1;
+        let hl = false;
+        if (landPop >= 0 && s === BUCH && r >= 0 && r <= 2) {
+          sk = 1 + 0.16 * Math.sin(landPop * Math.PI);
+        }
+        if (w.phase === 'steht' && r >= 0 && r <= 2) {
+          hl = gewinnPosition(i, r);
+          if (hl) {
+            sk = 1 + 0.06 * (0.5 + 0.5 * Math.sin(S.zeit * 8));
+          }
+          if (s === BUCH && S.buchFeier && S.zeit - S.buchFeier < 1.6) {
+            sk = 1 + 0.18 * Math.sin(Math.min(1, (S.zeit - S.buchFeier) / 1.6) * Math.PI);
+          }
+        }
+        if (hl && !Stil.sparmodus) {
+          glow(g, cx, cy, W.cw * 0.55, C(255, 220, 120, 70));
+        }
+        const gg = gr * sk;
+        if (blur < 0.999) {
+          if (blur > 0.001) {
+            g.globalAlpha = 1 - blur;
+          }
+          g.drawImage(symbolBild(s, px, false), cx - gg / 2, cy - gg / 2, gg, gg);
+        }
+        if (blur > 0.001) {
+          g.globalAlpha = blur;
+          g.drawImage(symbolBild(s, px, true), cx - gg / 2, cy - gg / 2, gg, gg);
+        }
+        g.globalAlpha = 1;
+      }
+    }
+    // Expandierte Sondersymbole (aktuell und bereits gezeigt)
+    if (S.exp) {
+      zeichneExpansion(g, S.exp, clamp01((S.zeit - S.exp.t0) / 0.6));
+    }
+    // Schatten oben/unten (Walzentiefe)
+    g.fillStyle = gp(g, 0, W.y, C(0, 0, 0, 120), 0, W.y + 26, C(0, 0, 0, 0));
+    g.fillRect(W.x, W.y, breiteG, 26);
+    g.fillStyle = gp(g, 0, W.y + hoeheG - 26, C(0, 0, 0, 0), 0, W.y + hoeheG, C(0, 0, 0, 120));
+    g.fillRect(W.x, W.y + hoeheG - 26, breiteG, 26);
+    g.restore();
+    // Trennstege
+    for (let i = 1; i < 5; i++) {
+      const x = W.x + i * W.cw;
+      g.fillStyle = gp(g, x - 3, 0, C(120, 80, 30), x + 3, 0, C(240, 200, 120));
+      g.fillRect(x - 2, W.y, 4, hoeheG);
+    }
+    rand(g, innen, KONTUR, 3);
+  }
+  function zeichneExpansion(g, ex, u) {
+    const W = LB.walzen;
+    const e = easeOutBack(u);
+    const s = ex.sym;
+    for (let k = 0; k < ex.walzen.length; k++) {
+      const i = ex.walzen[k];
+      const x = W.x + i * W.cw;
+      const h = W.rh * 3;
+      g.save();
+      const cy = W.y + h / 2;
+      g.translate(x + W.cw / 2, cy);
+      g.scale(1, Math.max(0.05, e));
+      g.translate(-(x + W.cw / 2), -cy);
+      g.fillStyle = gp(g, 0, W.y, C(255, 214, 110), 0, W.y + h, C(170, 100, 20));
+      g.fillRect(x + 3, W.y + 3, W.cw - 6, h - 6);
+      if (!Stil.sparmodus) {
+        g.save();
+        g.beginPath();
+        g.rect(x + 3, W.y + 3, W.cw - 6, h - 6);
+        g.clip();
+        strahlen(g, x + W.cw / 2, cy, h * 0.7, 14, S.zeit * 0.6, C(255, 255, 220, 120), 0.5);
+        g.restore();
+      }
+      const gr = W.cw * 1.05;
+      const px = gr * aufloesung;
+      g.drawImage(symbolBild(s, px, false), x + W.cw / 2 - gr / 2, cy - gr / 2, gr, gr);
+      const kl = W.cw * 0.6;
+      g.globalAlpha = 0.55;
+      g.drawImage(symbolBild(s, kl * aufloesung, false), x + W.cw / 2 - kl / 2, W.y + 8, kl, kl);
+      g.drawImage(symbolBild(s, kl * aufloesung, false), x + W.cw / 2 - kl / 2, W.y + h - kl - 8, kl, kl);
+      g.globalAlpha = 1;
+      strich(g, 5);
+      g.strokeStyle = css(C(255, 240, 160));
+      g.strokeRect(x + 5, W.y + 5, W.cw - 10, h - 10);
+      g.restore();
+    }
+  }
+  /** Gehört die Position zu der gerade angezeigten Gewinnlinie (oder zum Scatter)? */
+  function gewinnPosition(i, r) {
+    const e = S.ergebnis;
+    if (!e || S.zeigeLinie === -1 || !(S.z === 'ZEIGEN' || S.z === 'GEWINN' || S.z === 'EXP' || S.z === 'FS_WARTEN' || S.z === 'BEREIT')) {
+      return false;
+    }
+    const pruefe = function (lw) {
+      return i < lw.n && LINIEN[lw.l][i] === r;
+    };
+    if (S.zeigeLinie === -2) {
+      for (let k = 0; k < e.linien.length; k++) {
+        if (pruefe(e.linien[k])) {
+          return true;
+        }
+      }
+      return e.scatter.betrag > 0 && S.fenster[i][r] === BUCH;
+    }
+    const k = S.zeigeLinie;
+    if (k < e.linien.length) {
+      return pruefe(e.linien[k]);
+    }
+    return e.scatter.betrag > 0 && S.fenster[i][r] === BUCH;
+  }
+  function zeichneLinie(g, l, alphaW, breiteL) {
+    const W = LB.walzen;
+    const f = LINIEN_FARBE[l];
+    const pkt = [];
+    pkt.push([W.x - 6, W.y + (LINIEN[l][0] + 0.5) * W.rh]);
+    for (let i = 0; i < 5; i++) {
+      pkt.push([W.x + (i + 0.5) * W.cw, W.y + (LINIEN[l][i] + 0.5) * W.rh]);
+    }
+    pkt.push([W.x + 5 * W.cw + 6, W.y + (LINIEN[l][4] + 0.5) * W.rh]);
+    g.save();
+    g.globalAlpha = alphaW;
+    g.lineJoin = 'round';
+    g.lineCap = 'round';
+    const pfad = new Path2D();
+    pkt.forEach(function (p, k) {
+      if (k === 0) {
+        pfad.moveTo(p[0], p[1]);
+      } else {
+        pfad.lineTo(p[0], p[1]);
+      }
+    });
+    g.lineWidth = (breiteL || 6) + 4;
+    g.strokeStyle = 'rgba(0,0,0,0.6)';
+    g.stroke(pfad);
+    g.lineWidth = breiteL || 6;
+    g.strokeStyle = css(f);
+    g.stroke(pfad);
+    g.restore();
+  }
+  function zeichneGewinnlinien(g) {
+    const e = S.ergebnis;
+    const W = LB.walzen;
+    if (S.linienZeigen && S.zeit - S.linienZeigen < 1.4 && S.z === 'BEREIT') {
+      for (let l = 0; l < S.linien; l++) {
+        zeichneLinie(g, l, 0.85, 4);
+      }
+      return;
+    }
+    if (S.exp) {
+      const u = clamp01((S.zeit - S.exp.t0 - 0.6) / 0.3);
+      for (let l = 0; l < S.fs.linien; l++) {
+        zeichneLinie(g, l, 0.7 * u, 4);
+      }
+      return;
+    }
+    if (!e || S.zeigeLinie === -1 || S.z === 'KARTE' || S.z === 'LEITER' || S.z === 'DREHT') {
+      return;
+    }
+    const rahmenFuer = function (lw) {
+      const f = LINIEN_FARBE[lw.l];
+      for (let i = 0; i < lw.n; i++) {
+        const r = LINIEN[lw.l][i];
+        const p = rrP(W.x + i * W.cw + 5, W.y + r * W.rh + 5, W.cw - 10, W.rh - 10, 18);
+        strich(g, 5);
+        g.strokeStyle = 'rgba(0,0,0,0.55)';
+        g.stroke(p);
+        strich(g, 3.5);
+        g.strokeStyle = css(f);
+        g.stroke(p);
+      }
+    };
+    if (S.zeigeLinie === -2) {
+      e.linien.forEach(function (lw) {
+        zeichneLinie(g, lw.l, 0.9, 5);
+      });
+      return;
+    }
+    const k = S.zeigeLinie;
+    if (k < e.linien.length) {
+      const lw = e.linien[k];
+      zeichneLinie(g, lw.l, 1, 6);
+      rahmenFuer(lw);
+    } else if (e.scatter.betrag > 0) {
+      e.scatter.pos.forEach(function (p) {
+        const r = rrP(W.x + p[0] * W.cw + 5, W.y + p[1] * W.rh + 5, W.cw - 10, W.rh - 10, 18);
+        strich(g, 4);
+        g.strokeStyle = css(GELB);
+        g.stroke(r);
+      });
+    }
+  }
+  function zeichneMarker(g) {
+    const W = LB.walzen, M = LB.marker;
+    const seiten = [{ x: M.links, spalte: 0 }, { x: M.rechts, spalte: 4 }];
+    seiten.forEach(function (sd) {
+      const proReihe = [[], [], []];
+      for (let l = 0; l < 10; l++) {
+        proReihe[LINIEN[l][sd.spalte]].push(l);
+      }
+      for (let r = 0; r < 3; r++) {
+        const liste = proReihe[r];
+        const gesamtH = liste.length * (M.h + 4) - 4;
+        for (let k = 0; k < liste.length; k++) {
+          const l = liste[k];
+          const y = W.y + (r + 0.5) * W.rh - gesamtH / 2 + k * (M.h + 4);
+          const aktiv = l < (S.fs ? S.fs.linien : S.linien);
+          const p = rrP(sd.x, y, M.w, M.h, 10);
+          fuell(g, p, aktiv ? LINIEN_FARBE[l] : C(70, 60, 50));
+          rand(g, p, KONTUR, 2);
+          text(g, String(l + 1), titel(12.5), aktiv ? KONTUR : C(150, 140, 130), sd.x + M.w / 2, y + M.h / 2 + 4.5, 0);
+        }
+      }
+    });
+  }
+
+  // ---------------------------------------------------------------- Zeichnen: Karte (Risiko)
+  function zeichneKartenRisiko(g) {
+    const W = LB.walzen;
+    const k = S.karte;
+    const bw = W.cw * 5, bh = W.rh * 3;
+    g.save();
+    g.fillStyle = 'rgba(8,8,24,0.86)';
+    g.fillRect(W.x, W.y, bw, bh);
+    const kw = Math.min(150, bh * 0.52);
+    const kx = W.x + bw / 2 - kw / 2, ky = W.y + bh / 2 - kw * 0.7 + 8;
+    // Farbanzeige links und rechts
+    const blink = Math.floor((S.zeit - k.t0) / 0.28) % 2;
+    const wahl = k.phase === 'wahl';
+    const seite = function (x, rot, an) {
+      const p = rrP(x, ky + 10, kw * 0.9, kw * 1.2, 22);
+      fuell(g, p, rot ? C(200, 24, 34, an ? 255 : 90) : C(30, 30, 40, an ? 255 : 110));
+      rand(g, p, an ? C(255, 240, 180) : C(120, 100, 80), an ? 3 : 2);
+      text(g, rot ? 'ROT' : 'SCHWARZ', titel(rot ? 22 : 17), an ? WEISS : C(200, 190, 180), x + kw * 0.45, ky + kw * 0.7 + 18, 0);
+      g.fillStyle = an ? '#fff' : 'rgba(255,255,255,0.4)';
+      g.fill(farbSymbol(rot ? 1 : 0, x + kw * 0.45, ky + kw * 0.38 + 6, 11));
+    };
+    seite(kx - kw * 1.25, true, wahl ? blink === 0 : k.wahl === 'ROT');
+    seite(kx + kw * 1.35, false, wahl ? blink === 1 : k.wahl === 'SCHWARZ');
+    // Karte
+    if (wahl) {
+      if (!Stil.sparmodus) {
+        glow(g, kx + kw / 2, ky + kw * 0.7, kw, blink === 0 ? C(255, 60, 60, 110) : C(120, 140, 255, 90));
+      }
+      zeichneSpielkarte(g, -1, kx, ky, kw, 0, 1, aufloesung);
+    } else {
+      const u = clamp01((S.zeit - k.t0) / 0.3);
+      const flip = Math.abs(Math.cos(u * Math.PI));
+      zeichneSpielkarte(g, u < 0.5 ? -1 : k.c, kx, ky, kw, 0, flip, aufloesung);
+      if (u >= 1) {
+        const ok = k.richtig;
+        comicText(g, ok ? 'RICHTIG!' : 'FALSCH', titel(30), ok ? GRUEN_HELL : C(255, 110, 100), W.x + bw / 2, ky - 14, 0, 3);
+      }
+    }
+    // Verlauf der letzten Karten
+    text(g, 'ZULETZT', titel(12), C(255, 220, 160), W.x + 16, W.y + 24, -1);
+    for (let i = 0; i < Math.min(5, S.karten.length); i++) {
+      zeichneSpielkarte(g, S.karten[i], W.x + 16 + i * 44, W.y + 32, 38, 0, 1, aufloesung);
+    }
+    const E = einsatz();
+    text(g, 'Gewinn ' + euro(S.gewinn), titel(18), GELB, W.x + bw - 16, W.y + 30, 1);
+    text(g, wahl ? 'Bei richtiger Farbe: ' + euro(S.gewinn * 2) : '', sans(13), C(255, 230, 190), W.x + bw - 16, W.y + 52, 1);
+    text(g, 'Runde ' + Math.min(KARTE_RUNDEN, (S.kartenRunde || 0) + (wahl ? 1 : 0)) + ' von höchstens ' + KARTE_RUNDEN
+      + ' · Grenze ' + euroKurz(RISIKO_GRENZE * E), sans(12), C(200, 190, 230), W.x + bw / 2, W.y + bh - 14, 0);
+    g.restore();
+  }
+
+  // ---------------------------------------------------------------- Zeichnen: Leiter
+  function zeichneLeiter(g) {
+    const Lp = LB.leiter;
+    panel(g, Lp.x, Lp.y, Lp.w, Lp.h);
+    const E = S.fs ? S.fs.lb * S.fs.linien : einsatz();
+    const werte = S.leiter ? S.leiter.werte : leiterWerte(E);
+    text(g, 'RISIKOLEITER', titel(LB.hoch ? 17 : 20), GELB, Lp.x + Lp.w / 2, Lp.y + (LB.hoch ? 30 : 36), 0);
+    const R = leiterRungen();
+    const Lr = S.leiter;
+    let unterT = LB.hoch ? '' : 'Gewinn verdoppeln – 50 : 50';
+    if (Lr && Lr.phase === 'lauf' && (Lr.stufe < 0 || Lr.wert !== werte[Lr.stufe])) {
+      unterT = euro(Lr.wert) + ' → ' + euroKurz(werte[Lr.ziel]) + ' · Chance ' + prozent(Lr.wert / werte[Lr.ziel], 0);
+    } else if (S.z === 'GEWINN' && leiterErlaubt()) {
+      unterT = 'Einstieg mit ' + euro(S.gewinn);
+    }
+    if (unterT) {
+      text(g, unterT, sans(LB.hoch ? 11 : 12), C(255, 220, 170), Lp.x + Lp.w / 2, Lp.y + (LB.hoch ? 46 : 58), 0);
+    }
+    const aktivStufe = Lr ? Lr.stufe : (S.z === 'GEWINN' ? leiterStufeVon(S.gewinn, werte) : -1);
+    const blink = Lr && Lr.phase === 'lauf' ? Math.floor((S.zeit - Lr.t0) / 0.3) % 2 : -1;
+    for (let k = 0; k < R.length; k++) {
+      const r = R[k];
+      const p = rrP(r.x, r.y, r.w, r.h, 16);
+      let fuellung = C(46, 20, 8), randF = C(140, 90, 40), tf = C(220, 170, 110);
+      let leucht = 0;
+      if (k === aktivStufe) {
+        fuellung = C(255, 200, 40);
+        randF = C(255, 250, 200);
+        tf = KONTUR;
+        leucht = 0.6;
+      } else if (k < aktivStufe) {
+        fuellung = C(110, 70, 20);
+        tf = C(255, 220, 150);
+      }
+      if (Lr && k === Lr.ziel && Lr.phase === 'lauf' && blink === 0) {
+        fuellung = C(255, 120, 30);
+        randF = WEISS;
+        tf = WEISS;
+        leucht = 0.9;
+      }
+      if (Lr && Lr.phase === 'ergebnis' && Lr.gewonnen && k === Lr.stufe) {
+        const puls = 0.5 + 0.5 * Math.sin(S.zeit * 20);
+        fuellung = mix(C(255, 200, 40), WEISS, puls * 0.5);
+        leucht = 1;
+      }
+      if (leucht > 0 && !Stil.sparmodus) {
+        glowRand(g, p, randF, leucht, 10);
+      }
+      fuell(g, p, fuellung);
+      rand(g, p, randF, 2);
+      text(g, euroKurz(werte[k]), titel(Math.min(20, r.h * 0.5)), tf, r.x + r.w / 2, r.y + r.h / 2 + Math.min(20, r.h * 0.5) * 0.36, 0);
+      if (!LB.hoch) {
+        text(g, LEITER_FAKTOR[k] + '×', sans(10.5), alpha(tf, 160), r.x + 12, r.y + r.h / 2 + 4, -1);
+      }
+    }
+    // Feld "0"
+    const n0 = R.null;
+    const p0 = rrP(n0.x, n0.y, n0.w, n0.h, 16);
+    let f0 = C(60, 10, 10), t0 = C(220, 120, 110);
+    if (Lr && Lr.phase === 'lauf' && blink === 1) {
+      f0 = C(230, 40, 40);
+      t0 = WEISS;
+      if (!Stil.sparmodus) {
+        glowRand(g, p0, C(255, 120, 120), 0.8, 10);
+      }
+    }
+    if (Lr && Lr.phase === 'ergebnis' && !Lr.gewonnen) {
+      f0 = C(255, 40, 40);
+      t0 = WEISS;
+    }
+    fuell(g, p0, f0);
+    rand(g, p0, C(160, 80, 70), 2);
+    text(g, '0', titel(Math.min(22, n0.h * 0.6)), t0, n0.x + n0.w / 2, n0.y + n0.h / 2 + 7, 0);
+  }
+
+  // ---------------------------------------------------------------- Zeichnen: Panel unten, Kopf, Meldungen
+  function zeichneUnten(g) {
+    const U = LB.unten;
+    panel(g, U.x, U.y, U.w, U.h);
+    if (LB.hoch) {
+      const M = LB.mitte;
+      panel(g, M.x, M.y, LB.leiter.x - M.x - 8, M.h);
+    }
+    const fs = S.fs;
+    ledAnzeige(g, LB.guth.x, LB.guth.y, LB.guth.w, LB.guth.h, 'GUTHABEN', euro(Math.round(S.kreditAnzeige)), C(120, 255, 120), 24);
+    const E = fs ? fs.lb * fs.linien : einsatz();
+    ledAnzeige(g, LB.eins.x, LB.eins.y, LB.eins.w, LB.eins.h, fs ? 'EINSATZ (FREISPIELE)' : 'EINSATZ', euro(E), LED, 24);
+    text(g, (fs ? fs.linien : S.linien) + ' Linien × ' + euro(fs ? fs.lb : lb()), sans(11), C(255, 220, 150, 190), LB.eins.x + 14,
+      LB.eins.y + LB.eins.h - 10, -1);
+    const G2 = LB.gew;
+    let gTitel = 'GEWINN', gWert = S.gewinnAnzeige;
+    if (fs) {
+      gTitel = 'FREISPIELGEWINN';
+    } else if (S.z === 'LEITER' && S.leiter) {
+      gWert = S.leiter.wert;
+    }
+    const gr = LB.hoch ? 34 : 24;
+    ledAnzeige(g, G2.x, G2.y, G2.w, G2.h, gTitel, gWert > 0 ? euro(gWert) : '', C(255, 210, 60), gr);
+    if (S.gutschrift && S.zeit - S.gutschrift.t0 < 1.2 && !fs) {
+      const u = (S.zeit - S.gutschrift.t0) / 1.2;
+      g.save();
+      g.globalAlpha = 1 - u;
+      comicText(g, '+' + euro(S.gutschrift.betrag), titel(20), C(150, 255, 150), LB.guth.x + LB.guth.w - 14, LB.guth.y - 6 - u * 24, 1, 2);
+      g.restore();
+    }
+    // Hinweistext in der Aktionszeile, wenn keine Aktionsknöpfe sichtbar sind
+    const A = LB.aktion;
+    if (S.z !== 'GEWINN' && S.z !== 'KARTE' && S.z !== 'LEITER') {
+      const zeilen = hinweisZeilen();
+      for (let i = 0; i < zeilen.length; i++) {
+        text(g, zeilen[i], sans(LB.hoch ? 13.5 : 13), C(255, 226, 190, 200), A.x + (A.quer ? 0 : 6), A.y + 24 + i * 21, -1);
+      }
+    }
+    if (LB.hoch) {
+      zeichneMiniPlan(g);
+    }
+  }
+  /** Kompakter Gewinnplan im freien Platz des Hochformats. */
+  function zeichneMiniPlan(g) {
+    const A = LB.aktion, M = LB.mitte;
+    const x = A.x, w = A.w;
+    let y = A.y + 3 * (A.h + 12) + 6;
+    const unten = M.y + M.h - 10;
+    if (unten - y < 70) {
+      return;
+    }
+    const lbW = S.fs ? S.fs.lb : lb();
+    const E = S.fs ? S.fs.lb * S.fs.linien : einsatz();
+    text(g, 'GEWINNPLAN · ' + euro(lbW) + ' JE LINIE', titel(13), C(255, 210, 120), x + 4, y + 14, -1);
+    y += 24;
+    const reihen = [[BUCH], [FALKE], [KATZE], [ANKH, PYRAMIDE], [AS, KOENIG], [DAME, BUBE, ZEHN]];
+    const rh = 40;
+    for (let k = 0; k < reihen.length && y + rh <= unten; k++) {
+      const lst = reihen[k];
+      const p = rrP(x, y, w, rh - 4, 14);
+      fuell(g, p, k % 2 === 0 ? C(255, 240, 200, 18) : C(255, 240, 200, 8));
+      for (let i = 0; i < lst.length; i++) {
+        g.drawImage(symbolBild(lst[i], 32 * aufloesung, false), x + 6 + i * 26, y + 2, 32, 32);
+      }
+      const s = lst[0];
+      const werte = s === BUCH ? [[5, 200 * E], [4, 20 * E], [3, 2 * E]] : [5, 4, 3].map(function (n) {
+        return [n, PAY[s][n] * lbW];
+      });
+      const colW = (w - 92) / 3;
+      for (let j = 0; j < werte.length; j++) {
+        const c0 = x + 92 + j * colW;
+        text(g, werte[j][0] + '×', sans(11), C(220, 200, 170), c0 + 2, y + 23, -1);
+        text(g, euro(werte[j][1]), titel(13), C(255, 236, 190), c0 + colW - 8, y + 23, 1);
+      }
+      y += rh;
+    }
+  }
+  function hinweisZeilen() {
+    if (S.fs) {
+      return ['Freispiele laufen – Sondersymbole wachsen über', 'die ganze Walze und zahlen auf allen Linien.'];
+    }
+    if (Knopf.touch) {
+      return ['Walzen oder START antippen: Start / Stopp', 'Nach einem Gewinn: Risiko, Leiter oder Annehmen'];
+    }
+    return ['Leertaste Start/Stopp · +/− Einsatz · X Linien · A Auto', 'Nach Gewinn: R Karte · L Leiter · N Annehmen · I Gewinnplan'];
+  }
+  function meldungstext() {
+    const fs = S.fs;
+    const e = S.ergebnis;
+    if (S.z === 'KARTE') {
+      return ['ROT ODER SCHWARZ?', 'Richtig verdoppelt den Gewinn, falsch ist alles weg'];
+    }
+    if (S.z === 'LEITER') {
+      return ['STOPP DRÜCKEN', 'Das Licht springt zwischen nächster Stufe und 0 – fair 50 : 50'];
+    }
+    if (S.z === 'GEWINN') {
+      const t = karteErlaubt() || leiterErlaubt() ? 'Risiko (Karte), Leiter oder Annehmen' : 'Gewinn liegt über der Risikogrenze';
+      return ['GEWINN ' + euro(S.gewinn), t];
+    }
+    if (S.z === 'INTRO') {
+      return ['SONDERSYMBOL', 'Das Buch wählt ein Symbol, das sich über ganze Walzen ausbreitet'];
+    }
+    if (S.z === 'EXP' && S.exp) {
+      return [NAMEN[S.exp.sym].toUpperCase() + ' AUF ' + S.exp.n + ' WALZEN', euro(S.exp.betrag) + ' auf allen ' + fs.linien + ' Linien'];
+    }
+    if (S.z === 'ZEIGEN' && e && S.zeigeLinie === -2) {
+      return ['GEWINN ' + euro(S.gewinnAnzeige - (fs ? fs.gewinn - e.summe : 0)), e.linien.length + (e.linien.length === 1 ? ' Linie' : ' Linien')
+        + (e.scatter.betrag > 0 ? ' + Bücher' : '')];
+    }
+    if ((S.z === 'ZEIGEN' || S.z === 'FS_WARTEN') && e && S.zeigeLinie >= 0) {
+      const k = S.zeigeLinie;
+      if (k < e.linien.length) {
+        const lw = e.linien[k];
+        return ['LINIE ' + (lw.l + 1) + ': ' + lw.n + ' × ' + NAMEN[lw.sym].toUpperCase(), euro(lw.betrag)];
+      }
+      return [e.scatter.n + ' × SONNENBUCH', euro(e.scatter.betrag) + ' (Scatter, zahlt überall)'];
+    }
+    if (S.z === 'DREHT') {
+      return [S.spannung ? 'NOCH EIN BUCH …' : (fs ? 'FREISPIEL ' + fs.nr + ' VON ' + fs.gesamt : 'VIEL GLÜCK!'), ''];
+    }
+    if (fs) {
+      return ['FREISPIEL ' + Math.min(fs.gesamt, fs.nr + 1) + ' VON ' + fs.gesamt, S.konf.fsAuto ? '' : 'START drücken'];
+    }
+    return ['3 BÜCHER = 10 FREISPIELE', 'Einsatz ' + euro(einsatz()) + ' auf ' + S.linien + (S.linien === 1 ? ' Linie' : ' Linien')];
+  }
+  function zeichneKopf(g) {
+    zeichneSpielTitel(g, 'SONNENBUCH', LB.hoch ? 'MAGIE · 10 LINIEN' : 'MAGIE · 10 LINIEN · FREISPIELE · SPIELGELD', LB.hoch ? 20 : 24, 50, LB.hoch ? 32 : 36);
+    // Freispiel-Leiste mit Sondersymbolen
+    const F = LB.fsLeiste;
+    const fs = S.fs;
+    if (fs) {
+      const p = rrP(F.x, F.y, F.w, F.h, F.h);
+      fuell(g, p, C(20, 12, 40, 220));
+      rand(g, p, C(255, 210, 90), 2);
+      text(g, 'FREISPIELE ' + Math.min(fs.gesamt, fs.nr) + ' / ' + fs.gesamt, titel(15), GELB, F.x + 16, F.y + F.h / 2 + 5.5, -1);
+      const n = fs.symbole.length;
+      const gr = F.h - 6;
+      const x0 = F.x + F.w / 2 - (n * (gr + 4)) / 2;
+      for (let k = 0; k < n; k++) {
+        const s = fs.symbole[k];
+        const x = x0 + k * (gr + 4);
+        if (S.intro && S.intro.sym === s && k === n - 1 && S.zeit - S.intro.t0 < S.intro.ende + 1.2) {
+          continue;
+        }
+        const q = rrP(x, F.y + 3, gr, gr, 10);
+        fuell(g, q, C(255, 214, 110));
+        rand(g, q, KONTUR, 1.5);
+        g.drawImage(symbolBild(s, gr * aufloesung, false), x + 1, F.y + 4, gr - 2, gr - 2);
+      }
+      text(g, euro(S.gewinnAnzeige), titel(15), C(150, 255, 150), F.x + F.w - 16, F.y + F.h / 2 + 5.5, 1);
+    }
+    // Meldungszeile unter den Walzen
+    const m = meldungstext();
+    const W = LB.walzen;
+    const cx = W.x + W.cw * 2.5;
+    comicText(g, m[0], titel(LB.hoch ? 18 : 19), S.z === 'GEWINN' ? GELB : (S.spannung ? C(255, 180, 60) : C(255, 240, 210)), cx, LB.meldungY, 0, 2);
+    if (m[1]) {
+      text(g, m[1], sans(12.5), C(220, 210, 250), cx, LB.meldungY + 16, 0);
+    }
+  }
+
+  // ---------------------------------------------------------------- Zeichnen: Intro (Buch wählt Sondersymbol)
+  function zeichneIntro(g) {
+    const I = S.intro;
+    const W = LB.walzen;
+    const bw = W.cw * 5, bh = W.rh * 3;
+    const t = S.zeit - I.t0;
+    g.save();
+    g.fillStyle = 'rgba(6,6,20,' + (0.82 * clamp01(t / 0.3)).toFixed(3) + ')';
+    g.fillRect(W.x, W.y, bw, bh);
+    const auf = easeOutBack(clamp01(t / 0.45));
+    const cx = W.x + bw / 2, cy = W.y + bh / 2 + 6;
+    const sw = Math.min(bw * 0.3, bh * 0.62), sh = sw * 1.25;
+    if (!Stil.sparmodus) {
+      strahlen(g, cx, cy, Math.max(bw, bh) * 0.7, 18, S.zeit * 0.3, C(255, 220, 120, 70), 0.5);
+    }
+    g.translate(cx, cy);
+    g.scale(auf, auf);
+    // Einband
+    fuell(g, rrP(-sw - 14, -sh / 2 - 10, sw * 2 + 28, sh + 20, 24), C(120, 12, 20));
+    rand(g, rrP(-sw - 14, -sh / 2 - 10, sw * 2 + 28, sh + 20, 24), KONTUR, 3);
+    // Seiten
+    const links = rrP(-sw, -sh / 2, sw, sh, 12), rechts = rrP(0, -sh / 2, sw, sh, 12);
+    g.fillStyle = gp(g, 0, -sh / 2, C(255, 248, 226), 0, sh / 2, C(232, 210, 164));
+    g.fill(links);
+    g.fill(rechts);
+    rand(g, links, C(140, 100, 50), 2);
+    rand(g, rechts, C(140, 100, 50), 2);
+    g.fillStyle = gp(g, -14, 0, C(0, 0, 0, 0), 0, 0, C(0, 0, 0, 60));
+    g.fillRect(-14, -sh / 2, 14, sh);
+    // linke Seite: Text und Ornamente
+    text(g, I.erstes ? 'FREISPIELE' : '+10 FREISPIELE', titel(Math.max(12, sw * 0.13)), C(150, 60, 0), -sw / 2, -sh / 2 + sh * 0.2, 0);
+    text(g, 'Sondersymbol', sans(Math.max(10, sw * 0.08)), C(120, 80, 40), -sw / 2, -sh / 2 + sh * 0.32, 0);
+    g.strokeStyle = 'rgba(150,100,40,0.6)';
+    g.lineWidth = 2;
+    for (let k = 0; k < 4; k++) {
+      const y = -sh / 2 + sh * (0.45 + k * 0.12);
+      g.beginPath();
+      g.moveTo(-sw * 0.85, y);
+      g.quadraticCurveTo(-sw / 2, y - 8, -sw * 0.15, y);
+      g.stroke();
+    }
+    // rechte Seite: blätternde Symbole
+    let k = 0;
+    for (let i = 0; i < I.folge.length; i++) {
+      if (I.folge[i].t <= t) {
+        k = i;
+      }
+    }
+    const s = I.folge[k].s;
+    const seit = t - I.folge[k].t;
+    const blatt = clamp01(seit / 0.06);
+    g.save();
+    g.translate(sw / 2, 0);
+    g.scale(Math.max(0.05, blatt), 1);
+    const gr = sw * 0.82;
+    const fertig = t >= I.ende;
+    if (fertig && !Stil.sparmodus) {
+      glow(g, 0, 0, gr * 0.75, C(255, 210, 60, 160));
+    }
+    const sk = fertig ? 1 + 0.08 * Math.sin(Math.min(1, (t - I.ende) / 0.5) * Math.PI) : 1;
+    g.drawImage(symbolBild(s, gr * sk * aufloesung, false), -gr * sk / 2, -gr * sk / 2, gr * sk, gr * sk);
+    g.restore();
+    g.restore();
+    if (t >= I.ende) {
+      comicText(g, NAMEN[I.sym].toUpperCase(), titel(26), GELB, cx, W.y + bh - 18, 0, 3);
+    }
+  }
+
+  function zeichne(g, cw, ch) {
+    g.setTransform(1, 0, 0, 1, 0, 0);
+    g.globalAlpha = 1;
+    hintergrund(g, cw, ch);
+    g.setTransform(skala, 0, 0, skala, ox, oy);
+    zeichneKopf(g);
+    zeichneWalzen(g);
+    zeichneMarker(g);
+    zeichneGewinnlinien(g);
+    if (S.z === 'KARTE' && S.karte) {
+      zeichneKartenRisiko(g);
+    }
+    if (S.intro) {
+      zeichneIntro(g);
+    }
+    zeichneUnten(g);
+    zeichneLeiter(g);
+    knoepfe.zeichne(g, S.zeit);
+    partikel.zeichne(g);
+    meld.zeichne(g, LB.walzen.x + LB.walzen.cw * 2.5, LB.walzen.y + LB.walzen.rh * 1.5, LB.hoch ? 36 : 40);
+    if (S.ov !== 'KEINS') {
+      g.save();
+      g.setTransform(1, 0, 0, 1, 0, 0);
+      g.fillStyle = 'rgba(6,6,20,0.72)';
+      g.fillRect(0, 0, cw, ch);
+      g.restore();
+      zeichneOverlay(g);
+      ovKnoepfe.zeichne(g, S.zeit);
+    }
+  }
+
+  // ---------------------------------------------------------------- Overlays
+  let ovRahmen = null;
+  function schliessen() {
+    S.ov = 'KEINS';
+    ovKnoepfe.leeren();
+    S.optionen = null;
+    S.dialog = null;
+  }
+  function oeffne(art) {
+    ovKnoepfe.leeren();
+    S.optionen = null;
+    S.dialog = null;
+    const W = LB.W, H = LB.H;
+    if (art === 'GUTHABEN') {
+      if (S.z !== 'BEREIT' || S.fs) {
+        return;
+      }
+      const d = new GuthabenDialog(W, H, LB.hoch, function (wert) {
+        Konto.kredit = wert;
+        S.kreditAnzeige = wert;
+        klang.spiele('CASHOUT');
+        meld.neu('GUTHABEN', euro(wert), GRUEN, 1.5);
+        speichern();
+        schliessen();
+      }, schliessen);
+      S.dialog = d;
+      d.knoepfe.forEach(function (b) {
+        ovKnoepfe.add(b);
+      });
+      ovRahmen = { x: d.x, y: d.y, w: d.w, h: d.h };
+    } else if (art === 'REGELN') {
+      const w = LB.hoch ? 680 : 760, h = LB.hoch ? 470 : 440;
+      const x = (W - w) / 2, y = (H - h) / 2;
+      ovRahmen = { x: x, y: y, w: w, h: h };
+      const zeilen = [
+        { titel: 'Tempo', info: 'Walzenlauf und Gewinnanzeige', werte: [{ t: 'NORMAL', v: 'normal' }, { t: 'SCHNELL', v: 'schnell' }],
+          lesen: function () {
+            return S.konf.tempo;
+          }, schreiben: function (v) {
+            S.konf.tempo = v;
+          } },
+        { titel: 'Spannung', info: 'Bei zwei Büchern laufen die restlichen Walzen länger', werte: [{ t: 'AN', v: true }, { t: 'AUS', v: false }],
+          chipW: 80, lesen: function () {
+            return S.konf.spannung;
+          }, schreiben: function (v) {
+            S.konf.spannung = v;
+          } },
+        { titel: 'Freispiele', info: 'Automatisch weiterdrehen oder jedes Mal START', werte: [{ t: 'AUTOMATISCH', v: true }, { t: 'PER START', v: false }],
+          chipW: 130, lesen: function () {
+            return S.konf.fsAuto;
+          }, schreiben: function (v) {
+            S.konf.fsAuto = v;
+          } }
+      ];
+      S.optionen = new OptionsListe(zeilen, x + 34, y + 84, w - 68, 62);
+      S.optionen.beiAenderung = function () {
+        S.dirty = true;
+      };
+      S.optionen.knoepfe.forEach(function (b) {
+        ovKnoepfe.add(b);
+      });
+      ovKnoepfe.add(new Knopf('FERTIG', x + (w - 200) / 2, y + h - 70, 200, 50, GRUEN, schliessen));
+    } else if (art === 'HILFE' || art === 'STATISTIK') {
+      const w = LB.hoch ? 690 : 1100, h = LB.hoch ? Math.min(H - 60, art === 'HILFE' ? 1200 : 640) : (art === 'HILFE' ? 610 : 580);
+      const x = (W - w) / 2, y = (H - h) / 2;
+      ovRahmen = { x: x, y: y, w: w, h: h };
+      if (art === 'STATISTIK') {
+        ovKnoepfe.add(new Knopf('ZURÜCKSETZEN', x + 34, y + h - 70, 220, 48, ORANGE, function () {
+          Object.keys(S.stat).forEach(function (k) {
+            S.stat[k] = 0;
+          });
+          S.dirty = true;
+        }));
+      }
+    }
+    ovKnoepfe.add(new Knopf('', ovRahmen.x + ovRahmen.w - 52, ovRahmen.y + 14, 36, 36, CREME, schliessen).setIcon('SCHLIESSEN'));
+    S.ov = art;
+    klang.spiele('KNOPF');
+  }
+  function zeichneOverlay(g) {
+    const O = ovRahmen;
+    if (S.ov === 'GUTHABEN' && S.dialog) {
+      S.dialog.zeichne(g, S.zeit, Konto.kredit, true);
+    } else if (S.ov === 'REGELN') {
+      hellesPanel(g, O.x, O.y, O.w, O.h, 'EINSTELLUNGEN');
+      S.optionen.zeichne(g, S.zeit);
+      const zl = umbrechen(g, 'Auszahlungsquote 95,03 % – exakt berechnet, gleich für jede Linienzahl und jeden Einsatz. Risiko und Leiter sind fair (Erwartungswert bleibt gleich).', sans(12.5), O.w - 68);
+      for (let i = 0; i < zl.length; i++) {
+        text(g, zl[i], sans(12.5), C(130, 80, 30), O.x + 34, O.y + 84 + 3 * 62 + 24 + i * 18, -1);
+      }
+    } else if (S.ov === 'HILFE') {
+      zeichneGewinnplan(g, O);
+    } else if (S.ov === 'STATISTIK') {
+      zeichneStatistik(g, O);
+    }
+  }
+  function zeichneGewinnplan(g, O) {
+    hellesPanel(g, O.x, O.y, O.w, O.h, 'GEWINNPLAN');
+    const linie = lb();
+    const dunkel = KONTUR, braun = C(130, 80, 30);
+    text(g, 'Werte für ' + euro(linie) + ' je Linie (' + S.linien + ' Linien = ' + euro(einsatz()) + ')', sans(13), braun, O.x + 230, O.y + 50, -1);
+    const reihen = [[FALKE], [KATZE], [ANKH, PYRAMIDE], [AS, KOENIG], [DAME, BUBE, ZEHN]];
+    const quer = !LB.hoch;
+    const x0 = O.x + 30, y0 = O.y + 80;
+    const zw = quer ? 300 : (O.w - 70) / 2;
+    const zh = quer ? 108 : 98;
+    // Buch
+    const buchBox = function (x, y, w) {
+      const p = rrP(x, y, w, zh - 10, 18);
+      fuell(g, p, C(255, 236, 190));
+      rand(g, p, C(200, 140, 60), 2);
+      g.drawImage(symbolBild(BUCH, 70 * aufloesung, false), x + 8, y + 8, 70, 70);
+      text(g, 'SONNENBUCH', titel(14), C(150, 60, 0), x + 88, y + 24, -1);
+      text(g, 'Joker für alle Symbole und Scatter', sans(11.5), dunkel, x + 88, y + 42, -1);
+      text(g, '5×  ' + euro(200 * einsatz()) + '   4×  ' + euro(20 * einsatz()) + '   3×  ' + euro(2 * einsatz()), titel(12.5), dunkel, x + 88, y + 62, -1);
+      text(g, '3 Bücher irgendwo = 10 Freispiele', sans(11.5), braun, x + 88, y + 80, -1);
+    };
+    const symBox = function (x, y, w, liste) {
+      const p = rrP(x, y, w, zh - 10, 18);
+      fuell(g, p, C(255, 246, 222));
+      rand(g, p, C(220, 170, 100), 1.6);
+      const gr = liste.length > 2 ? 44 : (liste.length > 1 ? 52 : 70);
+      for (let i = 0; i < liste.length; i++) {
+        g.drawImage(symbolBild(liste[i], gr * aufloesung, false), x + 8 + i * (gr - 6), y + (zh - 10 - gr) / 2, gr, gr);
+      }
+      const tx = x + 16 + (liste.length > 1 ? liste.length * (gr - 6) + 6 : 78);
+      const s = liste[0];
+      let yy = y + 22;
+      for (let n = 5; n >= 2; n--) {
+        if (PAY[s][n] > 0) {
+          text(g, n + '×', titel(12.5), braun, tx, yy, -1);
+          text(g, euro(PAY[s][n] * linie), titel(13), dunkel, x + w - 14, yy, 1);
+          yy += 19;
+        }
+      }
+    };
+    if (quer) {
+      buchBox(x0, y0, zw);
+      reihen.forEach(function (lst, k) {
+        const kk = k + 1;
+        symBox(x0 + (kk % 3) * (zw + 12), y0 + Math.floor(kk / 3) * zh, zw, lst);
+      });
+    } else {
+      buchBox(x0, y0, O.w - 60);
+      reihen.forEach(function (lst, k) {
+        symBox(x0 + (k % 2) * (zw + 10), y0 + zh + Math.floor(k / 2) * zh, zw - (k % 2 === 0 ? 0 : 0), lst);
+      });
+    }
+    // Linienbilder
+    const ly = quer ? y0 + 2 * zh + 12 : y0 + 4 * zh + 8;
+    text(g, 'GEWINNLINIEN (von links nach rechts)', titel(14), C(150, 70, 0), x0, ly + 14, -1);
+    const lw = quer ? 92 : 112, lh = quer ? 46 : 52, ls = quer ? 10 : 5;
+    for (let l = 0; l < 10; l++) {
+      const lx = x0 + (l % ls) * (lw + 12), lyy = ly + 26 + Math.floor(l / ls) * (lh + 14);
+      fuell(g, rrP(lx, lyy, lw, lh, 10), C(30, 36, 82));
+      const zw2 = lw / 5, zh2 = lh / 3;
+      g.strokeStyle = css(LINIEN_FARBE[l]);
+      g.lineWidth = 3;
+      g.beginPath();
+      for (let i = 0; i < 5; i++) {
+        const px = lx + (i + 0.5) * zw2, py = lyy + (LINIEN[l][i] + 0.5) * zh2;
+        if (i === 0) {
+          g.moveTo(px, py);
+        } else {
+          g.lineTo(px, py);
+        }
+      }
+      g.stroke();
+      text(g, String(l + 1), titel(11), WEISS, lx + 9, lyy + 13, 0);
+    }
+    // Regeln
+    const ry = ly + 26 + (quer ? 1 : 2) * (lh + 14) + 22;
+    const regeln = [
+      'Gewinne zählen auf gespielten Linien von links nach rechts, nur der höchste Gewinn je Linie. Linien- und Scattergewinne werden addiert.',
+      'FREISPIELE: 3 oder mehr Bücher bringen 10 Freispiele mit dem Einsatz des auslösenden Spiels. Vorher wählt das Buch ein Sondersymbol.',
+      'SONDERSYMBOL: Liegt es auf genug Walzen für einen Gewinn, breitet es sich über die ganzen Walzen aus und zahlt auf allen gespielten Linien – auch auf Walzen, die nicht nebeneinander liegen.',
+      'MAGIE: Kommen in den Freispielen wieder 3 Bücher, gibt es +10 Freispiele und ein weiteres Sondersymbol dazu – bis zu 9 gleichzeitig.',
+      'RISIKO: Karte Rot/Schwarz verdoppelt (bis 5×) – LEITER: Stufe für Stufe hoch bis zum 500-fachen Einsatz, jedes Mal 50 : 50. Auszahlungsquote 95,03 %.'
+    ];
+    let yy = ry;
+    const rw = O.w - 68;
+    for (let i = 0; i < regeln.length; i++) {
+      const zl = umbrechen(g, regeln[i], sans(12.5), rw);
+      for (let j = 0; j < zl.length; j++) {
+        if (yy < O.y + O.h - 16) {
+          text(g, zl[j], sans(12.5), dunkel, x0 + 4, yy, -1);
+        }
+        yy += 17;
+      }
+      yy += 4;
+    }
+  }
+  function zeichneStatistik(g, O) {
+    hellesPanel(g, O.x, O.y, O.w, O.h, 'STATISTIK');
+    const st = S.stat;
+    const quote = st.einsatz > 0 ? st.gewinn / st.einsatz : 0;
+    const zeilen = [
+      ['Spiele', tausender(st.spiele)],
+      ['Gewinnspiele', st.spiele ? tausender(st.treffer) + ' (' + prozent(st.treffer / st.spiele, 1) + ')' : '–'],
+      ['Eingesetzt / ausgezahlt', euro(st.einsatz) + ' / ' + euro(st.gewinn)],
+      ['Quote real / berechnet', (st.einsatz > 0 ? prozent(quote, 1) : '–') + ' / 95,03 %'],
+      ['Größter Gewinn', euro(st.groesster)],
+      ['Freispiele ausgelöst / bester Freispielgewinn', st.fs + ' / ' + euro(st.fsBester)],
+      ['Sondersymbol-Gewinne', tausender(st.sonder)],
+      ['Karte gewonnen / verloren', st.karteGew + ' / ' + st.karteVerl],
+      ['Leiter hoch / verloren', st.leiterGew + ' / ' + st.leiterVerl]
+    ];
+    let y = O.y + 100;
+    for (let i = 0; i < zeilen.length; i++) {
+      text(g, zeilen[i][0], sans(15), C(120, 80, 40), O.x + 34, y, -1);
+      text(g, zeilen[i][1], titel(15), KONTUR, O.x + O.w - 34, y, 1);
+      strich(g, 1, true);
+      g.strokeStyle = 'rgba(120,80,40,0.16)';
+      g.stroke(linieP(O.x + 34, y + 11, O.x + O.w - 34, y + 11));
+      y += 38;
+    }
+    text(g, 'Freispiele kommen im Schnitt alle 197 Spiele. Hohe Schwankung: lange Durststrecken und seltene große Gewinne sind normal.',
+      sans(12), C(150, 100, 50), O.x + 34, Math.min(y + 14, O.y + O.h - 90), -1);
+  }
+
+  // ---------------------------------------------------------------- Eingabe
+  function aufWalzen(x, y) {
+    const W = LB.walzen;
+    return x >= W.x && x <= W.x + W.cw * 5 && y >= W.y && y <= W.y + W.rh * 3;
+  }
+  function aufLeiter(x, y) {
+    const Lp = LB.leiter;
+    return x >= Lp.x && x <= Lp.x + Lp.w && y >= Lp.y && y <= Lp.y + Lp.h;
+  }
+
+  const szene = {
+    name: 'sonnenbuch',
+    betreten: function () {
+      if (!S.geladen) {
+        S.geladen = true;
+        laden();
+        S.fenster = fensterAus(walzen.map(function (w) {
+          return ((Math.floor(w.pos) % STREIFEN[w.i].length) + STREIFEN[w.i].length) % STREIFEN[w.i].length;
+        }));
+      }
+      S.kreditAnzeige = Konto.kredit;
+      S.ov = 'KEINS';
+      if (S.fs) {
+        // unterbrochene Freispiele fortsetzen
+        S.z = 'FS_WARTEN';
+        S.gewinnAnzeige = S.fs.gewinn;
+        meld.neu('FREISPIELE', 'Es geht weiter!', GOLD, 1.6);
+        planLeeren();
+        schritt(1.2, function () {
+          if (S.z === 'FS_WARTEN') {
+            if (S.fs.neu) {
+              introStarten(S.fs.symbole[0], true);
+            } else {
+              naechstesFreispiel();
+            }
+          }
+        });
+      } else {
+        S.z = 'BEREIT';
+        meld.neu('SONNENBUCH', 'Viel Glück!', GOLD, 1.6);
+      }
+    },
+    verlassen: function () {
+      if (S.z === 'GEWINN') {
+        annehmen(false);
+      }
+      S.auto = false;
+      if (laufTon) {
+        laufTon.stop();
+        laufTon = null;
+      }
+      if (spannTon) {
+        spannTon.stop();
+        spannTon = null;
+      }
+      planLeeren();
+      speichern();
+    },
+    layout: function (gw, gh) {
+      const hoch = gh > gw * 1.1;
+      const zielH = hoch ? clampI(Math.round(720 * gh / gw), 1240, 1600) : 800;
+      if (!LB || LB.hoch !== hoch || (hoch && LB.H !== zielH)) {
+        LB = hoch ? layoutHoch(zielH) : layoutQuer();
+        baueKnoepfe();
+        partikel.hoehe = LB.H;
+        if (S.ov !== 'KEINS') {
+          const art = S.ov;
+          S.ov = 'KEINS';
+          oeffne(art);
+        }
+      }
+      return { W: LB.W, H: LB.H };
+    },
+    update: update,
+    zeichne: zeichne,
+    ruhig: function () {
+      return S.z === 'BEREIT' && S.ov === 'KEINS' && !planLaeuft() && meld.leer() && partikel.anzahl() === 0
+        && Math.abs(Konto.kredit - S.kreditAnzeige) < 1 && alleStehen() && Stil.sparmodus;
+    },
+    dirty: function () {
+      return S.dirty;
+    },
+    speichern: speichern,
+    touchGeaendert: function () {
+      baueKnoepfe();
+    },
+    meldung: function (t, u, f) {
+      meld.neu(t, u, f, 2);
+    },
+    runter: function (x, y) {
+      S.mx = x;
+      S.my = y;
+      if (S.ov !== 'KEINS') {
+        if (ovKnoepfe.runter(x, y)) {
+          return;
+        }
+        const O = ovRahmen;
+        if (O && (x < O.x || x > O.x + O.w || y < O.y || y > O.y + O.h)) {
+          schliessen();
+        }
+        return;
+      }
+      if (knoepfe.runter(x, y)) {
+        return;
+      }
+      if (S.z === 'LEITER' && aufLeiter(x, y)) {
+        leiterStopp();
+        return;
+      }
+      if (S.z === 'KARTE' && aufWalzen(x, y)) {
+        const W = LB.walzen;
+        karteWaehlen(x < W.x + W.cw * 2.5);
+        return;
+      }
+      if (aufWalzen(x, y)) {
+        starte();
+      }
+    },
+    bewegt: function (x, y, gedrueckt, maus) {
+      if (maus || gedrueckt) {
+        S.mx = x;
+        S.my = y;
+      }
+    },
+    hoch: function (x, y, maus) {
+      if (S.ov !== 'KEINS') {
+        ovKnoepfe.hoch(x, y, klang);
+      } else {
+        knoepfe.hoch(x, y, klang);
+      }
+      if (!maus) {
+        S.mx = S.my = -1;
+      }
+    },
+    abbruch: function () {
+      knoepfe.abbruch();
+      ovKnoepfe.abbruch();
+      S.mx = S.my = -1;
+    },
+    maus_weg: function () {
+      S.mx = S.my = -1;
+    },
+    taste: function (e) {
+      const code = e.code, key = e.key;
+      if (e.repeat && code !== 'Space') {
+        return;
+      }
+      if (S.ov !== 'KEINS') {
+        if (code === 'Escape') {
+          schliessen();
+        }
+        return;
+      }
+      if (code === 'Space' || code === 'Enter' || code === 'NumpadEnter') {
+        if (e.repeat) {
+          return;
+        }
+        if (S.z === 'LEITER') {
+          leiterStopp();
+        } else if (S.z !== 'KARTE') {
+          starte();
+        }
+        return;
+      }
+      switch (code) {
+        case 'ArrowLeft':
+          karteWaehlen(true);
+          return;
+        case 'ArrowRight':
+          karteWaehlen(false);
+          return;
+        case 'ArrowUp':
+          if (S.z === 'LEITER') {
+            leiterStopp();
+          } else {
+            leiterStarten();
+          }
+          return;
+        case 'KeyR':
+          karteStarten();
+          return;
+        case 'KeyL':
+          leiterStarten();
+          return;
+        case 'KeyN':
+        case 'ArrowDown':
+          annehmen(false);
+          return;
+        case 'KeyA':
+          btn.auto.ausloesen();
+          return;
+        case 'KeyX':
+          linienAendern();
+          return;
+        case 'KeyM':
+          tonUmschalten();
+          return;
+        case 'KeyI':
+          oeffne('HILFE');
+          return;
+        case 'KeyS':
+          oeffne('STATISTIK');
+          return;
+        case 'KeyE':
+          if (S.z === 'BEREIT' && !S.fs) {
+            oeffne('REGELN');
+          }
+          return;
+        case 'KeyG':
+          oeffne('GUTHABEN');
+          return;
+        case 'Escape':
+          if (verlassenErlaubt()) {
+            wechsleSzene('lobby');
+          }
+          return;
+        default:
+          break;
+      }
+      if (key === '-' || code === 'NumpadSubtract' || code === 'Minus') {
+        einsatzAendern(-1);
+      } else if (key === '+' || code === 'NumpadAdd' || code === 'BracketRight' || code === 'Equal') {
+        einsatzAendern(1);
+      }
+    }
+  };
+
+  // ---------------------------------------------------------------- Vorschau für die Spielauswahl
+  szene.vorschau = function (g, p, zeit) {
+    g.fillStyle = radial(g, p.x + p.w / 2, p.y + p.h * 0.45, Math.max(p.w, p.h) * 0.8,
+      [[0, C(50, 56, 120)], [0.6, C(20, 22, 56)], [1, C(6, 6, 18)]]);
+    g.fillRect(p.x, p.y, p.w, p.h);
+    // drei Mini-Walzen
+    const cw = Math.min(p.w / 3.4, p.h / 2.6);
+    const rh = cw * 0.86;
+    const x0 = p.x + p.w / 2 - cw * 1.5, y0 = p.y + p.h / 2 - rh * 1.5 + rh * 0.15;
+    const sym = [[AS, FALKE, DAME], [KATZE, BUCH, ANKH], [KOENIG, PYRAMIDE, ZEHN]];
+    for (let i = 0; i < 3; i++) {
+      fuell(g, rrP(x0 + i * cw + 3, y0, cw - 6, rh * 3, 14), C(14, 16, 44, 220));
+      for (let r = 0; r < 3; r++) {
+        const s = sym[i][r];
+        let gr = cw * 0.8;
+        const cx = x0 + (i + 0.5) * cw, cy = y0 + (r + 0.5) * rh;
+        if (s === BUCH) {
+          gr *= 1.15 + (Stil.sparmodus ? 0 : 0.06 * Math.sin(zeit * 3));
+          if (!Stil.sparmodus) {
+            strahlen(g, cx, cy, cw * 1.3, 12, zeit * 0.5, C(255, 220, 120, 120), 0.5);
+          }
+        }
+        g.drawImage(symbolBild(s, gr * aufloesung, false), cx - gr / 2, cy - gr / 2, gr, gr);
+      }
+    }
+    strich(g, 3);
+    g.strokeStyle = css(C(230, 180, 90));
+    g.strokeRect(x0, y0, cw * 3, rh * 3);
+  };
+
+  // ---------------------------------------------------------------- Test- und Simulationszugang
+  function simuliere(n, sonderFest) {
+    let einsatzS = 0, gewinnS = 0, fsAnz = 0, fsSpiele = 0, max = 0;
+    const lbW = 1, lin = 10;
+    for (let k = 0; k < n; k++) {
+      einsatzS += lbW * lin;
+      const st = STREIFEN.map(function (s) {
+        return Math.floor(Math.random() * s.length);
+      });
+      const e = bewerte(fensterAus(st), lin, lbW, []);
+      let g = e.summe;
+      if (e.scatter.n >= 3) {
+        fsAnz++;
+        const sym = [sonderFest !== undefined ? sonderFest : Math.floor(Math.random() * 9)];
+        let rest = 10;
+        while (rest > 0) {
+          rest--;
+          fsSpiele++;
+          const s2 = STREIFEN.map(function (s) {
+            return Math.floor(Math.random() * s.length);
+          });
+          const e2 = bewerte(fensterAus(s2), lin, lbW, sym);
+          g += e2.summe;
+          if (e2.scatter.n >= 3) {
+            rest += 10;
+            if (sym.length < 9) {
+              let neu;
+              do {
+                neu = Math.floor(Math.random() * 9);
+              } while (sym.indexOf(neu) >= 0);
+              sym.push(neu);
+            }
+          }
+        }
+      }
+      gewinnS += g;
+      max = Math.max(max, g);
+    }
+    return { quote: gewinnS / einsatzS, fsAlle: n / Math.max(1, fsAnz), fsSpiele: fsSpiele / Math.max(1, fsAnz), max: max / (lbW * lin) };
+  }
+  szene.test = {
+    S: S, P: P, walzen: walzen, bewerte: bewerte, fensterAus: fensterAus, linienWert: linienWert, STREIFEN: STREIFEN, LINIEN: LINIEN,
+    PAY: PAY, simuliere: simuliere, starte: starte, annehmen: annehmen, karteStarten: karteStarten, karteWaehlen: karteWaehlen,
+    leiterStarten: leiterStarten, leiterStopp: leiterStopp, oeffne: oeffne, planLaeuft: planLaeuft, freispielDrehen: freispielDrehen,
+    introStarten: introStarten, LB: function () {
+      return LB;
+    }, knopf: function (n) {
+      return btn[n];
+    }, symbolBild: symbolBild, setzeStops: function (l) {
+      testStops = l;
+    }, setzeSonder: function (l) {
+      testSonder = l;
+    }
+  };
+  return szene;
+})();
+
 // ---- lobby.js
 // ====================================================================================
-// lobby.js – Spielauswahl der Spielhalle: drei Spiele mit lebendiger Vorschau,
+// lobby.js – Spielauswahl der Spielhalle: vier Spiele mit lebendiger Vorschau,
 // gemeinsames Guthaben (neu setzen auf 10 / 20 / 50 / 100 €), Ton, Lautstaerke,
 // Sparmodus, Croupier-Stimme und Installation als App.
 // ====================================================================================
@@ -12131,7 +15243,7 @@ const SzeneBlackjack = (function () {
 const SzeneLobby = (function () {
   const Z = {
     zeit: 0, ov: 'KEINS', mx: -1, my: -1, fokus: -1, kreditAnzeige: 0, gedrueckt: -1,
-    hover: [0, 0, 0], druck: [0, 0, 0], quoten: ['', 'QUOTE 97,3 %', ''], dialog: null, optionen: null, ersterBesuch: true
+    hover: [0, 0, 0, 0], druck: [0, 0, 0, 0], quoten: ['', 'QUOTE 97,3 %', '', 'QUOTE 95,0 %'], dialog: null, optionen: null, ersterBesuch: true
   };
   const meld = new Meldungen();
   const glut = new Partikel();
@@ -12160,8 +15272,15 @@ const SzeneLobby = (function () {
       text: 'Sechs Decks, die Bank steht auf 17, Black Jack zahlt 3 : 2. Teilen, Verdoppeln, Versicherung.',
       tags: ['3 : 2', 'STRATEGIE-TIPP'], farbe: C(50, 140, 235),
       punkte: ['Bis zu drei Boxen gleichzeitig', 'Tipp zeigt die beste Entscheidung', 'Strategietabelle zum Nachschlagen']
+    },
+    {
+      id: 'sonnenbuch', titel: 'SONNENBUCH', unter: 'WALZENSPIEL · MAGIE',
+      text: 'Das Buch ist Joker und Scatter: 3 Bücher bringen 10 Freispiele mit wachsenden Sondersymbolen – bis zu 9 auf einmal.',
+      tags: ['10 LINIEN', 'LEITER & RISIKO'], farbe: C(170, 110, 255),
+      punkte: ['Bis zu 9 Sondersymbole', 'Risikoleiter bis 500 × Einsatz', 'Karte Rot oder Schwarz']
     }
   ];
+  const N = SPIELE.length;
 
   // ---------------------------------------------------------------- Layout
   function layoutQuer() {
@@ -12170,8 +15289,8 @@ const SzeneLobby = (function () {
     L.guth = { x: 600, y: 36, w: 270, h: 80 };
     L.geld = { x: 884, y: 40, w: 176, h: 72 };
     L.icons = { rechts: 1236, y: 52, d: 50, abstand: 58 };
-    const w = 378, gap = 24, x0 = (1280 - (3 * w + 2 * gap)) / 2;
-    L.karten = [0, 1, 2].map(function (i) {
+    const w = 290, gap = 16, x0 = (1280 - (4 * w + 3 * gap)) / 2;
+    L.karten = [0, 1, 2, 3].map(function (i) {
       return { x: x0 + i * (w + gap), y: 160, w: w, h: 572 };
     });
     L.fussY = 770;
@@ -12184,10 +15303,12 @@ const SzeneLobby = (function () {
     L.icons = { rechts: 700, y: 22, d: 48, abstand: 56 };
     L.guth = { x: 20, y: 140, w: 390, h: 80 };
     L.geld = { x: 424, y: 144, w: 276, h: 72 };
-    const y0 = 244, fuss = 56, gap = 16;
-    const kh = Math.floor((H - y0 - fuss - 2 * gap) / 3);
-    L.karten = [0, 1, 2].map(function (i) {
-      return { x: 20, y: y0 + i * (kh + gap), w: 680, h: kh };
+    // zwei mal zwei Karten
+    const y0 = 240, fuss = 52, gap = 16;
+    const kh = Math.floor((H - y0 - fuss - gap) / 2);
+    const kw = (680 - gap) / 2;
+    L.karten = [0, 1, 2, 3].map(function (i) {
+      return { x: 20 + (i % 2) * (kw + gap), y: y0 + Math.floor(i / 2) * (kh + gap), w: kw, h: kh };
     });
     L.fussY = H - 22;
     return L;
@@ -12195,20 +15316,12 @@ const SzeneLobby = (function () {
 
   /** Innere Bereiche einer Spielkarte: Vorschau, Text, Knopf. */
   function kartenTeile(k) {
-    if (!LL.hoch) {
-      const pv = { x: k.x + 18, y: k.y + 18, w: k.w - 36, h: 248 };
-      return {
-        pv: pv, tx: k.x + 26, ty: pv.y + pv.h + 50, tw: k.w - 52,
-        knopf: { x: k.x + 30, y: k.y + k.h - 86, w: k.w - 60, h: 64 }
-      };
-    }
-    const pw = Math.min(k.h - 32, 292);
-    const pv = { x: k.x + 16, y: k.y + 16, w: pw, h: k.h - 32 };
-    const tx = pv.x + pv.w + 22;
-    const tw = k.x + k.w - 20 - tx;
+    const ph = LL.hoch ? clampI(Math.round(k.h * 0.4), 170, 290) : 214;
+    const pv = { x: k.x + 16, y: k.y + 16, w: k.w - 32, h: ph };
+    const kh = LL.hoch ? 58 : 62;
     return {
-      pv: pv, tx: tx, ty: k.y + 54, tw: tw,
-      knopf: { x: tx, y: k.y + k.h - 80, w: tw, h: 62 }
+      pv: pv, tx: k.x + 22, ty: pv.y + pv.h + 42, tw: k.w - 44,
+      knopf: { x: k.x + 24, y: k.y + k.h - kh - 18, w: k.w - 48, h: kh }
     };
   }
 
@@ -12242,14 +15355,14 @@ const SzeneLobby = (function () {
       knoepfe.add(liste[i]);
     }
     spielKnoepfe = [];
-    for (let i = 0; i < 3; i++) {
+    const farben = [C(40, 190, 70), C(30, 160, 80), C(40, 150, 255), C(150, 90, 240)];
+    for (let i = 0; i < N; i++) {
       const t = kartenTeile(LL.karten[i]);
       const id = SPIELE[i].id;
-      const b = new Knopf('SPIELEN', t.knopf.x, t.knopf.y, t.knopf.w, t.knopf.h, i === 0 ? C(40, 190, 70) : (i === 1 ? C(30, 160, 80)
-        : C(40, 150, 255)), function () {
+      const b = new Knopf('SPIELEN', t.knopf.x, t.knopf.y, t.knopf.w, t.knopf.h, farben[i], function () {
         starteSpiel(id);
       });
-      b.schrift = 26;
+      b.schrift = 24;
       if (!Knopf.touch) {
         b.setUnter('TASTE ' + (i + 1));
       }
@@ -12453,12 +15566,13 @@ const SzeneLobby = (function () {
 
   function vorschauRoulette(g, p, zeit) {
     zeichneFilz(g, rectP(p.x, p.y, p.w, p.h), p.x, p.y, p.w, p.h, C(16, 96, 58));
-    const r = Math.min(p.w * 0.5, p.h * 0.5) - 8;
-    const cx = LL.hoch ? p.x + p.w / 2 : p.x + p.w * 0.4;
+    const spalte = !LL.hoch && p.w >= 240;
+    const r = spalte ? Math.min((p.w - 70) * 0.5, p.h * 0.5) - 6 : Math.min(p.w * 0.5, p.h * 0.5) - 8;
+    const cx = spalte ? p.x + (p.w - 62) / 2 : p.x + p.w / 2;
     const cy = p.y + p.h / 2;
     fuell(g, kreisP(cx + 5, cy + 8, r), C(0, 0, 0, 90));
     SzeneRoulette.vorschau(g, cx, cy, r, zeit);
-    if (!LL.hoch) {
+    if (spalte) {
       // zuletzt gefallene Zahlen (Anzeige am Tisch)
       const zahlen = [17, 0, 32, 5, 26, 11];
       const zx = p.x + p.w - 44, zh = (p.h - 28) / zahlen.length;
@@ -12557,8 +15671,10 @@ const SzeneLobby = (function () {
       vorschauTurm(g, pv, zeit);
     } else if (i === 1) {
       vorschauRoulette(g, pv, zeit);
-    } else {
+    } else if (i === 2) {
       vorschauBlackjack(g, pv, zeit);
+    } else {
+      SzeneBuch.vorschau(g, pv, zeit);
     }
     // Glanz oben
     g.fillStyle = gp(g, 0, pv.y, C(255, 255, 255, 40), 0, pv.y + pv.h * 0.35, C(255, 255, 255, 0));
@@ -12566,57 +15682,67 @@ const SzeneLobby = (function () {
     g.restore();
     goldRahmenBox(g, pr, pv.x, pv.y, pv.h, 2.4);
     // Texte
-    const hoch = LL.hoch;
-    const gr = hoch ? (t.tw < 300 ? 28 : 32) : 36;
+    let gr = 31;
+    while (gr > 22 && breite(g, s.titel, titel(gr)) > t.tw) {
+      gr -= 1;
+    }
     let y = t.ty;
     glanzText(g, s.titel, titel(gr), t.tx, y, -1, WEISS, heller(s.farbe, 0.55), s.farbe, 3.2, -1);
-    y += hoch ? 24 : 26;
-    comicText(g, s.unter, titel(hoch ? 12 : 13), heller(s.farbe, 0.45), t.tx + 2, y, -1, 1.5);
-    y += hoch ? 26 : 30;
-    const f = sans(hoch ? 14 : 15);
-    const zl = umbrechen(g, s.text, f, t.tw);
-    const maxZ = hoch ? Math.max(2, Math.floor((t.knopf.y - y - 36) / 20) + 1) : 3;
-    for (let j = 0; j < zl.length && j < maxZ; j++) {
-      text(g, zl[j], f, C(255, 236, 205), t.tx, y + j * (hoch ? 20 : 22), -1);
-    }
-    y += Math.min(zl.length, maxZ) * (hoch ? 20 : 22) + (hoch ? 2 : 6);
-    if (!hoch) {
-      y = t.knopf.y - 56;
-    }
-    // Merkmale
+    y += 23;
+    comicText(g, s.unter, titel(12), heller(s.farbe, 0.45), t.tx + 2, y, -1, 1.5);
+    y += 26;
+    // Merkmale (über dem Knopf, bis zu zwei Reihen)
     const tags = s.tags.concat(Z.quoten[i] ? [Z.quoten[i]] : []);
-    const tf = titel(hoch ? 11 : 11.5);
-    let tx = t.tx;
-    const th = hoch ? 22 : 24;
+    const tf = titel(11);
+    const th = 22;
+    const reihen = [];
+    let reihe = [], rw = 0;
     for (let j = 0; j < tags.length; j++) {
-      const bw = breite(g, tags[j], tf) + 18;
-      if (tx + bw > t.tx + t.tw + 2) {
-        if (hoch && y + th * 2 + 6 > t.knopf.y - 4) {
-          break;
-        }
-        tx = t.tx;
-        y += th + 6;
+      const bw = breite(g, tags[j], tf) + 16;
+      if (reihe.length && rw + bw > t.tw + 2) {
+        reihen.push(reihe);
+        reihe = [];
+        rw = 0;
       }
-      const pill = rrP(tx, y, bw, th, th);
-      const quoteTag = j === s.tags.length;
-      fuell(g, pill, quoteTag ? C(20, 8, 2, 200) : alpha(dunkler(s.farbe, 0.35), 200));
-      rand(g, pill, quoteTag ? C(255, 210, 110, 200) : alpha(heller(s.farbe, 0.4), 220), 1.4);
-      text(g, tags[j], tf, quoteTag ? GELB_HELL : WEISS, tx + bw / 2, y + th / 2 + 4.5, 0);
-      tx += bw + 8;
+      reihe.push({ t: tags[j], w: bw, q: j === s.tags.length });
+      rw += bw + 7;
     }
-    // Kurzanleitung, wenn im Hochformat Platz ist
-    if (hoch && s.punkte) {
-      let py = y + th + 34;
-      const pf = sans(13.5);
+    reihen.push(reihe);
+    const tagY = t.knopf.y - 12 - reihen.length * (th + 6);
+    const f = sans(14);
+    const zl = umbrechen(g, s.text, f, t.tw);
+    const maxZ = Math.max(1, Math.floor((tagY - y - 4) / 20) + 1);
+    const zeilen = Math.min(zl.length, maxZ);
+    for (let j = 0; j < zeilen; j++) {
+      text(g, zl[j], f, C(255, 236, 205), t.tx, y + j * 20, -1);
+    }
+    const textEnde = y + (zeilen - 1) * 20;
+    y = tagY;
+    for (let rr = 0; rr < reihen.length; rr++) {
+      let tx = t.tx;
+      for (let j = 0; j < reihen[rr].length; j++) {
+        const tg = reihen[rr][j];
+        const pill = rrP(tx, y, tg.w, th, th);
+        fuell(g, pill, tg.q ? C(20, 8, 2, 200) : alpha(dunkler(s.farbe, 0.35), 200));
+        rand(g, pill, tg.q ? C(255, 210, 110, 200) : alpha(heller(s.farbe, 0.4), 220), 1.4);
+        text(g, tg.t, tf, tg.q ? GELB_HELL : WEISS, tx + tg.w / 2, y + th / 2 + 4.2, 0);
+        tx += tg.w + 7;
+      }
+      y += th + 6;
+    }
+    // Kurzanleitung, wenn Platz ist
+    if (s.punkte && zeilen === zl.length) {
+      let py = textEnde + 34;
+      const pf = sans(13);
       for (let j = 0; j < s.punkte.length; j++) {
-        if (py > t.knopf.y - 18) {
+        if (py > tagY - 10) {
           break;
         }
-        const stern = stern5P(t.tx + 7, py - 5, 7.5, 3.4);
+        const stern = stern5P(t.tx + 7, py - 5, 7, 3.2);
         fuell(g, stern, heller(s.farbe, 0.3));
         rand(g, stern, KONTUR, 1.2);
-        text(g, s.punkte[j], pf, C(255, 226, 190), t.tx + 22, py, -1);
-        py += 26;
+        text(g, s.punkte[j], pf, C(255, 226, 190), t.tx + 21, py, -1);
+        py += 24;
       }
     }
     g.restore();
@@ -12634,7 +15760,7 @@ const SzeneLobby = (function () {
         textGlanz(g, 'SPIELHALLE', titel(T.gr), T.x, T.y, -1, gw, 210);
       }
     }
-    comicText(g, LL.hoch ? 'DREI SPIELE · EIN GUTHABEN' : 'DREI SPIELE · EIN GUTHABEN · NUR SPIELGELD', titel(LL.hoch ? 12 : 13),
+    comicText(g, LL.hoch ? 'VIER SPIELE · EIN GUTHABEN' : 'VIER SPIELE · EIN GUTHABEN · NUR SPIELGELD', titel(LL.hoch ? 12 : 13),
       C(255, 220, 160), T.ux, T.uy, -1, 1.6);
     const G2 = LL.guth;
     ledAnzeige(g, G2.x, G2.y, G2.w, G2.h, 'GUTHABEN (ALLE SPIELE)', euro(Math.round(Z.kreditAnzeige)), LED, LL.hoch ? 32 : 30);
@@ -12662,7 +15788,7 @@ const SzeneLobby = (function () {
     }
     zeichneKopf(g);
     const zeit = Stil.sparmodus ? 1.2 : Z.zeit;
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < N; i++) {
       zeichneSpielkarteLobby(g, i, zeit);
     }
     knoepfe.zeichne(g, Z.zeit);
@@ -12696,7 +15822,7 @@ const SzeneLobby = (function () {
       Z.kreditAnzeige += diff * Math.min(1, dt * 7);
     }
     const aktiv = Z.ov === 'KEINS';
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < N; i++) {
       const ueber = aktiv && Z.mx >= 0 && kartenTreffer(Z.mx, Z.my) === i;
       Z.hover[i] += ((ueber ? 1 : 0) - Z.hover[i]) * Math.min(1, dt * 12);
       Z.druck[i] += ((Z.gedrueckt === i ? 1 : 0) - Z.druck[i]) * Math.min(1, dt * 24);
@@ -12713,7 +15839,7 @@ const SzeneLobby = (function () {
   }
 
   function kartenTreffer(x, y) {
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < N; i++) {
       const k = LL.karten[i];
       if (x >= k.x && x <= k.x + k.w && y >= k.y && y <= k.y + k.h) {
         return i;
@@ -12741,8 +15867,8 @@ const SzeneLobby = (function () {
       Z.kreditAnzeige = Konto.kredit;
       Z.ov = 'KEINS';
       Z.gedrueckt = -1;
-      Z.hover = [0, 0, 0];
-      Z.druck = [0, 0, 0];
+      Z.hover = [0, 0, 0, 0];
+      Z.druck = [0, 0, 0, 0];
       ovKnoepfe.leeren();
       quotenBerechnen();
       if (btnTon) {
@@ -12773,7 +15899,7 @@ const SzeneLobby = (function () {
       if (!Stil.sparmodus || !meld.leer() || Math.abs(Konto.kredit - Z.kreditAnzeige) >= 1) {
         return false;
       }
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < N; i++) {
         if (Math.abs(Z.hover[i] - Math.round(Z.hover[i])) > 0.01 || Z.druck[i] > 0.01) {
           return false;
         }
@@ -12866,12 +15992,14 @@ const SzeneLobby = (function () {
         starteSpiel('roulette');
       } else if (code === 'Digit3' || code === 'Numpad3' || code === 'KeyB') {
         starteSpiel('blackjack');
+      } else if (code === 'Digit4' || code === 'Numpad4') {
+        starteSpiel('sonnenbuch');
       } else if (code === vor || code === 'Tab') {
-        Z.fokus = (Z.fokus + 1) % 3;
+        Z.fokus = (Z.fokus + 1) % N;
         klang.spiele('KNOPF', { gain: 0.6 });
         e.preventDefault();
       } else if (code === zurueckT) {
-        Z.fokus = (Z.fokus + 2) % 3;
+        Z.fokus = (Z.fokus + N - 1) % N;
         klang.spiele('KNOPF', { gain: 0.6 });
       } else if (code === 'Enter' || code === 'Space' || code === 'NumpadEnter') {
         starteSpiel(SPIELE[Math.max(0, Z.fokus)].id);
@@ -12902,7 +16030,7 @@ const SzeneLobby = (function () {
 
 // ---- main.js
 // ====================================================================================
-// main.js – Spielhalle: Szenenwechsel (Spielauswahl, Turmspitze, Roulette, Black Jack),
+// main.js – Spielhalle: Szenenwechsel (Spielauswahl, Turmspitze, Roulette, Black Jack, Sonnenbuch),
 // Bildschirmgroesse, Spielschleife, Eingabe, Speichern und Installation als App (PWA).
 // ====================================================================================
 
@@ -13057,11 +16185,12 @@ function wechsleSzene(name) {
 }
 
 function alleSpeichern() {
+  // erst das Konto, dann die Szene: Szenen mit offenem Gewinn schreiben ihn beim Speichern mit ins Konto
+  Konto.speichern();
+  Global.speichern();
   if (szene && szene.speichern) {
     szene.speichern();
   }
-  Konto.speichern();
-  Global.speichern();
 }
 
 // ------------------------------------------------------------------ Bildschirm
@@ -13301,6 +16430,7 @@ function starte() {
   SZENEN.turmspitze = SzeneTurm;
   SZENEN.roulette = SzeneRoulette;
   SZENEN.blackjack = SzeneBlackjack;
+  SZENEN.sonnenbuch = SzeneBuch;
   wechsleSzene(szeneAusAdresse() || 'lobby');
   uebergang = 0;
 
