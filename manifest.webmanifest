@@ -1,7 +1,7 @@
 {
   "name": "Turmspitze Spielhalle",
   "short_name": "Turmspitze",
-  "description": "Spielhalle mit Turmspitze (Spielautomat mit Risikoleiter), französischem Roulette, Black Jack und dem Walzenspiel Sonnenbuch – nur Spielgeld.",
+  "description": "Spielhalle mit zehn Spielen – Turmspitze, Roulette, Black Jack, Sonnenbuch, Goldzahl-Roulette, Schatzstollen, Mines, Plinko, Chicken und Höhenflug – mit Spielerkonten und Admin-Bereich. Nur Spielgeld.",
   "lang": "de",
   "id": "./",
   "start_url": "./",
