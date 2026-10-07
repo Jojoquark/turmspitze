@@ -1,6 +1,6 @@
 # Turmspitze – Spielhalle
 
-Eine Spielhalle als Web-App mit **zehn Spielen**, einem gemeinsamen Guthaben, Spielerkonten und Admin-Bereich.
+Eine Spielhalle als Web-App mit **fünfzehn Spielen**, einem gemeinsamen Guthaben, einer zweiten Währung (Goldchips), Spielerkonten mit Google-/Apple-Anmeldung und Admin-Bereich.
 
 **Spielhalle (deutsche Klassiker)**
 
@@ -16,9 +16,19 @@ Eine Spielhalle als Web-App mit **zehn Spielen**, einem gemeinsamen Guthaben, Sp
 - **Mines**, **Plinko** und **Chicken**: wie die Casino-Originals von Stake – gleiche Mathematik und Bedienung (Manuell/Auto, ½ und 2×, Stopp bei Gewinn/Verlust).
 - **Höhenflug**: Crash-Spiel mit Flugzeug im Stil von Aviator – zwei Einsätze gleichzeitig, Auto-Auszahlung, Auto-Spiel, Verlauf.
 
+**Ganz neu**
+
+- **Poker** (Texas Hold'em, No Limit) gegen 1 bis 5 Computergegner mit eigenen Spielstilen. Echte Blinds, vier Setzrunden, All-in und Side Pots. Mit **Trainer** (Hand, Gewinnchance per Simulation, Outs, Pot Odds, Vorschlag mit Begründung), **Tutorial** (erklärt jede Phase der Hand) und **8 Lektionen** zum Nachlesen.
+- **Zaubermönch**: Leiter-Automat nach der Mechanik von *Magic Monk Rasputin* (Merkur): 3 × 3, 5 Linien, drei Gewinnleitern (Ringe, Eier, Kronen), Werte stehen lassen oder nehmen, ab Stufe 9 Sofortgewinne, Stufe 20 Hauptgewinn bis 2.500 × Einsatz, der Mönch auf allen drei Walzen leert die Leitern. Quote je nach Spielweise 94,7 % bis etwa 98 % (wie beim Vorbild 94,77–97,96 %).
+- **Nil-Juwelen**: nach der Mechanik von *Lucky Pharaoh* (Merkur): 5 × 3, 10 Linien, Gewinne von links, von rechts und auf den drei mittleren Walzen, gestapelte Symbole. Gewinne ab 4 × Einsatz lassen sich in **Power Spins** tauschen (vier Felder gleichzeitig, Goldmaske verwandelt sich auf allen Feldern in dasselbe Symbol). Quote 94,4 % (bar) bis 96,4 % (mit Power Spins).
+- **Sonnenernte**: nach der Mechanik von *77777 Sunny Spins* (Merkur): Früchte, 10 Linien, die 7 ist Joker. Ab 5 Sonnentalern starten die **Sonnen-Spins** (Taler bleiben stehen, neue setzen auf 3 zurück, Töpfe Mini bis Grand, volles Feld × 3). Quote etwa 96,4 %.
+- **Bonbonregen**: der derzeit beliebteste Online-Slot-Typ, nach der Mechanik von *Sweet Bonanza* (Pragmatic Play): 6 × 5, Gewinne ab 8 gleichen Symbolen irgendwo, Kaskaden, Freispiele mit Bonbon-Bomben bis 100×, Einsatz-Plus und Freispiele kaufen. Quote etwa 96,5 %, Höchstgewinn 21.100 ×.
+
+Die Auszahlungsquoten der vier neuen Automaten wurden per Simulation (mehrere Millionen Drehungen) auf die veröffentlichten Werte der Vorbilder abgestimmt; die genauen Walzenbelegungen der Originale sind nicht öffentlich.
+
 Alles läuft im Browser, auch offline. Auf iPhone, iPad und Android lässt sich die Spielhalle als App auf den Startbildschirm legen.
 
-**Es wird nur mit Spielgeld gespielt.** Namen, Grafiken, Figuren und Sounds sind selbst gemacht; nur die Spielregeln und die Mathematik folgen den genannten Vorbildern. Es werden keine Logos oder Grafiken von Merkur/Gauselmann, Pragmatic Play, ELK Studios, Stake oder Spribe verwendet.
+**Es wird nur mit Spielgeld gespielt.** Namen, Grafiken, Figuren und Sounds sind selbst gemacht; nur die Spielregeln und die Mathematik folgen den genannten Vorbildern. Es werden keine Namen, Logos oder Grafiken von Merkur/Gauselmann, Pragmatic Play, ELK Studios, Stake oder Spribe verwendet – alle Symbole sind im Code gezeichnet.
 
 ## Guthaben aufladen
 
@@ -69,6 +79,37 @@ Hinweise:
 - Spieler melden sich mit Name und Passwort an. Intern wird daraus eine Adresse wie `max@turmspitze.example.com`, an die nie etwas geschickt wird. Ein vergessenes Passwort kann nicht zurückgesetzt werden: einfach neues Konto anlegen lassen und im Admin-Bereich das alte Guthaben gutschreiben.
 - Da es Spielgeld ist, ist das System auf Bequemlichkeit ausgelegt, nicht auf Bank-Sicherheit: Wer sich mit Entwicklerwerkzeugen auskennt, könnte sein eigenes Spielgeld-Guthaben verändern. Fremde Konten, Sperren und Einstellungen sind durch die Regeln geschützt.
 - Wird der Online-Modus eingeschaltet, startet jeder Spieler mit dem Startguthaben. Lokale Spielstände werden nicht automatisch übernommen (der Admin kann Guthaben gutschreiben).
+
+## Zweite Währung: Goldchips
+
+- **Goldchips (GC)** kann nur der Admin vergeben: Admin-Bereich → Spieler → Spieler antippen → bei „Guthaben ändern“ auf **● Goldchips** umschalten → Betrag gutschreiben, abziehen oder setzen.
+- Spieler mit Goldchips sehen in der Spielauswahl den Knopf **GC** (und „€“ zum Zurückwechseln). Gewechselt wird nur in der Spielauswahl, nicht mitten in einer Runde.
+- Für jedes Spiel stellt der Admin eine eigene **Auszahlungsquote** für Goldchips ein (Admin → Einstellungen → Goldchips; 30 % bis 150 %, leer = Standard). Die Quote wird den Spielern **offen angezeigt**: auf jeder Spielkarte, oben im Spiel („Goldchips · Quote 90 %“), in den Spielregeln und im Fenster „Währung“. Bei Mines, Chicken, Plinko und Höhenflug steckt die Quote direkt in den angezeigten Multiplikatoren, bei Poker ist sie ein Rake auf gewonnene Pots, sonst wird jede Auszahlung umgerechnet.
+- Mit Goldchips sind **alle Tipps und Hilfen aus**: Black-Jack-Tipps und Strategietabelle, Kartenzähler, Taktikhandbuch der Roulettes, Poker-Trainer und Lektionen.
+- Goldchips kann man nicht aufladen. Statistiken werden getrennt nach Euro und Goldchips geführt.
+
+## Taktikhandbuch (Roulette und Goldzahl-Roulette)
+
+Das grüne **Buch-Symbol** (Roulette) bzw. der Knopf **Taktik** (Goldzahl-Roulette) öffnet das Handbuch:
+
+- **Verteilvorlagen**: James Bond, Zwei Dutzende/Kolonnen, Farbe + Chevals, Fünf Carrés, Voisins, Tiers, Orphelins, Jeu Zéro, Zahl mit Nachbarn, Kesselsektor, Finale, heiße/kalte Zahlen (und beim Goldzahl-Roulette Dutzend als Pleins, alle Zahlen als Plein). Jede Vorlage zeigt Kosten, welche Zahlen gewinnen (Mini-Tableau), Gewinn/Verlust und Erwartung – **Anwenden** legt die Jetons direkt auf den Tisch.
+- **Einsatzsteuerung**: Martingale, Paroli, D'Alembert, Fibonacci und 1-3-2-6 auf eine einfache Chance – setzt auf Wunsch nach jedem Coup automatisch den nächsten Einsatz, mit Verlauf, Bilanz und Risikotabelle.
+- **Wissen**: Gewinnchancen, Hausvorteil und was Taktiken können und was nicht.
+
+## Anmelden mit Google und Apple
+
+Im Online-Modus erscheinen im Anmeldefenster zusätzlich **Mit Google anmelden** und **Mit Apple anmelden**. Neue Spieler wählen danach einmal ihren Spielernamen. Damit das funktioniert:
+
+1. In `online-config.js` muss die `authDomain` stehen (ist eingetragen: `gamblen-395f3.firebaseapp.com`).
+2. Firebase → Authentication → **Anmeldeanbieter**: Google und Apple aktivieren (erledigt).
+3. Firebase → Authentication → **Einstellungen → Autorisierte Domains**: `jojoquark.github.io` hinzufügen. **Ohne diesen Schritt meldet Google/Apple „unauthorized-domain“.**
+4. Nur für Apple: Im Apple-Developer-Konto (kostenpflichtige Mitgliedschaft nötig) eine **Services-ID** für „Sign in with Apple“ anlegen, als Domain `gamblen-395f3.firebaseapp.com` und als Rückruf-Adresse `https://gamblen-395f3.firebaseapp.com/__/auth/handler` eintragen, einen Schlüssel erzeugen und Services-ID, Team-ID, Key-ID und Schlüssel in Firebase beim Anbieter Apple eintragen.
+
+Die Datenbank-Regeln müssen dafür nicht geändert werden.
+
+## Statistiken zurücksetzen
+
+Admin → Übersicht → **Alle Statistiken zurücksetzen** (wahlweise Euro und Goldchips, nur Euro oder nur Goldchips). Setzt Runden, Einsätze, Gewinne, Rekorde und „Aufgeladen“ aller Spieler sowie die Statistiken in den Spielen zurück; Guthaben bleiben. Einzelne Spieler lassen sich in ihrer Detailansicht zurücksetzen.
 
 ## Auf GitHub Pages veröffentlichen
 
