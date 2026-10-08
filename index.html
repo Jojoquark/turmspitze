@@ -718,7 +718,7 @@ input, textarea, select {
 .pk-buehne { justify-content: center; }
 .pk-flaeche {
   position: relative;
-  width: min(100%, 780px, calc((100dvh - 150px) * 1.12));
+  width: min(100%, 780px, calc((100dvh - 162px) * 1.12));
   aspect-ratio: 1.12;
 }
 .pk-cv { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -782,7 +782,7 @@ input, textarea, select {
 
 /* Handys: Bedienung ohne Scrollen sichtbar halten */
 @media (max-width: 800px) {
-  .pk-flaeche { width: min(100%, calc(100dvh - 540px)); min-width: 200px; }
+  .pk-flaeche { width: min(100%, calc(100dvh - 540px)); min-width: 170px; }
   .mn-raster { width: min(100%, 520px, calc(100dvh - 420px)); min-width: 220px; }
   .ck-flaeche { height: clamp(200px, 34dvh, 380px); }
 }
@@ -1185,7 +1185,7 @@ input, textarea, select {
   .ss-wert { font-size: 11px; }
   .ss-lorenzeile, .ss-leiste { display: none; }
   .ss-seite { display: grid; grid-template-columns: 1fr; }
-  .ss-feld { min-height: 0; height: min(100vw - 12px, calc(100dvh - 290px)); min-height: 280px; }
+  .ss-feld { min-height: 0; height: min(100vw - 12px, calc(100dvh - 290px)); min-height: 270px; }
   .ss-steuer { gap: 8px; padding: 8px 6px calc(8px + env(safe-area-inset-bottom, 0px)); }
   .ss-kaufen { height: 44px; padding: 0 10px; font-size: 15px; }
   .ss-einsatz button { width: 34px; height: 34px; }
@@ -1412,6 +1412,31 @@ input, textarea, select {
 .wf-k ul { margin: 4px 0 2px; padding-left: 18px; font-size: 13px; font-weight: 700; color: #5a3a1a; }
 .wf-k li { margin: 1px 0; }
 .wf-tab td:nth-child(2), .wf-tab td:nth-child(3), .wf-tab th:nth-child(2), .wf-tab th:nth-child(3) { text-align: right; }
+/* Statistik mit relativen Werten: auf schmalen Bildschirmen seitlich wischen */
+.kt-rolle { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 -4px; padding: 0 4px; }
+.konto-tabelle td small, .konto-tabelle th small { display: block; font-size: 10.5px; font-weight: 700; opacity: 0.7; }
+.ad-max { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px; }
+.ad-max label { display: flex; flex-direction: column; gap: 2px; font-size: 12px; }
+.ad-max span { opacity: 0.75; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ad-max input { width: 100%; min-width: 0; }
+.kt-kacheln { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin: 6px 0 8px; }
+.kt-k { padding: 7px 8px; border-radius: 10px; background: rgba(0, 0, 0, 0.06); border: 1px solid rgba(43, 22, 6, 0.15); min-width: 0; }
+.kt-k small { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.7; }
+.kt-k b { display: block; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.kt-k span { display: block; font-size: 11px; opacity: 0.75; }
+.fenster.dunkel .kt-k, .ad .kt-k { background: rgba(255, 255, 255, 0.05); border-color: rgba(255, 255, 255, 0.12); }
+@media (max-width: 620px) {
+  .kt-kacheln { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* Tabelle als Karten: je Spiel ein Block mit beschrifteten Werten */
+  .kt-rolle { overflow: visible; }
+  .konto-tabelle.kt-neu, .kt-neu tbody { display: block; }
+  .kt-neu tr.kt-kopf { display: none; }
+  .kt-neu tr { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2px 8px; padding: 8px 2px; border-bottom: 1px solid rgba(43, 22, 6, 0.15); }
+  .kt-neu td { border: 0; padding: 0; text-align: left; white-space: normal; font-size: 13px; }
+  .kt-neu td.kt-name { grid-column: 1 / -1; font-weight: 900; font-size: 14px; }
+  .kt-neu td[data-l]::before { content: attr(data-l); display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.6; font-weight: 700; }
+  .kt-neu tr.kt-summe { background: rgba(0, 0, 0, 0.05); border-radius: 8px; }
+}
 /* App-Download-Aufforderung */
 .fenster.app-pop { width: min(400px, 100%); text-align: center; background: radial-gradient(120% 80% at 50% 0%, #3b2a7a 0%, #1a1238 60%, #120c26 100%); border: 1px solid rgba(255, 215, 110, 0.35); }
 .fenster.app-pop .fenster-kopf { display: none; }
@@ -2281,6 +2306,64 @@ input, textarea, select {
 .nj-plan div { display: flex; align-items: center; gap: 3px; padding: 2px 8px 2px 3px; border-radius: 999px; background: rgba(6, 26, 76, 0.75); border: 1px solid #e9c36e; }
 .nj-plan img { width: 26px; height: 26px; }
 .nj-plan b { font: 700 12px Orbitron, Nunito, sans-serif; color: #ffe08a; }
+
+/* ---------------------------------------------------------------- sehr schmale Handys (≤ 400 px) */
+@media (max-width: 400px) {
+  .sl-leiste { gap: 5px; padding-left: 6px; padding-right: 6px; }
+  .sl-einsatz { gap: 3px; }
+  .sl-einsatz button { width: 34px; height: 40px; }
+  .sl-e-wert, .sl-gewinn { min-width: 58px; }
+  .ds-zaubermoench .sl-e-wert, .ds-zaubermoench .sl-gewinn, .ds-niljuwelen .sl-e-wert, .ds-niljuwelen .sl-gewinn,
+  .ds-sonnenernte .sl-e-wert, .ds-sonnenernte .sl-gewinn { padding: 3px 5px 4px; }
+  .ds-zaubermoench .sl-e-wert b, .ds-zaubermoench .sl-gewinn b, .ds-niljuwelen .sl-e-wert b, .ds-niljuwelen .sl-gewinn b,
+  .ds-sonnenernte .sl-e-wert b, .ds-sonnenernte .sl-gewinn b { font-size: 14px; letter-spacing: 0.01em; }
+  .sl-risiko { padding: 0 8px; font-size: 12px !important; letter-spacing: 0.02em !important; }
+  .ds-bonbonregen .sl-einsatz button { width: 34px; height: 34px; font-size: 20px; }
+  .ds-bonbonregen .sl-auto { width: 40px; height: 40px; }
+  .ds-bonbonregen .sl-start { width: 62px; height: 62px; margin-top: -12px; }
+  .ds-bonbonregen .sl-start::before { inset: 13px; border-width: 5px; }
+  .ds-bonbonregen .sl-start::after { right: 10px; top: 12px; }
+  .ds-bonbonregen .sl-e-wert b { font-size: 16px; }
+  .ds-bonbonregen .sl-gewinn b { font-size: 19px; }
+}
+/* Rahmen eng um die Walzen (5 × 3), auch im Querformat */
+.ds-niljuwelen .sl-haupt, .ds-sonnenernte .sl-haupt { justify-content: center; align-items: center; }
+.ds-niljuwelen .nj-buehne, .ds-sonnenernte .se-buehne { flex: 0 1 auto; aspect-ratio: 1.72; height: calc(100% - 28px); max-height: calc(100% - 28px); max-width: calc(100% - 40px); align-self: center; }
+.ds-niljuwelen .nj-buehne.power { aspect-ratio: auto; flex: 1 1 auto; height: auto; }
+@media (max-width: 560px) {
+  .ds-niljuwelen .nj-buehne, .ds-sonnenernte .se-buehne { height: auto; width: calc(100% - 40px); max-height: none; }
+  .ds-niljuwelen .nj-buehne.power { width: calc(100% - 40px); flex: 1 1 auto; }
+}
+/* Sonnenernte: Power-Spin-Wahl und Banner */
+.se-wahl { width: min(380px, 94%); padding: 16px; border-radius: 20px; text-align: center; background: linear-gradient(180deg, #8a1606, #4a0802); border: 3px solid #ffd23a; box-shadow: 0 0 40px rgba(255, 180, 40, 0.5); }
+.se-w-t { font: 400 26px Bungee, "Lilita One", sans-serif; color: #ffe14a; -webkit-text-stroke: 1px #6a1000; paint-order: stroke fill; }
+.se-wahl p { color: #fff0d0; margin: 8px 0 10px; }
+.se-wahl small { display: block; margin-top: 10px; color: #ffc9a0; font-size: 12px; }
+.se-w-felder { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+.se-w-felder button { padding: 8px 6px; border-radius: 12px; border: 2px solid #ffd23a; background: rgba(255, 210, 60, 0.1); color: #ffe9a0; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.se-w-felder button b { font: 400 17px Bungee, "Lilita One", sans-serif; }
+.se-w-felder button small { margin: 0; font: 700 11px Nunito, sans-serif; color: inherit; }
+.se-w-felder button.an { background: #ffd23a; color: #6a1000; }
+.se-w-felder button:disabled { opacity: 0.4; }
+.se-w-k { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.se-w-k button { height: 50px; border: 0; border-radius: 14px; font: 400 17px Bungee, "Lilita One", sans-serif; color: #fff; }
+.se-nehmen { background: linear-gradient(180deg, #5fe08d, #1f9b4a); }
+.se-power { background: linear-gradient(180deg, #fff27a, #ffb000 55%, #d07000); color: #6a1000 !important; animation: slPuls 1s infinite; }
+.se-banner { pointer-events: none; animation: seBanner 1.1s ease-out forwards; }
+.se-banner span { display: block; padding: 14px 26px; border-radius: 18px; font: 400 clamp(26px, 7vmin, 52px) Bungee, "Lilita One", sans-serif; color: #ffe14a; -webkit-text-stroke: 2px #6a1000; paint-order: stroke fill;
+  background: radial-gradient(circle, rgba(255, 120, 20, 0.9), rgba(140, 20, 0, 0.9)); border: 3px solid #ffd23a; box-shadow: 0 0 60px rgba(255, 170, 40, 0.8); }
+@keyframes seBanner { 0% { transform: scale(0.3) rotate(-6deg); opacity: 0; } 25% { transform: scale(1.12) rotate(2deg); opacity: 1; } 40% { transform: scale(1); } 85% { opacity: 1; } 100% { transform: scale(1.3); opacity: 0; } }
+.ds-sonnenernte .se-buehne.power { aspect-ratio: auto; flex: 1 1 auto; height: auto; }
+@media (max-width: 560px) { .ds-sonnenernte .se-buehne.power { width: calc(100% - 40px); } }
+/* Gewinn-Zähler: kurzer Stoß nach dem Hochzählen */
+.sl-gewinn.stoss b { animation: slStoss 0.35s ease-out; }
+@keyframes slStoss { 40% { transform: scale(1.18); } }
+/* Nil-Juwelen: Power-Spin-Banner und Goldmasken-Blitz */
+.nj-banner { pointer-events: none; animation: seBanner 1.2s ease-out forwards; }
+.nj-banner span { display: block; padding: 14px 28px; border-radius: 14px; font: 900 clamp(24px, 6.5vmin, 48px) "Cinzel Decorative", Cinzel, serif; color: #ffe08a;
+  background: linear-gradient(180deg, #123a8c, #061a4c); border: 3px solid #e9c36e; box-shadow: 0 0 0 4px #1a3c9a, 0 0 60px rgba(80, 200, 255, 0.6); text-shadow: 0 2px 0 #000; }
+.nj-buehne.maske { animation: njMaske 0.8s ease-out; }
+@keyframes njMaske { 0% { filter: brightness(1); } 30% { filter: brightness(1.9) saturate(1.4); box-shadow: 0 0 0 4px #e9c36e, 0 0 80px 20px rgba(255, 220, 120, 0.9); } 100% { filter: brightness(1); } }
 </style>
 </head>
 <body>
@@ -7000,6 +7083,10 @@ function mathe() {
   return m;
 }
 function einsatz() {
+  const m = hoechstEinsatz('turmspitze');
+  while (m > 0 && G.einsatzIdx > 0 && EINSAETZE[G.einsatzIdx] > m && tuermeLeer()) {
+    G.einsatzIdx--;
+  }
   return EINSAETZE[G.einsatzIdx];
 }
 function summe() {
@@ -7524,7 +7611,14 @@ function einsatzAendern(d) {
   if (G.z !== 'BEREIT' && G.z !== 'AUSWERTUNG') {
     return;
   }
-  const neu = Math.max(0, Math.min(EINSAETZE.length - 1, G.einsatzIdx + d));
+  let neu = Math.max(0, Math.min(EINSAETZE.length - 1, G.einsatzIdx + d));
+  const mT = hoechstEinsatz('turmspitze');
+  while (mT > 0 && neu > 0 && EINSAETZE[neu] > mT) {
+    neu--;
+  }
+  if (d > 0 && neu === G.einsatzIdx && mT > 0) {
+    melde('HÖCHSTEINSATZ', euroKurz(mT) + ' (Admin)', ORANGE, 1.6);
+  }
   if (neu !== G.einsatzIdx) {
     G.einsatzIdx = neu;
     spiele('KNOPF');
@@ -10238,7 +10332,15 @@ const SzeneRoulette = (function () {
     }
     const max = MAXIMUM[w.zahlen.length] || 10000;
     const jetzt = alt ? alt.betrag : 0;
-    let b = Math.min(betrag, max - jetzt, Konto.kredit);
+    let gesetzt = 0;
+    R.einsaetze.forEach(function (x) {
+      gesetzt += x.betrag;
+    });
+    const rest = einsatzRest('roulette', gesetzt);
+    let b = Math.min(betrag, max - jetzt, Konto.kredit, rest);
+    if (b <= 0 && rest <= 0 && !stumm) {
+      hoechstHinweis('roulette');
+    }
     if (b <= 0) {
       if (!stumm) {
         if (Konto.kredit <= 0) {
@@ -12715,7 +12817,16 @@ const SzeneBlackjack = (function () {
       return;
     }
     const box = B.boxen[i];
-    const b = Math.min(betrag, MAX_BOX - box.einsatz, Konto.kredit);
+    let gesetztBJ = 0;
+    B.boxen.forEach(function (x) {
+      gesetztBJ += x.einsatz || 0;
+    });
+    const restBJ = einsatzRest('blackjack', gesetztBJ);
+    const b = Math.min(betrag, MAX_BOX - box.einsatz, Konto.kredit, restBJ);
+    if (b <= 0 && restBJ <= 0) {
+      hoechstHinweis('blackjack');
+      return;
+    }
     if (b <= 0) {
       klang.spiele('FEHLER');
       meld.neu(Konto.kredit <= 0 ? 'GUTHABEN LEER' : 'MAXIMUM', Konto.kredit <= 0 ? 'Oben rechts € antippen' : 'Höchstens ' + euroKurz(MAX_BOX) + ' je Box',
@@ -15148,6 +15259,12 @@ const SzeneBuch = (function () {
       return;
     }
     const E = einsatz();
+    if (hoechstEinsatz('sonnenbuch') > 0 && E > hoechstEinsatz('sonnenbuch')) {
+      S.auto = false;
+      hoechstHinweis('sonnenbuch');
+      klang.spiele('FEHLER');
+      return;
+    }
     if (Konto.kredit < E) {
       S.auto = false;
       klang.spiele('FEHLER');
@@ -17721,7 +17838,7 @@ const HallenEinst = {
   standard: function () {
     return {
       startguthaben: 10000, aufladen: true, betraege: [1000, 2000, 5000, 10000], hoechst: 0, aus: {}, mitteilung: '', stand: 0,
-      gcAn: true, gcStandard: 0, gcQuoten: {}, turmKonf: null
+      gcAn: true, gcStandard: 0, gcQuoten: {}, turmKonf: null, maxEinsatz: {}
     };
   },
   /** Daten pruefen und auf sinnvolle Werte begrenzen (kommen ggf. aus dem Netz). */
@@ -17768,6 +17885,16 @@ const HallenEinst = {
         const q = quote(x.gcQuoten[id]);
         if (q > 0) {
           s.gcQuoten[id] = q;
+        }
+      });
+    }
+    // Höchsteinsatz je Spiel und Runde (Cent, 0 = unbegrenzt)
+    s.maxEinsatz = {};
+    if (x.maxEinsatz && typeof x.maxEinsatz === 'object') {
+      Object.keys(SPIEL_NAMEN).forEach(function (id) {
+        const v = zahl(x.maxEinsatz[id], 0, 1000000000, 0);
+        if (v > 0) {
+          s.maxEinsatz[id] = v;
         }
       });
     }
@@ -17819,7 +17946,7 @@ HallenEinst.d = HallenEinst.standard();
 const BASIS_QUOTE = {
   turmspitze: 0.960, roulette: 0.973, blackjack: 0.993, sonnenbuch: 0.950, goldroulette: 0.974, schatzstollen: 0.955,
   mines: 0.99, plinko: 0.99, chicken: 0.98, hoehenflug: 0.97, poker: 1, zaubermoench: 0.962, niljuwelen: 0.94,
-  sonnenernte: 0.965, bonbonregen: 0.965
+  sonnenernte: 0.96, bonbonregen: 0.965
 };
 /** Betrag mit fester Waehrung (fuer Admin und Konto-Uebersicht, unabhaengig von der aktiven Waehrung). */
 function geldText(cent, w) {
@@ -17956,7 +18083,7 @@ const Waehrung = {
       }, 'Nil-Juwelen'],
       [function () {
         const S = NS.SzeneSonnenernte.test.S;
-        return S.laeuft || S.offen > 0 || S.feature;
+        return S.laeuft || S.offen > 0 || S.feature || S.power || S.wahl;
       }, 'Sonnenernte'],
       [function () {
         const B = NS.SzeneBonbonregen.test.B;
@@ -19066,6 +19193,9 @@ const Statistik = {
     s.e += Math.round(cent);
     if (neueRunde !== false) {
       s.r++;
+      s.le = Math.round(cent);
+    } else {
+      s.le = (s.le || 0) + Math.round(cent);
     }
     s.t = Date.now();
     Spieler.geaendert();
@@ -19078,6 +19208,10 @@ const Statistik = {
     cent = Math.round(cent);
     s.g += cent;
     s.m = Math.max(s.m, cent);
+    // höchster Gewinn im Verhältnis zum Einsatz der Runde (× Einsatz)
+    if (s.le > 0) {
+      s.mx = Math.max(s.mx || 0, Math.round(cent / s.le * 100) / 100);
+    }
     s.t = Date.now();
     Spieler.geaendert();
   },
@@ -19348,13 +19482,27 @@ function aufladenFenster(beiNeu) {
 }
 
 // ------------------------------------------------------------------ Kasse fuer die neuen Spiele
+/** Höchsteinsatz je Runde für ein Spiel (Cent; 0 = unbegrenzt). Vom Admin einstellbar. */
+function hoechstEinsatz(spiel) {
+  const m = HallenEinst.d && HallenEinst.d.maxEinsatz;
+  return m && m[spiel] > 0 ? m[spiel] : 0;
+}
+/** Wie viel in dieser Runde noch gesetzt werden darf (Infinity = unbegrenzt). */
+function einsatzRest(spiel, schonGesetzt) {
+  const m = hoechstEinsatz(spiel);
+  return m > 0 ? Math.max(0, m - (schonGesetzt || 0)) : Infinity;
+}
+function hoechstHinweis(spiel) {
+  Hinweis.zeige('Höchsteinsatz in ' + (SPIEL_NAMEN[spiel] || 'diesem Spiel') + ': ' + euro(hoechstEinsatz(spiel)) + ' je Runde.', 'schlecht', 3200);
+}
 const Kasse = {
   dirty: false,
+  rundeSumme: {},
   kredit: function () {
     return Konto.kredit;
   },
   /** Einsatz abbuchen. false bei zu wenig Guthaben oder Sperre. */
-  abbuchen: function (spiel, cent, neueRunde) {
+  abbuchen: function (spiel, cent, neueRunde, grundeinsatz) {
     cent = Math.round(cent);
     if (Spieler.gesperrt()) {
       Hinweis.zeige('Dein Konto ist gesperrt.', 'schlecht');
@@ -19363,6 +19511,15 @@ const Kasse = {
     if (!(cent >= 0) || cent > Konto.kredit) {
       return false;
     }
+    // Höchsteinsatz je Runde; bei Bonus-Käufen zählt der Grundeinsatz (grundeinsatz), nicht der Kaufpreis
+    const bisher = neueRunde === false ? (this.rundeSumme[spiel] || 0) : 0;
+    const pruef = grundeinsatz > 0 ? grundeinsatz : bisher + cent;
+    if (cent > 0 && pruef > einsatzRest(spiel, 0)) {
+      hoechstHinweis(spiel);
+      klang.spiele('FEHLER');
+      return false;
+    }
+    this.rundeSumme[spiel] = bisher + cent;
     Konto.kredit -= cent;
     Statistik.einsatz(spiel, cent, neueRunde !== false);
     this.rundeW[spiel] = Waehrung.aktiv;
@@ -22924,7 +23081,15 @@ const SzeneGoldroulette = (function () {
       return 0;
     }
     const alt = R3.wetten.get(id) || 0;
-    const b = Math.min(betrag, MAX_SPOT - alt, Konto.kredit);
+    const restG = einsatzRest('goldroulette', summe());
+    const b = Math.min(betrag, MAX_SPOT - alt, Konto.kredit, restG);
+    if (b <= 0 && restG <= 0) {
+      if (!still) {
+        hoechstHinweis('goldroulette');
+        klang.spiele('FEHLER');
+      }
+      return 0;
+    }
     if (b <= 0) {
       if (!still) {
         Hinweis.zeige(Konto.kredit <= 0 ? 'Guthaben leer – oben „Aufladen“ antippen.' : 'Höchsteinsatz für dieses Feld erreicht.', 'schlecht');
@@ -24929,6 +25094,10 @@ const SzeneStollen = (function () {
     return g;
   }
   function einsatz() {
+    const m = hoechstEinsatz(SPIEL);
+    while (m > 0 && S2.eIdx > 0 && EINSAETZE[S2.eIdx] > m) {
+      S2.eIdx--;
+    }
     return EINSAETZE[S2.eIdx];
   }
   function tempo() {
@@ -24951,7 +25120,7 @@ const SzeneStollen = (function () {
       autoAus();
       return;
     }
-    if (!Kasse.abbuchen(SPIEL, preis)) {
+    if (!Kasse.abbuchen(SPIEL, preis, true, e)) {
       return;
     }
     Kasse.speichern();
@@ -25706,6 +25875,9 @@ const SzeneStollen = (function () {
     });
     qs(el, '.ss-plus').addEventListener('click', function () {
       S2.eIdx = Math.min(EINSAETZE.length - 1, S2.eIdx + 1);
+      if (hoechstEinsatz(SPIEL) > 0 && EINSAETZE[S2.eIdx] > hoechstEinsatz(SPIEL)) {
+        hoechstHinweis(SPIEL);
+      }
       klang.spiele('KNOPF');
       uiAktualisieren();
       speichern();
@@ -25883,10 +26055,10 @@ const SzeneLobby = (function () {
       punkte: ['Gestapelte Symbole', 'Goldmaske verwandelt sich', 'Bis 5.000×']
     },
     {
-      id: 'sonnenernte', szene: 'SzeneSonnenernte', titel: 'SONNENERNTE', unter: '7ER-FRÜCHTE · SONNEN-SPINS',
-      text: 'Die 7 ist Joker. Ab 5 Sonnentalern starten die Sonnen-Spins: Taler bleiben stehen, Töpfe bis Grand, volles Feld × 3.',
-      tags: ['10 LINIEN', 'TÖPFE BIS GRAND'], farbe: C(255, 170, 30),
-      punkte: ['Taler mit Beträgen', '5 Töpfe', 'Risiko Rot/Schwarz']
+      id: 'sonnenernte', szene: 'SzeneSonnenernte', titel: 'SONNENERNTE', unter: 'SONNEN-SPINS · POWER SPINS',
+      text: 'Pharaonen unter roter Sonne: ab 6 Sonnentalern Sonnen-Spins mit Töpfen bis Grand, Power Spins auf 2 oder 4 Feldern.',
+      tags: ['10 LINIEN', 'GRAND 5.000×'], farbe: C(255, 170, 30),
+      punkte: ['Sonnen-Spins ab 6 Talern', 'Power Spins 2 / 4 Felder', 'Risikoleiter']
     },
     {
       id: 'bonbonregen', szene: 'SzeneBonbonregen', titel: 'BONBONREGEN', unter: 'TUMBLE · 6×5 · BIS 21.100×',
@@ -27108,6 +27280,17 @@ const SzeneLobby = (function () {
 // ====================================================================================
 
 /** Statistik-Tabelle eines Profils (HTML). */
+/** Prozent mit Vorzeichen, z. B. „+4,2 %“. */
+function prozentText(x, vorzeichen) {
+  if (!isFinite(x)) {
+    return '–';
+  }
+  return (vorzeichen && x > 0 ? '+' : '') + komma(x * 100, Math.abs(x) >= 10 ? 0 : 1) + ' %';
+}
+/** Vielfaches, z. B. „125,5 ×“. */
+function malText(x) {
+  return x > 0 ? komma(x, x >= 100 ? 0 : (x >= 10 ? 1 : 2)) + ' ×' : '–';
+}
 function statistikTabelle(p, mitLeer, w) {
   const st = (w === 'gc' ? p.statsGc : p.stats) || {};
   const euro = function (c) {
@@ -27119,20 +27302,40 @@ function statistikTabelle(p, mitLeer, w) {
   if (!ids.length) {
     return '<p class="klein-c">Noch keine Runden gespielt.</p>';
   }
-  let zr = 0, ze = 0, zg = 0;
+  let zr = 0, ze = 0, zg = 0, zmx = 0, zm = 0;
+  const zeile = function (name, r, e, g, m, mx, kopf) {
+    const netto = g - e;
+    const kl = netto >= 0 ? 'plus-c' : 'minus-c';
+    const z = function (l, inhalt, k) {
+      return '<td data-l="' + l + '"' + (k ? ' class="' + k + '"' : '') + '>' + inhalt + '</td>';
+    };
+    return '<tr' + (kopf ? ' class="kt-summe"' : '') + '><td class="kt-name">' + name + '</td>' + z('Runden', tausender(r)) + z('Einsatz', euro(e)) + z('Gewinn', euro(g))
+      + z('Ergebnis', (netto > 0 ? '+' : '') + euro(netto) + '<small>' + (e > 0 ? prozentText(netto / e, true) : '–') + '</small>', kl)
+      + z('Quote', e > 0 ? prozentText(g / e) : '–')
+      + z('Ø je Runde', r > 0 ? (netto > 0 ? '+' : '') + euro(Math.round(netto / r)) : '–', kl)
+      + z('Bester', (m ? euro(m) : '–') + '<small>' + malText(mx || 0) + '</small>') + '</tr>';
+  };
   const zeilen = ids.map(function (id) {
     const s = st[id] || { r: 0, e: 0, g: 0, m: 0 };
     zr += s.r;
     ze += s.e;
     zg += s.g;
-    const netto = s.g - s.e;
-    return '<tr><td>' + htmlSicher(SPIEL_NAMEN[id]) + '</td><td>' + tausender(s.r) + '</td><td>' + euro(s.e) + '</td><td>' + euro(s.g) + '</td><td class="'
-      + (netto >= 0 ? 'plus-c' : 'minus-c') + '">' + (netto > 0 ? '+' : '') + euro(netto) + '</td><td>' + euro(s.m || 0) + '</td></tr>';
+    zm = Math.max(zm, s.m || 0);
+    zmx = Math.max(zmx, s.mx || 0);
+    return zeile(htmlSicher(SPIEL_NAMEN[id]), s.r, s.e, s.g, s.m, s.mx, false);
   }).join('');
   const nz = zg - ze;
-  return '<table class="konto-tabelle"><tr><th>Spiel</th><th>Runden</th><th>Einsatz</th><th>Gewinn</th><th>Ergebnis</th><th>Bester</th></tr>' + zeilen
-    + '<tr><th>Summe</th><th>' + tausender(zr) + '</th><th>' + euro(ze) + '</th><th>' + euro(zg) + '</th><th class="' + (nz >= 0 ? 'plus-c' : 'minus-c') + '">'
-    + (nz > 0 ? '+' : '') + euro(nz) + '</th><th></th></tr></table>';
+  const kachel = function (t, w, u, k) {
+    return '<div class="kt-k' + (k ? ' ' + k : '') + '"><small>' + t + '</small><b>' + w + '</b>' + (u ? '<span>' + u + '</span>' : '') + '</div>';
+  };
+  const kacheln = '<div class="kt-kacheln">'
+    + kachel('Ergebnis', (nz > 0 ? '+' : '') + euro(nz), ze > 0 ? prozentText(nz / ze, true) + ' des Einsatzes' : '', nz >= 0 ? 'plus-c' : 'minus-c')
+    + kachel('Quote', ze > 0 ? prozentText(zg / ze) : '–', 'Gewinn ÷ Einsatz')
+    + kachel('Ø je Runde', zr > 0 ? (nz > 0 ? '+' : '') + euro(Math.round(nz / zr)) : '–', tausender(zr) + ' Runden', nz >= 0 ? 'plus-c' : 'minus-c')
+    + kachel('Höchster Gewinn', zm ? euro(zm) : '–', zmx ? malText(zmx) + ' Einsatz' : '') + '</div>';
+  return kacheln + '<div class="kt-rolle"><table class="konto-tabelle kt-neu"><tr class="kt-kopf"><th class="kt-name">Spiel</th><th>Runden</th><th>Einsatz</th><th>Gewinn</th><th>Ergebnis</th><th>Quote</th><th>Ø je Runde</th><th>Bester</th></tr>' + zeilen
+    + zeile('Summe', zr, ze, zg, zm, zmx, true) + '</table></div>'
+    + '<p class="klein-c">Ergebnis = Gewinn − Einsatz (in % des Einsatzes). Quote = Gewinn ÷ Einsatz. Ø je Runde = Ergebnis ÷ Runden. Bester = höchster Einzelgewinn und sein Vielfaches des Einsatzes.</p>';
 }
 
 // ------------------------------------------------------------------ Anmeldung (nur online)
@@ -28155,6 +28358,10 @@ const AdminPanel = (function () {
       + '<div class="ad-feld"><span>Spiele in der Spielauswahl</span><div class="ad-spiele">' + Object.keys(SPIEL_NAMEN).map(function (id) {
         return '<label><input type="checkbox" data-spiel="' + id + '"' + (e.aus && e.aus[id] ? '' : ' checked') + '> ' + SPIEL_NAMEN[id] + '</label>';
       }).join('') + '</div></div>'
+      + '<div class="ad-feld"><span>Höchsteinsatz je Runde (leer = unbegrenzt; gilt für Euro und Goldchips, bei Bonus-Käufen zählt der Grundeinsatz)</span><div class="ad-max">' + Object.keys(SPIEL_NAMEN).map(function (id) {
+        const v = e.maxEinsatz && e.maxEinsatz[id];
+        return '<label><span>' + SPIEL_NAMEN[id] + '</span><input class="ad-e-max" data-spiel="' + id + '" inputmode="decimal" placeholder="∞" value="' + (v ? centText(v) : '') + '"></label>';
+      }).join('') + '</div></div>'
       + '<label class="ad-feld"><span>Mitteilung an alle (erscheint in der Spielauswahl, leer = keine)</span><input class="ad-e-mit" maxlength="200" value="' + htmlSicher(e.mitteilung || '') + '"></label>'
       + '<div class="ad-feld"><span>Turmspitze – Wahrscheinlichkeiten &amp; Spitzen-Gewinn (gilt für alle Spieler, nur hier änderbar)</span><div class="ad-reihe"><b>' + htmlSicher(e.turmKonf ? (e.turmKonf.name || 'Eigene') : 'Original') + '</b><button class="ad-knopf ad-e-turm">Bearbeiten</button>' + (e.turmKonf ? '<button class="ad-knopf ad-e-turm0">Auf Original</button>' : '') + '</div></div>'
       + gcEinstHtml(e)
@@ -28440,6 +28647,13 @@ const AdminPanel = (function () {
           }), aus: {}, mitteilung: qs(box, '.ad-e-mit').value.trim()
         };
         e.turmKonf = HallenEinst.d.turmKonf;
+        e.maxEinsatz = {};
+        qsa(box, '.ad-e-max').forEach(function (i) {
+          const v = geldEuro(i.value);
+          if (v > 0) {
+            e.maxEinsatz[i.getAttribute('data-spiel')] = v;
+          }
+        });
         qsa(box, '[data-spiel]').forEach(function (c) {
           if (!c.checked) {
             e.aus[c.getAttribute('data-spiel')] = true;
@@ -29006,7 +29220,9 @@ const AppPopup = (function () {
 const Rangliste = (function () {
   const AUS_KEY = 'casino.rangliste.aus';
   const R = { f: null, tab: 'k', liste: [], laedt: false, fehler: '', letzterUpload: 0, letzteSig: '' };
-  const TABS = [['k', 'Guthaben'], ['ne', 'Plus'], ['m', 'Größter Gewinn'], ['c', 'Goldchips']];
+  const TABS = [['k', 'Guthaben'], ['ne', 'Plus'], ['q', 'Quote %'], ['pr', 'Ø je Runde'], ['m', 'Größter Gewinn'], ['mx', 'Bester ×'], ['c', 'Goldchips']];
+  // Quote und Ø je Runde erst ab so vielen Runden (sonst entscheidet ein Glückstreffer)
+  const MIN_RUNDEN = 50;
 
   function ausGewaehlt() {
     try {
@@ -29025,7 +29241,7 @@ const Rangliste = (function () {
   /** Kennzahlen eines Profils. */
   function eintrag(p) {
     const summe = function (st) {
-      const x = { e: 0, g: 0, m: 0, ms: '', r: 0 };
+      const x = { e: 0, g: 0, m: 0, ms: '', r: 0, mx: 0, mxs: '' };
       Object.keys(st || {}).forEach(function (id) {
         const s = st[id] || {};
         x.e += Math.max(0, Math.round(s.e || 0));
@@ -29035,13 +29251,20 @@ const Rangliste = (function () {
           x.m = Math.round(s.m);
           x.ms = id;
         }
+        if ((s.mx || 0) > x.mx) {
+          x.mx = s.mx;
+          x.mxs = id;
+        }
       });
       return x;
     };
     const a = summe(p.stats), b = summe(p.statsGc);
     return {
       n: String(p.name || 'Spieler').slice(0, 24), k: Math.max(0, Math.round(p.kredit || 0)), c: Math.max(0, Math.round(p.chips || 0)),
-      ne: a.g - a.e, nc: b.g - b.e, m: a.m, ms: a.ms, mg: b.m, mgs: b.ms, r: a.r + b.r
+      ne: a.g - a.e, nc: b.g - b.e, m: a.m, ms: a.ms, mg: b.m, mgs: b.ms, r: a.r + b.r,
+      // relative Werte (Euro-Spielgeld): Quote in Promille, bester Gewinn × Einsatz, Ergebnis je Runde in Cent
+      q: a.e > 0 ? Math.round(a.g / a.e * 1000) : 0, er: a.r, mx: Math.round((a.mx || 0) * 100) / 100, mxs: a.mxs,
+      pr: a.r > 0 ? Math.round((a.g - a.e) / a.r) : 0
     };
   }
   /** Eigenen Eintrag online aktualisieren (höchstens jede Minute, nur bei Änderung). */
@@ -29113,8 +29336,14 @@ const Rangliste = (function () {
     if (tab === 'c' || (tab === 'm' && false)) {
       return geldText(v, 'gc');
     }
-    if (tab === 'ne') {
+    if (tab === 'ne' || tab === 'pr') {
       return (v > 0 ? '+' : '') + geldText(v, 'eur');
+    }
+    if (tab === 'q') {
+      return komma(v / 10, 1) + ' %';
+    }
+    if (tab === 'mx') {
+      return komma(Number(x.mx) || 0, (x.mx || 0) >= 100 ? 0 : 1) + ' ×';
     }
     return geldText(v, 'eur');
   }
@@ -29134,6 +29363,9 @@ const Rangliste = (function () {
       h += '<p class="rl-fehler">' + htmlSicher(R.fehler) + '</p>';
     } else {
       const liste = R.liste.filter(function (x) {
+        if (tab === 'q' || tab === 'pr') {
+          return (x.er || 0) >= MIN_RUNDEN;
+        }
         return tab === 'c' ? (x.c || 0) > 0 || (x.mg || 0) > 0 : true;
       }).slice().sort(function (a, b) {
         return (Number(b[tab]) || 0) - (Number(a[tab]) || 0);
@@ -29146,10 +29378,14 @@ const Rangliste = (function () {
         });
         h += '<ol class="rl-liste">';
         liste.slice(0, 50).forEach(function (x, i) {
-          const extra = tab === 'm' ? (x.ms && SPIEL_NAMEN[x.ms] ? SPIEL_NAMEN[x.ms] : '') : (x.r ? tausender(x.r) + ' Runden' : '');
+          const spielName = function (id) {
+            return id && SPIEL_NAMEN[id] ? SPIEL_NAMEN[id] : '';
+          };
+          const extra = tab === 'm' ? spielName(x.ms) : (tab === 'mx' ? spielName(x.mxs) : (tab === 'q' ? 'Ergebnis ' + ((x.ne || 0) > 0 ? '+' : '') + geldText(x.ne || 0, 'eur') + ' · ' + tausender(x.er || 0) + ' Runden'
+            : (x.r ? tausender(x.r) + ' Runden' + (tab === 'k' || tab === 'ne' ? ' · Quote ' + komma((x.q || 0) / 10, 1) + ' %' : '') : '')));
           h += '<li class="' + (i < 3 ? 'p' + (i + 1) : '') + (x.id === ich ? ' ich' : '') + '"><b class="rl-platz">' + (i < 3 ? ['🥇', '🥈', '🥉'][i] : (i + 1) + '.') + '</b>'
             + '<span class="rl-name">' + htmlSicher(x.n) + (x.id === ich ? ' <i>(du)</i>' : '') + '<small>' + htmlSicher(extra) + '</small></span>'
-            + '<b class="rl-wert' + (tab === 'ne' && (x.ne || 0) < 0 ? ' minus' : '') + '">' + wertText(x, tab) + '</b>'
+            + '<b class="rl-wert' + ((tab === 'ne' || tab === 'pr') && (x[tab] || 0) < 0 ? ' minus' : '') + '">' + wertText(x, tab) + '</b>'
             + (AdminPanel.angemeldet() && Spieler.online() ? '<button class="rl-weg" data-id="' + htmlSicher(x.id) + '" title="Aus der Rangliste entfernen">✕</button>' : '') + '</li>';
         });
         h += '</ol>';
@@ -29157,6 +29393,9 @@ const Rangliste = (function () {
           h += '<p class="rl-info">Dein Platz: <b>' + (meinRang + 1) + '.</b> von ' + liste.length + '</p>';
         }
       }
+    }
+    if (tab === 'q' || tab === 'pr') {
+      h += '<p class="rl-klein">Quote = Gewinne ÷ Einsätze. Gewertet ab ' + MIN_RUNDEN + ' Runden (Euro-Spielgeld).</p>';
     }
     h += '<label class="rl-aus"><input type="checkbox" class="rl-aus-c"' + (ausGewaehlt() ? ' checked' : '') + '> Mich nicht in der öffentlichen Rangliste zeigen</label>'
       + '<p class="rl-klein">' + (Spieler.online() ? 'Öffentlich für alle Spieler sichtbar: Name, Guthaben, Plus und größter Gewinn. Aktualisiert sich etwa jede Minute.' : 'Ohne Online-Modus: die Spieler auf diesem Gerät.') + ' Nur Spielgeld – ohne echten Wert.</p>';
@@ -30497,7 +30736,13 @@ const SzenePoker = (function () {
       klang.spiele('FEHLER');
       return;
     }
-    const betrag = Math.min(buyin, Konto.kredit);
+    const mP = hoechstEinsatz(SPIEL);
+    if (mP > 0 && bb() * 20 > mP) {
+      Hinweis.zeige('Dieser Tisch ist zu groß: Höchsteinsatz (Buy-in) in Poker ist ' + geld(mP) + '. Kleinere Blinds wählen.', 'schlecht', 3500);
+      klang.spiele('FEHLER');
+      return;
+    }
+    const betrag = Math.min(buyin, Konto.kredit, mP > 0 ? mP : Infinity);
     Konto.kredit -= betrag;
     Kasse.dirty = true;
     Kasse.speichern();
@@ -32021,39 +32266,51 @@ const NilLogik = (function () {
 })();
 // ---- sonne-logik.js
 // ====================================================================================
-// sonne-logik.js – Mathematik von „Sonnenernte“ (nach dem Vorbild der 7er-Fruechte-Automaten mit
-// Halte-Feature): 5 × 3, 10 Linien von links nach rechts, die 7 ist Joker (ersetzt alle ausser dem
-// Sonnentaler). Ab 5 Sonnentalern starten die Sonnen-Spins: Taler bleiben stehen, 3 Spins, jeder neue
-// Taler setzt wieder auf 3. Jeder Taler zeigt einen Wert (× Einsatz) oder einen Topf
-// (Mini, Minor, Maxi, Super, Grand – Grand hoechstens einmal je Serie). Volles Feld = alles × 3.
+// sonne-logik.js – Mathematik von „Sonnenernte“ nach dem Vorbild von Lucky Pharaoh Sunny Spins:
+// 5 × 3 Walzen, 10 Gewinnlinien von links nach rechts und auf den drei mittleren Walzen,
+// gestapelte Symbole. Ab 6 Sonnentalern starten die Sonnen-Spins: alle Taler bleiben stehen,
+// 3 Spins, jeder neue Taler setzt wieder auf 3. Taler zeigen 1–50 × Einsatz oder einen Topf
+// (Mini 50×, Minor 100×, Major 800×, Grand 5.000× – Grand höchstens einmal je Serie).
+// Power Spins: Gewinn ab 2 × Einsatz → Power Spins auf 2 Feldern (je Spin 2 × Einsatz),
+// ab 4 × Einsatz auch auf 4 Feldern (je Spin 4 × Einsatz). Dort erscheint die Goldmaske, die sich
+// auf allen Feldern in dasselbe Symbol verwandelt; Sonnentaler und Sonnen-Spins gibt es auch dort.
+// Alle Werte in Vielfachen des Einsatzes (je Feld).
 // ====================================================================================
 
 const SonneLogik = (function () {
-  // 0 Sieben (Joker), 1 Melone, 2 Traube, 3 Pflaume, 4 Orange, 5 Zitrone, 6 Kirsche, 7 Sonnentaler
-  const N_SYM = 7;
-  const SIEBEN = 0;
-  const TALER = 7;
-  const NAMEN = ['Sieben', 'Melone', 'Traube', 'Pflaume', 'Orange', 'Zitrone', 'Kirsche', 'Sonnentaler'];
-  // Auszahlung je Linie (Vielfache des Linieneinsatzes) fuer 3, 4, 5 Symbole; Kirsche zahlt schon ab 2
-  const PLAN = [[50, 200, 1000], [20, 80, 400], [20, 80, 400], [10, 40, 150], [10, 40, 150], [10, 30, 100], [10, 30, 100]];
-  const KIRSCHE_2 = 2;
+  // 0 Pharao, 1 Schakal, 2 Skarabäus, 3 Auge, 4 A, 5 K, 6 D, 7 10, 8 Sonnentaler, 9 Goldmaske (nur Power Spins)
+  const N_SYM = 8;
+  const TALER = 8;
+  const MASKE = 9;
+  const SIEBEN = -1; // (alte Version)
+  const NAMEN = ['Pharao', 'Schakal', 'Skarabäus', 'Auge', 'A', 'K', 'D', '10', 'Sonnentaler', 'Goldmaske'];
+  // Gewinn je Linie in Vielfachen des Einsatzes (intern in Zehnteln) für 3, 4, 5 gleiche
+  const PLAN = [[100, 300, 500], [60, 200, 400], [40, 100, 300], [40, 100, 300], [20, 40, 200], [20, 40, 200], [10, 20, 100], [10, 20, 100]];
+  const KIRSCHE_2 = 0;
   const LINIEN = [[1, 1, 1, 1, 1], [0, 0, 0, 0, 0], [2, 2, 2, 2, 2], [0, 1, 2, 1, 0], [2, 1, 0, 1, 2], [1, 0, 0, 0, 1], [1, 2, 2, 2, 1],
     [0, 0, 1, 2, 2], [2, 2, 1, 0, 0], [1, 2, 1, 0, 1]];
-  // Auszahlungsquote (Simulation, 4 Mio. Drehungen): ca. 96,5 % (Linien ca. 66 %, Sonnen-Spins ca. 30 %)
+  // Auszahlungsquote (Simulation): Grundspiel mit Sonnen-Spins ca. 96 %, ein Power-Spin-Feld ca. 100 %
   const KONF = {
-    stapel: 0.12,
-    sv: [0.4, 3, 3, 6, 6, 9, 9],
-    w: [0.5, 6, 6, 10, 10, 14, 14],
-    taler: 0.085,      // Chance je Feld auf einen Sonnentaler im Grundspiel
-    respin: 0.055,     // Chance je freiem Feld in den Sonnen-Spins
-    ausloeser: 5
+    stapel: 0.25,
+    sv: [5, 6, 6, 7, 5, 5, 6, 6],
+    w: [1, 2, 2, 2, 7, 7, 13.8, 13.8],
+    taler: 0.12,       // Chance je Feld auf einen Sonnentaler im Grundspiel
+    respin: 0.05,      // Chance je freiem Feld in den Sonnen-Spins
+    ausloeser: 6
   };
-  // Talerwerte (× Einsatz) und Toepfe
+  // Index 8 (Taler) kommt nur über „taler“, Index 9 ist die Goldmaske
+  const POWER = {
+    stapel: 0.25,
+    sv: [5, 6, 6, 7, 5, 5, 6, 6, 0, 5],
+    w: [1, 2, 2, 2, 7, 7, 14.1, 14.1, 0, 2],
+    taler: 0.12
+  };
+  // Talerwerte (× Einsatz) und Töpfe
   const WERTE = [[1, 30], [2, 22], [3, 15], [5, 10], [8, 6], [10, 5], [15, 3], [20, 2], [25, 1.2], [50, 0.6]];
-  const TOEPFE = [{ name: 'Mini', x: 15, w: 2.2 }, { name: 'Minor', x: 30, w: 1.0 }, { name: 'Maxi', x: 75, w: 0.4 }, { name: 'Super', x: 150, w: 0.15 },
-    { name: 'Grand', x: 1000, w: 0.04 }];
-  const VOLL_FAKTOR = 3;
-  const MAX = 5000;
+  const TOEPFE = [{ name: 'Mini', x: 50, w: 0.9 }, { name: 'Minor', x: 100, w: 0.35 }, { name: 'Major', x: 800, w: 0.03 }, { name: 'Grand', x: 5000, w: 0.004 }];
+  const VOLL_FAKTOR = 1;
+  const MAX = 10000;
+  const MASKE_GEWICHT = [1, 2, 2, 3, 4, 4, 5, 5];
 
   function wahl(rnd, gw) {
     let t = 0;
@@ -32073,8 +32330,8 @@ const SonneLogik = (function () {
   function neuerTaler(rnd, grandErlaubt) {
     const gw = WERTE.map(function (v) {
       return v[1];
-    }).concat(TOEPFE.map(function (t, i) {
-      return i === 4 && !grandErlaubt ? 0 : t.w;
+    }).concat(TOEPFE.map(function (t) {
+      return t.name === 'Grand' && !grandErlaubt ? 0 : t.w;
     }));
     const i = wahl(rnd, gw);
     if (i < WERTE.length) {
@@ -32083,20 +32340,21 @@ const SonneLogik = (function () {
     const t = TOEPFE[i - WERTE.length];
     return { topf: t.name, x: t.x };
   }
-  /** Feld [walze][reihe]; Taler-Werte in werte[walze][reihe]. */
-  function drehen(rnd) {
+  /** Feld [walze][reihe]; Taler-Werte in werte[walze][reihe]. power: mit Goldmaske. */
+  function drehen(rnd, power) {
+    const d = power ? POWER : KONF;
     const g = [], werte = [];
     for (let w = 0; w < 5; w++) {
       let spalte;
-      if (rnd() < KONF.stapel) {
-        const s = wahl(rnd, KONF.sv);
+      if (rnd() < d.stapel) {
+        const s = wahl(rnd, d.sv);
         spalte = [s, s, s];
       } else {
-        spalte = [wahl(rnd, KONF.w), wahl(rnd, KONF.w), wahl(rnd, KONF.w)];
+        spalte = [wahl(rnd, d.w), wahl(rnd, d.w), wahl(rnd, d.w)];
       }
       const wspalte = [null, null, null];
       for (let r = 0; r < 3; r++) {
-        if (rnd() < KONF.taler) {
+        if (rnd() < d.taler) {
           spalte[r] = TALER;
           wspalte[r] = neuerTaler(rnd, true);
         }
@@ -32106,7 +32364,7 @@ const SonneLogik = (function () {
     }
     return { feld: g, werte: werte };
   }
-  /** Linien von links; 7 ersetzt alles ausser Taler. Ergebnis × Einsatz. */
+  /** Linien von links nach rechts; zusätzlich 3 gleiche auf den mittleren Walzen, wenn die Linie sonst nichts gewinnt. */
   function auswerten(g) {
     let summe = 0;
     const linien = [];
@@ -32115,26 +32373,20 @@ const SonneLogik = (function () {
       for (let w = 0; w < 5; w++) {
         z.push(g[w][l[w]]);
       }
-      // bestes Ergebnis ueber alle moeglichen Zielsymbole
-      let best = null;
-      for (let s = 0; s < N_SYM; s++) {
-        let n = 0;
-        while (n < 5 && (z[n] === s || z[n] === SIEBEN)) {
-          n++;
-        }
-        let x = 0;
-        if (n >= 3) {
-          x = PLAN[s][n - 3] / 10;
-        } else if (n === 2 && s === 6) {
-          x = KIRSCHE_2 / 10;
-        }
-        if (x > 0 && (!best || x > best.x)) {
-          best = { linie: li, sym: s, n: n, x: x };
-        }
+      let n = 1;
+      while (n < 5 && z[n] === z[0]) {
+        n++;
       }
-      if (best) {
-        linien.push(best);
-        summe += best.x;
+      if (n >= 3 && z[0] < N_SYM) {
+        const x = PLAN[z[0]][n - 3] / 10;
+        linien.push({ linie: li, sym: z[0], n: n, x: x, von: 0 });
+        summe += x;
+        return;
+      }
+      if (z[1] === z[2] && z[2] === z[3] && z[1] < N_SYM) {
+        const x = PLAN[z[1]][0] / 10;
+        linien.push({ linie: li, sym: z[1], n: 3, x: x, von: 1 });
+        summe += x;
       }
     });
     return { x: summe, linien: linien };
@@ -32159,23 +32411,19 @@ const SonneLogik = (function () {
       return sp.slice();
     });
     let grand = false;
+    let frei = 0;
     werte.forEach(function (sp) {
       sp.forEach(function (t) {
         if (t && t.topf === 'Grand') {
           grand = true;
         }
-      });
-    });
-    let rest = 3;
-    const schritte = [];
-    let frei = 0;
-    werte.forEach(function (sp) {
-      sp.forEach(function (t) {
         if (!t) {
           frei++;
         }
       });
     });
+    let rest = 3;
+    const schritte = [];
     while (rest > 0 && frei > 0) {
       const neu = [];
       for (let w = 0; w < 5; w++) {
@@ -32208,11 +32456,56 @@ const SonneLogik = (function () {
     }
     return { schritte: schritte, werte: werte, x: Math.min(x, MAX), voll: voll, grand: grand };
   }
+  function maskeZiel(rnd) {
+    return wahl(rnd, MASKE_GEWICHT);
+  }
+  /**
+   * Ein Power Spin auf n Feldern (2 oder 4). Liefert je Feld { vorher, feld, werte, erg, sonne (Plan der Sonnen-Spins oder null) }
+   * und x = Summe aller Felder (× Einsatz je Feld, Sonnen-Spins eingeschlossen).
+   */
+  function powerSpin(rnd, n) {
+    const felder = [];
+    let hatMaske = false;
+    for (let f = 0; f < n; f++) {
+      const d = drehen(rnd, true);
+      felder.push(d);
+      d.feld.forEach(function (sp) {
+        if (sp.indexOf(MASKE) >= 0) {
+          hatMaske = true;
+        }
+      });
+    }
+    const ziel = hatMaske ? maskeZiel(rnd) : -1;
+    let x = 0;
+    felder.forEach(function (d) {
+      d.vorher = d.feld.map(function (sp) {
+        return sp.slice();
+      });
+      if (ziel >= 0) {
+        d.feld = d.feld.map(function (sp) {
+          return sp.map(function (s) {
+            return s === MASKE ? ziel : s;
+          });
+        });
+      }
+      d.erg = auswerten(d.feld);
+      x += d.erg.x;
+      d.sonne = talerAnzahl(d.feld) >= KONF.ausloeser ? sonnenSpins(rnd, d.werte) : null;
+      if (d.sonne) {
+        x += d.sonne.x;
+      }
+    });
+    return { felder: felder, ziel: ziel, x: x };
+  }
   return {
-    N_SYM: N_SYM, SIEBEN: SIEBEN, TALER: TALER, NAMEN: NAMEN, PLAN: PLAN, KIRSCHE_2: KIRSCHE_2, LINIEN: LINIEN, KONF: KONF, WERTE: WERTE, TOEPFE: TOEPFE,
-    VOLL_FAKTOR: VOLL_FAKTOR, MAX: MAX, wahl: wahl, neuerTaler: neuerTaler, drehen: drehen, auswerten: auswerten, talerAnzahl: talerAnzahl, sonnenSpins: sonnenSpins
+    N_SYM: N_SYM, SIEBEN: SIEBEN, TALER: TALER, MASKE: MASKE, NAMEN: NAMEN, PLAN: PLAN, KIRSCHE_2: KIRSCHE_2, LINIEN: LINIEN, KONF: KONF, POWER: POWER,
+    WERTE: WERTE, TOEPFE: TOEPFE, VOLL_FAKTOR: VOLL_FAKTOR, MAX: MAX, wahl: wahl, neuerTaler: neuerTaler, drehen: drehen, auswerten: auswerten,
+    talerAnzahl: talerAnzahl, sonnenSpins: sonnenSpins, powerSpin: powerSpin
   };
 })();
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = SonneLogik;
+}
 // ---- bonbon-logik.js
 // ====================================================================================
 // bonbon-logik.js – Mathematik von „Bonbonregen“ (nach dem Vorbild der Tumble-Automaten mit
@@ -32717,6 +33010,20 @@ WalzenBuehne.prototype.zeichne = function () {
           g.save();
           g.fillStyle = 'rgba(255,220,90,0.18)';
           g.fillRect(x + 2, y + 2, z - 4, z - 4);
+          // leuchtender Gewinnrahmen in der Linienfarbe (wie am Automaten)
+          const puls = 0.55 + 0.45 * Math.sin((self.zeit - self.gewinnStart) * 7);
+          g.strokeStyle = hell[key];
+          g.lineWidth = Math.max(2, z * 0.045);
+          g.shadowColor = hell[key];
+          g.shadowBlur = z * 0.18 * puls;
+          g.globalAlpha = 0.6 + 0.4 * puls;
+          if (g.roundRect) {
+            g.beginPath();
+            g.roundRect(x + z * 0.06, y + z * 0.06, z * 0.88, z * 0.88, z * 0.12);
+            g.stroke();
+          } else {
+            g.strokeRect(x + z * 0.06, y + z * 0.06, z * 0.88, z * 0.88);
+          }
           g.restore();
         }
         const s = f.raster[w][r];
@@ -32984,6 +33291,9 @@ function SlotLeiste(def) {
     + '<button class="sl-risiko" disabled>Risiko</button><button class="sl-auto">Auto</button><button class="sl-start">Start</button>';
   const wert = qs(box, '.sl-e-wert b');
   function einsatz() {
+    if (L.einsatzIdx > maxIdx()) {
+      L.einsatzIdx = maxIdx();
+    }
     return ein[L.einsatzIdx];
   }
   function zeigen() {
@@ -32991,9 +33301,21 @@ function SlotLeiste(def) {
     qs(box, '.sl-auto').classList.toggle('an', L.auto);
     qs(box, '.sl-auto').textContent = L.auto ? 'Stopp' : 'Auto';
   }
+  /** größter erlaubter Index (Höchsteinsatz vom Admin) */
+  function maxIdx() {
+    const m = hoechstEinsatz(def.spiel);
+    let i = ein.length - 1;
+    while (m > 0 && i > 0 && ein[i] > m) {
+      i--;
+    }
+    return i;
+  }
   function wechsel(d) {
-    const n = Math.max(0, Math.min(ein.length - 1, L.einsatzIdx + d));
+    const n = Math.max(0, Math.min(maxIdx(), L.einsatzIdx + d));
     if (n === L.einsatzIdx) {
+      if (d > 0 && hoechstEinsatz(def.spiel) > 0 && L.einsatzIdx >= maxIdx()) {
+        hoechstHinweis(def.spiel);
+      }
       return;
     }
     if (def.einsatzWechsel && def.einsatzWechsel(ein[n]) === false) {
@@ -33038,10 +33360,37 @@ function SlotLeiste(def) {
         zeigen();
       }
     },
+    /** Gewinnanzeige; steigt der Betrag, zählt sie wie am Automaten hoch (mit leisem Ticken). */
     gewinn: function (c, text) {
       const b = qs(box, '.sl-gewinn b');
-      b.textContent = c > 0 ? euro(c) : (text || '–');
+      const alt = L.gewinn || 0;
+      L.gewinn = c > 0 ? c : 0;
       qs(box, '.sl-gewinn').classList.toggle('an', c > 0);
+      cancelAnimationFrame(L.zaehlUhr || 0);
+      if (!(c > alt) || alt < 0 || Stil.sparmodus) {
+        b.textContent = c > 0 ? euro(c) : (text || '–');
+        return;
+      }
+      const dauer = Math.min(1400, 300 + (c - alt) / Math.max(1, einsatz()) * 60);
+      const t0 = performance.now();
+      let tick = 0;
+      const schritt = function (jetzt) {
+        const u = Math.min(1, (jetzt - t0) / dauer);
+        const e = 1 - Math.pow(1 - u, 3);
+        b.textContent = euro(Math.round(alt + (c - alt) * e));
+        if (jetzt - tick > 70 && u < 1) {
+          tick = jetzt;
+          klang.spiele('ZAEHL', { gain: 0.18 });
+        }
+        if (u < 1) {
+          L.zaehlUhr = requestAnimationFrame(schritt);
+        } else {
+          qs(box, '.sl-gewinn').classList.remove('stoss');
+          void b.offsetWidth;
+          qs(box, '.sl-gewinn').classList.add('stoss');
+        }
+      };
+      L.zaehlUhr = requestAnimationFrame(schritt);
     },
     risikoAn: function (an) {
       qs(box, '.sl-risiko').disabled = !an;
@@ -33240,6 +33589,216 @@ const GrossGewinn = {
     });
   }
 };
+// ---- aegypten-mal.js
+// Gemeinsame ägyptische Symbole (Pharao, Schakal, Skarabäus, Auge, Goldmaske) für Nil-Juwelen und Sonnenernte.
+const AegyptenMal = (function () {
+  function malePharao(g, r) {
+    g.save();
+    // Kopftuch (Streifen)
+    g.beginPath();
+    g.moveTo(0, -r * 0.92);
+    g.bezierCurveTo(r * 0.7, -r * 0.9, r * 0.8, -r * 0.2, r * 0.86, r * 0.75);
+    g.lineTo(-r * 0.86, r * 0.75);
+    g.bezierCurveTo(-r * 0.8, -r * 0.2, -r * 0.7, -r * 0.9, 0, -r * 0.92);
+    g.closePath();
+    g.fillStyle = '#e8b420';
+    g.fill();
+    g.save();
+    g.clip();
+    g.fillStyle = '#1f4fb8';
+    for (let i = -6; i < 8; i++) {
+      g.fillRect(-r, -r + i * r * 0.26, r * 2, r * 0.12);
+    }
+    g.restore();
+    g.beginPath();
+    g.moveTo(0, -r * 0.92);
+    g.bezierCurveTo(r * 0.7, -r * 0.9, r * 0.8, -r * 0.2, r * 0.86, r * 0.75);
+    g.lineTo(-r * 0.86, r * 0.75);
+    g.bezierCurveTo(-r * 0.8, -r * 0.2, -r * 0.7, -r * 0.9, 0, -r * 0.92);
+    SlotMal.kontur(g, r * 0.07);
+    // Gesicht
+    g.beginPath();
+    g.moveTo(-r * 0.36, -r * 0.42);
+    g.lineTo(r * 0.36, -r * 0.42);
+    g.lineTo(r * 0.32, r * 0.2);
+    g.quadraticCurveTo(0, r * 0.52, -r * 0.32, r * 0.2);
+    g.closePath();
+    g.fillStyle = SlotMal.verlauf(g, 0, -r * 0.4, 0, r * 0.5, [[0, '#ffe7a0'], [1, '#d08f12']]);
+    g.fill();
+    SlotMal.kontur(g, r * 0.05);
+    // Augen
+    [-1, 1].forEach(function (s) {
+      g.beginPath();
+      g.moveTo(s * r * 0.26, -r * 0.18);
+      g.quadraticCurveTo(s * r * 0.14, -r * 0.28, s * r * 0.04, -r * 0.18);
+      g.quadraticCurveTo(s * r * 0.14, -r * 0.1, s * r * 0.26, -r * 0.18);
+      g.fillStyle = '#fff';
+      g.fill();
+      g.lineWidth = r * 0.04;
+      g.strokeStyle = '#111';
+      g.stroke();
+      g.beginPath();
+      g.arc(s * r * 0.15, -r * 0.18, r * 0.04, 0, Math.PI * 2);
+      g.fillStyle = '#111';
+      g.fill();
+    });
+    // Bart
+    SlotMal.rund(g, -r * 0.08, r * 0.38, r * 0.16, r * 0.36, r * 0.05);
+    g.fillStyle = '#1f4fb8';
+    g.fill();
+    SlotMal.kontur(g, r * 0.04);
+    // Stirnschlange
+    g.beginPath();
+    g.arc(0, -r * 0.55, r * 0.09, 0, Math.PI * 2);
+    g.fillStyle = '#2ac08a';
+    g.fill();
+    SlotMal.kontur(g, r * 0.035);
+    g.restore();
+  }
+  function maleSchakal(g, r) {
+    g.save();
+    g.beginPath();
+    g.moveTo(-r * 0.2, -r * 0.2);
+    g.lineTo(-r * 0.35, -r * 0.92);
+    g.lineTo(-r * 0.05, -r * 0.45);
+    g.lineTo(r * 0.12, -r * 0.92);
+    g.lineTo(r * 0.18, -r * 0.3);
+    g.lineTo(r * 0.82, -r * 0.05);
+    g.lineTo(r * 0.8, r * 0.12);
+    g.lineTo(r * 0.2, r * 0.18);
+    g.lineTo(r * 0.3, r * 0.55);
+    g.lineTo(-r * 0.45, r * 0.55);
+    g.closePath();
+    g.fillStyle = SlotMal.verlauf(g, 0, -r, 0, r * 0.6, [[0, '#3a3a46'], [1, '#101016']]);
+    g.fill();
+    SlotMal.kontur(g, r * 0.07, '#d9a520');
+    g.beginPath();
+    g.ellipse(r * 0.12, -r * 0.18, r * 0.09, r * 0.05, -0.2, 0, Math.PI * 2);
+    g.fillStyle = '#ffd34d';
+    g.fill();
+    // Kragen
+    g.beginPath();
+    g.ellipse(-r * 0.08, r * 0.62, r * 0.62, r * 0.26, 0, Math.PI, 0);
+    g.lineTo(r * 0.54, r * 0.78);
+    g.lineTo(-r * 0.7, r * 0.78);
+    g.closePath();
+    g.fillStyle = '#e8b420';
+    g.fill();
+    g.save();
+    g.clip();
+    g.strokeStyle = '#1f4fb8';
+    g.lineWidth = r * 0.07;
+    for (let i = 0; i < 3; i++) {
+      g.beginPath();
+      g.ellipse(-r * 0.08, r * 0.62 + i * r * 0.07, r * (0.5 - i * 0.04), r * 0.18, 0, Math.PI, 0);
+      g.stroke();
+    }
+    g.restore();
+    SlotMal.kontur(g, r * 0.05);
+    g.restore();
+  }
+  function maleSkarab(g, r) {
+    g.save();
+    // Fluegel
+    [-1, 1].forEach(function (s) {
+      g.beginPath();
+      g.moveTo(s * r * 0.2, -r * 0.05);
+      g.quadraticCurveTo(s * r * 1.0, -r * 0.55, s * r * 0.92, r * 0.25);
+      g.quadraticCurveTo(s * r * 0.6, r * 0.1, s * r * 0.2, r * 0.2);
+      g.closePath();
+      g.fillStyle = SlotMal.verlauf(g, 0, -r * 0.5, 0, r * 0.3, [[0, '#7fe0ff'], [1, '#1680b8']]);
+      g.fill();
+      SlotMal.kontur(g, r * 0.05);
+    });
+    g.beginPath();
+    g.ellipse(0, r * 0.18, r * 0.34, r * 0.5, 0, 0, Math.PI * 2);
+    g.fillStyle = SlotMal.radial(g, 0, r * 0.1, r * 0.55, [[0, '#7cf2b0'], [1, '#0d7a4a']]);
+    g.fill();
+    SlotMal.kontur(g, r * 0.06);
+    g.beginPath();
+    g.moveTo(0, -r * 0.3);
+    g.lineTo(0, r * 0.66);
+    g.lineWidth = r * 0.04;
+    g.strokeStyle = 'rgba(0,0,0,0.5)';
+    g.stroke();
+    g.beginPath();
+    g.ellipse(0, -r * 0.42, r * 0.2, r * 0.15, 0, 0, Math.PI * 2);
+    g.fillStyle = '#0d5a3a';
+    g.fill();
+    SlotMal.kontur(g, r * 0.05);
+    // Sonne
+    g.beginPath();
+    g.arc(0, -r * 0.72, r * 0.16, 0, Math.PI * 2);
+    g.fillStyle = '#ff9a1f';
+    g.fill();
+    SlotMal.kontur(g, r * 0.04);
+    SlotMal.glanz(g, -r * 0.12, 0, r * 0.08, r * 0.16, 0.4);
+    g.restore();
+  }
+  function maleAuge(g, r) {
+    g.save();
+    g.beginPath();
+    g.moveTo(-r * 0.85, 0);
+    g.quadraticCurveTo(0, -r * 0.7, r * 0.85, 0);
+    g.quadraticCurveTo(0, r * 0.55, -r * 0.85, 0);
+    g.closePath();
+    g.fillStyle = '#fffaf0';
+    g.fill();
+    SlotMal.kontur(g, r * 0.1, '#0d2a6b');
+    g.beginPath();
+    g.arc(0, -r * 0.03, r * 0.28, 0, Math.PI * 2);
+    g.fillStyle = SlotMal.radial(g, 0, 0, r * 0.3, [[0, '#4ad7ff'], [1, '#0a3fa0']]);
+    g.fill();
+    g.beginPath();
+    g.arc(0, -r * 0.03, r * 0.12, 0, Math.PI * 2);
+    g.fillStyle = '#0a0a14';
+    g.fill();
+    SlotMal.glanz(g, -r * 0.08, -r * 0.12, r * 0.06, r * 0.04, 0.9);
+    // Braue und Zeichen darunter
+    g.lineCap = 'round';
+    g.strokeStyle = '#0d2a6b';
+    g.lineWidth = r * 0.12;
+    g.beginPath();
+    g.moveTo(-r * 0.8, -r * 0.48);
+    g.quadraticCurveTo(0, -r * 0.88, r * 0.82, -r * 0.42);
+    g.stroke();
+    g.beginPath();
+    g.moveTo(-r * 0.05, r * 0.3);
+    g.lineTo(-r * 0.05, r * 0.75);
+    g.quadraticCurveTo(-r * 0.05, r * 0.9, -r * 0.3, r * 0.82);
+    g.stroke();
+    g.beginPath();
+    g.moveTo(r * 0.35, r * 0.25);
+    g.quadraticCurveTo(r * 0.55, r * 0.6, r * 0.85, r * 0.5);
+    g.stroke();
+    g.restore();
+  }
+  function maleMaske(g, r) {
+    g.save();
+    g.shadowColor = '#ffd34d';
+    g.shadowBlur = r * 0.5;
+    SlotMal.rund(g, -r * 0.82, -r * 0.82, r * 1.64, r * 1.64, r * 0.3);
+    g.fillStyle = SlotMal.radial(g, 0, 0, r * 1.1, [[0, '#fff3a8'], [0.5, '#f2b51c'], [1, '#8a5400']]);
+    g.fill();
+    g.shadowBlur = 0;
+    SlotMal.kontur(g, r * 0.08);
+    g.scale(0.72, 0.72);
+    malePharao(g, r);
+    g.restore();
+    g.save();
+    g.font = '400 ' + Math.round(r * 0.6) + 'px "Lilita One", sans-serif';
+    g.textAlign = 'center';
+    g.textBaseline = 'middle';
+    g.lineWidth = r * 0.12;
+    g.strokeStyle = '#3a1d00';
+    g.strokeText('?', r * 0.55, r * 0.55);
+    g.fillStyle = '#fff';
+    g.fillText('?', r * 0.55, r * 0.55);
+    g.restore();
+  }
+
+  return { pharao: malePharao, schakal: maleSchakal, skarab: maleSkarab, auge: maleAuge, maske: maleMaske };
+})();
 // ---- zaubermoench.js
 // ====================================================================================
 // zaubermoench.js – „Zaubermönch“ nach den Regeln des Merkur-Vorbilds: 3 × 3 Felder, 5 Linien, Gewinne ab
@@ -33861,210 +34420,7 @@ const SzeneNiljuwelen = (function () {
   const N = { el: null, buehne: null, leiste: null, offen: 0, laeuft: false, autoUhr: 0, power: null, einsatzRunde: 0, wahl: null };
 
   // ---------------------------------------------------------------- Symbole
-  function malePharao(g, r) {
-    g.save();
-    // Kopftuch (Streifen)
-    g.beginPath();
-    g.moveTo(0, -r * 0.92);
-    g.bezierCurveTo(r * 0.7, -r * 0.9, r * 0.8, -r * 0.2, r * 0.86, r * 0.75);
-    g.lineTo(-r * 0.86, r * 0.75);
-    g.bezierCurveTo(-r * 0.8, -r * 0.2, -r * 0.7, -r * 0.9, 0, -r * 0.92);
-    g.closePath();
-    g.fillStyle = '#e8b420';
-    g.fill();
-    g.save();
-    g.clip();
-    g.fillStyle = '#1f4fb8';
-    for (let i = -6; i < 8; i++) {
-      g.fillRect(-r, -r + i * r * 0.26, r * 2, r * 0.12);
-    }
-    g.restore();
-    g.beginPath();
-    g.moveTo(0, -r * 0.92);
-    g.bezierCurveTo(r * 0.7, -r * 0.9, r * 0.8, -r * 0.2, r * 0.86, r * 0.75);
-    g.lineTo(-r * 0.86, r * 0.75);
-    g.bezierCurveTo(-r * 0.8, -r * 0.2, -r * 0.7, -r * 0.9, 0, -r * 0.92);
-    SlotMal.kontur(g, r * 0.07);
-    // Gesicht
-    g.beginPath();
-    g.moveTo(-r * 0.36, -r * 0.42);
-    g.lineTo(r * 0.36, -r * 0.42);
-    g.lineTo(r * 0.32, r * 0.2);
-    g.quadraticCurveTo(0, r * 0.52, -r * 0.32, r * 0.2);
-    g.closePath();
-    g.fillStyle = SlotMal.verlauf(g, 0, -r * 0.4, 0, r * 0.5, [[0, '#ffe7a0'], [1, '#d08f12']]);
-    g.fill();
-    SlotMal.kontur(g, r * 0.05);
-    // Augen
-    [-1, 1].forEach(function (s) {
-      g.beginPath();
-      g.moveTo(s * r * 0.26, -r * 0.18);
-      g.quadraticCurveTo(s * r * 0.14, -r * 0.28, s * r * 0.04, -r * 0.18);
-      g.quadraticCurveTo(s * r * 0.14, -r * 0.1, s * r * 0.26, -r * 0.18);
-      g.fillStyle = '#fff';
-      g.fill();
-      g.lineWidth = r * 0.04;
-      g.strokeStyle = '#111';
-      g.stroke();
-      g.beginPath();
-      g.arc(s * r * 0.15, -r * 0.18, r * 0.04, 0, Math.PI * 2);
-      g.fillStyle = '#111';
-      g.fill();
-    });
-    // Bart
-    SlotMal.rund(g, -r * 0.08, r * 0.38, r * 0.16, r * 0.36, r * 0.05);
-    g.fillStyle = '#1f4fb8';
-    g.fill();
-    SlotMal.kontur(g, r * 0.04);
-    // Stirnschlange
-    g.beginPath();
-    g.arc(0, -r * 0.55, r * 0.09, 0, Math.PI * 2);
-    g.fillStyle = '#2ac08a';
-    g.fill();
-    SlotMal.kontur(g, r * 0.035);
-    g.restore();
-  }
-  function maleSchakal(g, r) {
-    g.save();
-    g.beginPath();
-    g.moveTo(-r * 0.2, -r * 0.2);
-    g.lineTo(-r * 0.35, -r * 0.92);
-    g.lineTo(-r * 0.05, -r * 0.45);
-    g.lineTo(r * 0.12, -r * 0.92);
-    g.lineTo(r * 0.18, -r * 0.3);
-    g.lineTo(r * 0.82, -r * 0.05);
-    g.lineTo(r * 0.8, r * 0.12);
-    g.lineTo(r * 0.2, r * 0.18);
-    g.lineTo(r * 0.3, r * 0.55);
-    g.lineTo(-r * 0.45, r * 0.55);
-    g.closePath();
-    g.fillStyle = SlotMal.verlauf(g, 0, -r, 0, r * 0.6, [[0, '#3a3a46'], [1, '#101016']]);
-    g.fill();
-    SlotMal.kontur(g, r * 0.07, '#d9a520');
-    g.beginPath();
-    g.ellipse(r * 0.12, -r * 0.18, r * 0.09, r * 0.05, -0.2, 0, Math.PI * 2);
-    g.fillStyle = '#ffd34d';
-    g.fill();
-    // Kragen
-    g.beginPath();
-    g.ellipse(-r * 0.08, r * 0.62, r * 0.62, r * 0.26, 0, Math.PI, 0);
-    g.lineTo(r * 0.54, r * 0.78);
-    g.lineTo(-r * 0.7, r * 0.78);
-    g.closePath();
-    g.fillStyle = '#e8b420';
-    g.fill();
-    g.save();
-    g.clip();
-    g.strokeStyle = '#1f4fb8';
-    g.lineWidth = r * 0.07;
-    for (let i = 0; i < 3; i++) {
-      g.beginPath();
-      g.ellipse(-r * 0.08, r * 0.62 + i * r * 0.07, r * (0.5 - i * 0.04), r * 0.18, 0, Math.PI, 0);
-      g.stroke();
-    }
-    g.restore();
-    SlotMal.kontur(g, r * 0.05);
-    g.restore();
-  }
-  function maleSkarab(g, r) {
-    g.save();
-    // Fluegel
-    [-1, 1].forEach(function (s) {
-      g.beginPath();
-      g.moveTo(s * r * 0.2, -r * 0.05);
-      g.quadraticCurveTo(s * r * 1.0, -r * 0.55, s * r * 0.92, r * 0.25);
-      g.quadraticCurveTo(s * r * 0.6, r * 0.1, s * r * 0.2, r * 0.2);
-      g.closePath();
-      g.fillStyle = SlotMal.verlauf(g, 0, -r * 0.5, 0, r * 0.3, [[0, '#7fe0ff'], [1, '#1680b8']]);
-      g.fill();
-      SlotMal.kontur(g, r * 0.05);
-    });
-    g.beginPath();
-    g.ellipse(0, r * 0.18, r * 0.34, r * 0.5, 0, 0, Math.PI * 2);
-    g.fillStyle = SlotMal.radial(g, 0, r * 0.1, r * 0.55, [[0, '#7cf2b0'], [1, '#0d7a4a']]);
-    g.fill();
-    SlotMal.kontur(g, r * 0.06);
-    g.beginPath();
-    g.moveTo(0, -r * 0.3);
-    g.lineTo(0, r * 0.66);
-    g.lineWidth = r * 0.04;
-    g.strokeStyle = 'rgba(0,0,0,0.5)';
-    g.stroke();
-    g.beginPath();
-    g.ellipse(0, -r * 0.42, r * 0.2, r * 0.15, 0, 0, Math.PI * 2);
-    g.fillStyle = '#0d5a3a';
-    g.fill();
-    SlotMal.kontur(g, r * 0.05);
-    // Sonne
-    g.beginPath();
-    g.arc(0, -r * 0.72, r * 0.16, 0, Math.PI * 2);
-    g.fillStyle = '#ff9a1f';
-    g.fill();
-    SlotMal.kontur(g, r * 0.04);
-    SlotMal.glanz(g, -r * 0.12, 0, r * 0.08, r * 0.16, 0.4);
-    g.restore();
-  }
-  function maleAuge(g, r) {
-    g.save();
-    g.beginPath();
-    g.moveTo(-r * 0.85, 0);
-    g.quadraticCurveTo(0, -r * 0.7, r * 0.85, 0);
-    g.quadraticCurveTo(0, r * 0.55, -r * 0.85, 0);
-    g.closePath();
-    g.fillStyle = '#fffaf0';
-    g.fill();
-    SlotMal.kontur(g, r * 0.1, '#0d2a6b');
-    g.beginPath();
-    g.arc(0, -r * 0.03, r * 0.28, 0, Math.PI * 2);
-    g.fillStyle = SlotMal.radial(g, 0, 0, r * 0.3, [[0, '#4ad7ff'], [1, '#0a3fa0']]);
-    g.fill();
-    g.beginPath();
-    g.arc(0, -r * 0.03, r * 0.12, 0, Math.PI * 2);
-    g.fillStyle = '#0a0a14';
-    g.fill();
-    SlotMal.glanz(g, -r * 0.08, -r * 0.12, r * 0.06, r * 0.04, 0.9);
-    // Braue und Zeichen darunter
-    g.lineCap = 'round';
-    g.strokeStyle = '#0d2a6b';
-    g.lineWidth = r * 0.12;
-    g.beginPath();
-    g.moveTo(-r * 0.8, -r * 0.48);
-    g.quadraticCurveTo(0, -r * 0.88, r * 0.82, -r * 0.42);
-    g.stroke();
-    g.beginPath();
-    g.moveTo(-r * 0.05, r * 0.3);
-    g.lineTo(-r * 0.05, r * 0.75);
-    g.quadraticCurveTo(-r * 0.05, r * 0.9, -r * 0.3, r * 0.82);
-    g.stroke();
-    g.beginPath();
-    g.moveTo(r * 0.35, r * 0.25);
-    g.quadraticCurveTo(r * 0.55, r * 0.6, r * 0.85, r * 0.5);
-    g.stroke();
-    g.restore();
-  }
-  function maleMaske(g, r) {
-    g.save();
-    g.shadowColor = '#ffd34d';
-    g.shadowBlur = r * 0.5;
-    SlotMal.rund(g, -r * 0.82, -r * 0.82, r * 1.64, r * 1.64, r * 0.3);
-    g.fillStyle = SlotMal.radial(g, 0, 0, r * 1.1, [[0, '#fff3a8'], [0.5, '#f2b51c'], [1, '#8a5400']]);
-    g.fill();
-    g.shadowBlur = 0;
-    SlotMal.kontur(g, r * 0.08);
-    g.scale(0.72, 0.72);
-    malePharao(g, r);
-    g.restore();
-    g.save();
-    g.font = '400 ' + Math.round(r * 0.6) + 'px "Lilita One", sans-serif';
-    g.textAlign = 'center';
-    g.textBaseline = 'middle';
-    g.lineWidth = r * 0.12;
-    g.strokeStyle = '#3a1d00';
-    g.strokeText('?', r * 0.55, r * 0.55);
-    g.fillStyle = '#fff';
-    g.fillText('?', r * 0.55, r * 0.55);
-    g.restore();
-  }
+  const malePharao = AegyptenMal.pharao, maleSchakal = AegyptenMal.schakal, maleSkarab = AegyptenMal.skarab, maleAuge = AegyptenMal.auge, maleMaske = AegyptenMal.maske;
   // Facettierter Edelstein: Umriss mit n Ecken, Tafel oben, Facetten zur Spitze, Funkeln
   function maleJuwel(g, r, n, dunkel, mittel, hell, form) {
     g.save();
@@ -34325,6 +34681,7 @@ const SzeneNiljuwelen = (function () {
     k = k || 1;
     N.power = { gesamt: n, rest: n, gewinn: 0, restC: cent(rest), k: k };
     merken();
+    N.leiste.risikoAn(false);
     N.leiste.sperren(true);
     N.leiste.startText('Schnell');
     klang.spiele('FREISPIELE');
@@ -34335,6 +34692,7 @@ const SzeneNiljuwelen = (function () {
     N.buehne.setzeFelder(felder);
     N.buehne.layout();
     qs(N.el, '.nj-buehne').classList.add('power');
+    await banner(n + ' POWER SPIN' + (n > 1 ? 'S' : ''));
     powerInfo();
     while (N.power.rest > 0) {
       await warteMs(450);
@@ -34348,6 +34706,7 @@ const SzeneNiljuwelen = (function () {
       }));
       if (ps.ziel >= 0) {
         await warteMs(350);
+        qs(N.el, '.nj-buehne').classList.add('maske');
         klang.spiele('EXPANDIEREN');
         ps.felder.forEach(function (d, fi) {
           N.buehne.felder[fi].raster = d.feld.map(function (r) {
@@ -34356,6 +34715,7 @@ const SzeneNiljuwelen = (function () {
         });
         N.buehne.dirty = true;
         await warteMs(450);
+        qs(N.el, '.nj-buehne').classList.remove('maske');
       }
       let gw = [];
       ps.felder.forEach(function (d, fi) {
@@ -34386,6 +34746,17 @@ const SzeneNiljuwelen = (function () {
     N.leiste.startText('Start');
     N.leiste.gewinn(N.offen);
     N.leiste.risikoAn(N.offen > 0);
+  }
+  function banner(text) {
+    return new Promise(function (ok) {
+      const ov = qs(N.el, '.sl-overlay');
+      ov.innerHTML = '<div class="nj-banner"><span>' + text + '</span></div>';
+      klang.spiele('FREISPIELE');
+      setTimeout(function () {
+        ov.innerHTML = '';
+        ok();
+      }, 1200);
+    });
   }
   function powerInfo() {
     const p = N.power;
@@ -34570,17 +34941,18 @@ const SzeneNiljuwelen = (function () {
 })();
 // ---- sonnenernte.js
 // ====================================================================================
-// sonnenernte.js – „Sonnenernte“: Fruechte-Walzen 5 × 3, 10 Linien, 7 = Joker. Ab 5 Sonnentalern
-// starten die Sonnen-Spins (Taler bleiben stehen, 3 Spins, neue Taler setzen auf 3 zurueck,
-// Toepfe Mini bis Grand, volles Feld = × 3). Risiko Rot/Schwarz.
+// sonnenernte.js – „Sonnenernte“ im Stil von Lucky Pharaoh Sunny Spins: 5 × 3, 10 Linien (von links und
+// in der Mitte). Ab 6 Sonnentalern starten die Sonnen-Spins (Taler bleiben stehen, 3 Spins, neue Taler
+// setzen auf 3 zurück, Töpfe Mini/Minor/Major/Grand). Gewinne ab 2 × Einsatz lassen sich in Power Spins
+// auf 2 Feldern tauschen, ab 4 × auch auf 4 Feldern (mit Goldmaske und Sonnen-Spins). Risiko wie bei Merkur.
 // ====================================================================================
 
 const SzeneSonnenernte = (function () {
   const SPIEL = 'sonnenernte';
   const SL = SonneLogik;
-  const LEER = 8;
-  const SILBER = 10;
-  const S = { el: null, buehne: null, leiste: null, offen: 0, laeuft: false, autoUhr: 0, feature: null, einsatzRunde: 0 };
+  const LEER = 10;
+  const SILBER = 11;
+  const S = { el: null, buehne: null, leiste: null, offen: 0, laeuft: false, autoUhr: 0, feature: null, einsatzRunde: 0, power: null, wahl: null };
 
   // ---------------------------------------------------------------- Symbole
   function maleSieben(g, r) {
@@ -34733,17 +35105,58 @@ const SzeneSonnenernte = (function () {
     g.stroke();
     g.restore();
   }
+  // Kartenwerte auf glühenden Sonnen-Tafeln
+  function maleSonnenTafel(g, t, r, farbe, dunkel) {
+    g.save();
+    SlotMal.rund(g, -r * 0.74, -r * 0.8, r * 1.48, r * 1.6, r * 0.28);
+    g.fillStyle = SlotMal.verlauf(g, 0, -r * 0.8, 0, r * 0.8, [[0, '#fff3b0'], [0.45, '#ffb21e'], [1, '#c2410c']]);
+    g.shadowColor = 'rgba(255,170,30,0.8)';
+    g.shadowBlur = r * 0.25;
+    g.fill();
+    g.shadowBlur = 0;
+    SlotMal.kontur(g, r * 0.06, '#6a1a00');
+    // Strahlenkranz im Hintergrund der Tafel
+    g.save();
+    g.clip();
+    g.globalAlpha = 0.18;
+    g.fillStyle = '#fff';
+    for (let i = 0; i < 12; i++) {
+      g.rotate(Math.PI / 6);
+      g.beginPath();
+      g.moveTo(0, 0);
+      g.lineTo(-r * 0.12, -r * 1.2);
+      g.lineTo(r * 0.12, -r * 1.2);
+      g.fill();
+    }
+    g.restore();
+    g.font = '400 ' + Math.round(r * (t.length > 1 ? 0.95 : 1.2)) + 'px Bungee, "Lilita One", sans-serif';
+    g.textAlign = 'center';
+    g.textBaseline = 'middle';
+    g.lineJoin = 'round';
+    g.lineWidth = r * 0.16;
+    g.strokeStyle = dunkel;
+    g.strokeText(t, 0, r * 0.08);
+    g.fillStyle = SlotMal.verlauf(g, 0, -r * 0.5, 0, r * 0.5, [[0, '#ffffff'], [0.5, farbe], [1, dunkel]]);
+    g.fillText(t, 0, r * 0.08);
+    g.restore();
+  }
+  void maleSieben;
+  void maleMelone;
+  void maleTraube;
+  void maleKirsche;
+  void maleZitrone;
   function maler(g, s, r) {
     switch (s) {
-      case 0: maleSieben(g, r); break;
-      case 1: maleMelone(g, r); break;
-      case 2: maleTraube(g, r); break;
-      case 3: frucht(g, r, '#4a1a7a', '#c48af0', 0.66, 0.72); blatt(g, r, r * 0.05, -r * 0.62, -1.2); break;
-      case 4: frucht(g, r, '#e86a00', '#ffc070', 0.74, 0.72); blatt(g, r, 0, -r * 0.62, -0.9); break;
-      case 5: maleZitrone(g, r); break;
-      case 6: maleKirsche(g, r); break;
-      case 7: maleTaler(g, r, true); break;
-      case 9: maleTaler(g, r, true); break;
+      case 0: AegyptenMal.pharao(g, r); break;
+      case 1: AegyptenMal.schakal(g, r); break;
+      case 2: AegyptenMal.skarab(g, r); break;
+      case 3: AegyptenMal.auge(g, r); break;
+      case 4: maleSonnenTafel(g, 'A', r, '#ff4a6a', '#5a0018'); break;
+      case 5: maleSonnenTafel(g, 'K', r, '#3a7aff', '#0a1a60'); break;
+      case 6: maleSonnenTafel(g, 'D', r, '#2ac07a', '#04381c'); break;
+      case 7: maleSonnenTafel(g, '10', r, '#b06aff', '#30085a'); break;
+      case 8: maleTaler(g, r, true); break;
+      case 9: AegyptenMal.maske(g, r); break;
       case SILBER: maleTaler(g, r, true, true); break;
       default: maleLeer(g, r);
     }
@@ -34752,10 +35165,17 @@ const SzeneSonnenernte = (function () {
 
   // ---------------------------------------------------------------- Ablauf
   function cent(x) {
-    return Math.floor(x * S.einsatzRunde * Waehrung.faktor(SPIEL) + 1e-6);
+    const e = S.einsatzRunde || (S.leiste ? S.leiste.einsatz() : 0);
+    return Math.floor(x * e * Waehrung.faktor(SPIEL) + 1e-6);
   }
   function merken() {
     let x = S.offen;
+    if (S.power) {
+      x += S.power.gewinn + S.power.restC + S.power.rest * cent(S.power.nf);
+    }
+    if (S.wahl) {
+      x += cent(S.wahl.x);
+    }
     if (S.feature) {
       x += S.feature.gewiss;
     }
@@ -34773,8 +35193,23 @@ const SzeneSonnenernte = (function () {
   function talerText(t) {
     return t.topf ? t.topf.toUpperCase() : euroKurz(cent(t.x)).replace(' €', '');
   }
+  function gewinnListe(erg, fi, k) {
+    return erg.linien.map(function (l) {
+      const li = SL.LINIEN[l.linie];
+      const zellen = [];
+      for (let q = 0; q < l.n; q++) {
+        zellen.push([l.von + q, li[l.von + q]]);
+      }
+      return { feld: fi, zellen: zellen, linie: li.map(function (r, w) {
+        return [w, r];
+      }), farbe: ['#ffd34d', '#ff8a65', '#7cf2b0', '#7fd0ff', '#ff9fb4', '#9fc8ff', '#a8ffcf', '#e0b8ff'][l.sym], text: 'Linie ' + (l.linie + 1) + ': ' + euro(cent(l.x * (k || 1))) };
+    });
+  }
   async function start() {
-    if (S.feature) {
+    if (S.wahl) {
+      return;
+    }
+    if (S.feature || S.power) {
       S.buehne.schnell();
       FX.schnell = true;
       return;
@@ -34797,44 +35232,222 @@ const SzeneSonnenernte = (function () {
     }
     Kasse.speichern();
     S.einsatzRunde = e;
+    toepfeZeigen();
     S.laeuft = true;
     S.leiste.gewinn(0);
     S.leiste.sperren(true);
     S.leiste.startText('Stopp');
-    const d = SL.drehen(zufall);
+    const d = SL.drehen(zufall, false);
     const erg = SL.auswerten(d.feld);
+    const taler = SL.talerAnzahl(d.feld);
     klang.spiele('WALZE_LAUF', { gain: 0.45 });
     S.buehne.zeigeGewinne([]);
-    await S.buehne.drehen(0, d.feld, { dauer: 0.7, verz: 0.16, extras: d.werte });
+    // Spannung: liegen nach vier Walzen schon 4+ Taler, läuft die letzte Walze länger
+    let vorher = 0;
+    for (let w = 0; w < 4; w++) {
+      d.feld[w].forEach(function (x) {
+        if (x === SL.TALER) {
+          vorher++;
+        }
+      });
+    }
+    await S.buehne.drehen(0, d.feld, { dauer: vorher >= 4 ? 1.6 : 0.7, verz: 0.16, extras: d.werte });
     S.laeuft = false;
     S.leiste.startText('Start');
     S.leiste.sperren(false);
     if (erg.x > 0) {
-      S.buehne.zeigeGewinne(erg.linien.map(function (l) {
-        const li = SL.LINIEN[l.linie];
-        const zellen = [];
-        for (let k = 0; k < l.n; k++) {
-          zellen.push([k, li[k]]);
-        }
-        return { feld: 0, zellen: zellen, linie: li.map(function (r, w) {
-          return [w, r];
-        }), farbe: ['#ff5a5a', '#7cf2a0', '#d9a6ff', '#c48af0', '#ffb060', '#fff176', '#ff7a8a'][l.sym], text: 'Linie ' + (l.linie + 1) + ': ' + euro(cent(l.x)) };
-      }));
+      S.buehne.zeigeGewinne(gewinnListe(erg, 0));
       klang.spiele(erg.x >= 10 ? 'GEWINN_GROSS' : (erg.x >= 2 ? 'GEWINN_MITTEL' : 'GEWINN_KLEIN'));
+      await GrossGewinn.zeige(qs(S.el, '.sl'), cent(erg.x), S.einsatzRunde);
+    }
+    const sonne = taler >= SL.KONF.ausloeser;
+    // Power Spins anbieten (nicht im Auto-Spiel und nicht, wenn gleich Sonnen-Spins folgen)
+    if (erg.x >= 2 && !S.leiste.auto() && !sonne) {
+      S.wahl = { x: erg.x, nf: erg.x >= 4 ? 4 : 2 };
+      merken();
+      wahlZeigen();
+      return;
+    }
+    if (erg.x > 0) {
       S.offen += cent(erg.x);
       merken();
       S.leiste.gewinn(S.offen);
-      await GrossGewinn.zeige(qs(S.el, '.sl'), cent(erg.x), S.einsatzRunde);
     }
-    if (SL.talerAnzahl(d.feld) >= SL.KONF.ausloeser) {
+    if (sonne) {
       await warteMs(erg.x > 0 ? 1400 : 500);
-      await feature(d.werte);
-    } else {
-      S.leiste.risikoAn(S.offen > 0 && !S.leiste.auto());
+      const c = await feature(d.werte);
+      S.offen += c;
+      merken();
+      S.leiste.gewinn(S.offen);
+      featureEnde();
     }
+    S.leiste.risikoAn(S.offen > 0 && !S.leiste.auto());
     if (S.leiste.auto()) {
-      S.autoUhr = erg.x > 0 ? 1.2 : 0.4;
+      S.autoUhr = erg.x > 0 || sonne ? 1.2 : 0.4;
     }
+  }
+  // ---------------------------------------------------------------- Power Spins (2 oder 4 Felder)
+  function wahlZeigen() {
+    const w = S.wahl;
+    const ov = qs(S.el, '.sl-overlay');
+    const n2 = Math.floor(w.x / 2 + 1e-9), n4 = Math.floor(w.x / 4 + 1e-9);
+    const n = w.nf === 4 ? n4 : n2;
+    const rest = w.x - n * w.nf;
+    ov.innerHTML = '<div class="se-wahl"><div class="se-w-t">GEWINN ' + euro(cent(w.x)) + '</div>'
+      + '<p>Tausche ihn gegen <b>' + n + ' Power Spin' + (n > 1 ? 's' : '') + '</b> auf <b>' + w.nf + ' Feldern</b>' + (rest > 0.0001 ? ' (Rest ' + euro(cent(rest)) + ' sofort)' : '') + '.</p>'
+      + '<div class="se-w-felder"><button data-f="2"' + (w.nf === 2 ? ' class="an"' : '') + '><b>2 Felder</b><small>' + n2 + ' Spins à ' + euroKurz(cent(2)) + '</small></button>'
+      + '<button data-f="4"' + (w.nf === 4 ? ' class="an"' : '') + (n4 < 1 ? ' disabled' : '') + '><b>4 Felder</b><small>' + (n4 < 1 ? 'ab ' + euroKurz(cent(4)) : n4 + ' Spins à ' + euroKurz(cent(4))) + '</small></button></div>'
+      + '<div class="se-w-k"><button class="se-nehmen">Gewinn nehmen</button><button class="se-power">POWER SPINS</button></div>'
+      + '<small>Auf den Power-Feldern erscheint die Goldmaske (alle werden zum selben Symbol), Sonnentaler zählen dort auch – 6 auf einem Feld starten Sonnen-Spins. Power Spins zahlen im Schnitt etwa 100 % zurück.</small></div>';
+    qsa(ov, '.se-w-felder button').forEach(function (b) {
+      b.addEventListener('click', function () {
+        if (b.disabled) {
+          return;
+        }
+        w.nf = Number(b.getAttribute('data-f'));
+        klang.spiele('KNOPF');
+        wahlZeigen();
+      });
+    });
+    qs(ov, '.se-nehmen').addEventListener('click', function () {
+      ov.innerHTML = '';
+      S.offen += cent(w.x);
+      S.wahl = null;
+      merken();
+      S.leiste.gewinn(S.offen);
+      S.leiste.risikoAn(true);
+      klang.spiele('CASHOUT');
+    });
+    qs(ov, '.se-power').addEventListener('click', function () {
+      ov.innerHTML = '';
+      S.wahl = null;
+      powerStarten(n, rest, w.nf);
+    });
+  }
+  function powerBanner(text) {
+    return new Promise(function (ok) {
+      const ov = qs(S.el, '.sl-overlay');
+      ov.innerHTML = '<div class="se-banner"><span>' + text + '</span></div>';
+      klang.spiele('EXPANDIEREN');
+      setTimeout(function () {
+        ov.innerHTML = '';
+        ok();
+      }, FX.schnell ? 300 : 1100);
+    });
+  }
+  function powerFelder(nf) {
+    const felder = [];
+    for (let i = 0; i < nf; i++) {
+      const d = SL.drehen(zufall, true);
+      felder.push({ walzen: 5, reihen: 3, raster: d.feld, extras: d.werte });
+    }
+    S.buehne.setzeFelder(felder);
+    S.buehne.layout();
+  }
+  async function powerStarten(n, rest, nf) {
+    S.power = { gesamt: n, rest: n, gewinn: 0, restC: cent(rest), nf: nf };
+    merken();
+    S.leiste.risikoAn(false);
+    S.leiste.sperren(true);
+    S.leiste.startText('Schnell');
+    FX.schnell = false;
+    qs(S.el, '.se-buehne').classList.add('power');
+    await powerBanner(n + ' POWER SPIN' + (n > 1 ? 'S' : ''));
+    powerFelder(nf);
+    powerInfo();
+    while (S.power.rest > 0) {
+      await warteMs(FX.schnell ? 120 : 450);
+      S.power.rest--;
+      powerInfo();
+      const ps = SL.powerSpin(zufall, nf);
+      S.buehne.zeigeGewinne([]);
+      klang.spiele('WALZE_LAUF', { gain: 0.4 });
+      await Promise.all(ps.felder.map(function (d, fi) {
+        return S.buehne.drehen(fi, d.vorher, { dauer: 0.65 + fi * 0.08, verz: 0.1, extras: d.werte });
+      }));
+      if (ps.ziel >= 0) {
+        // Goldmasken leuchten auf und verwandeln sich
+        fxLayout();
+        ps.felder.forEach(function (d, fi) {
+          d.vorher.forEach(function (sp, w) {
+            sp.forEach(function (x, r) {
+              if (x === SL.MASKE) {
+                const p = zellePos(w, r, fi);
+                feuerball(p.x, p.y, p.z * 0.6);
+              }
+            });
+          });
+        });
+        klang.spiele('EXPANDIEREN');
+        await warteMs(FX.schnell ? 80 : 450);
+        ps.felder.forEach(function (d, fi) {
+          S.buehne.felder[fi].raster = d.feld.map(function (r) {
+            return r.slice();
+          });
+        });
+        S.buehne.dirty = true;
+        await warteMs(FX.schnell ? 80 : 400);
+      }
+      let gw = [];
+      let linien = 0;
+      ps.felder.forEach(function (d, fi) {
+        gw = gw.concat(gewinnListe(d.erg, fi));
+        linien += d.erg.x;
+      });
+      const c = cent(linien);
+      S.power.gewinn += c;
+      if (c > 0) {
+        S.buehne.zeigeGewinne(gw);
+        klang.spiele(linien >= 10 ? 'GEWINN_GROSS' : 'GEWINN_KLEIN');
+      }
+      merken();
+      powerInfo();
+      await warteMs(c > 0 ? (FX.schnell ? 300 : 1300) : (FX.schnell ? 100 : 500));
+      // Sonnen-Spins auf einzelnen Power-Feldern
+      for (let fi = 0; fi < ps.felder.length; fi++) {
+        const d = ps.felder[fi];
+        if (!d.sonne) {
+          continue;
+        }
+        const alle = S.buehne.felder.map(function (f) {
+          return { walzen: 5, reihen: 3, raster: f.raster.map(function (r) {
+            return r.slice();
+          }), extras: (f.extras || []).map(function (r) {
+            return r.slice();
+          }) };
+        });
+        S.buehne.setzeFelder([{ walzen: 5, reihen: 3, raster: d.feld.map(function (r) {
+          return r.slice();
+        }), extras: d.werte }]);
+        S.buehne.layout();
+        const cs = await feature(d.werte, d.sonne);
+        S.power.gewinn += cs;
+        merken();
+        featureEnde(true);
+        S.buehne.setzeFelder(alle);
+        S.buehne.layout();
+        powerInfo();
+      }
+    }
+    const summe = S.power.gewinn + S.power.restC;
+    await GrossGewinn.zeige(qs(S.el, '.sl'), summe, S.einsatzRunde);
+    Hinweis.zeige('Power Spins beendet: ' + euro(summe), summe > 0 ? 'gut' : '', 3000);
+    S.offen += summe;
+    S.power = null;
+    merken();
+    qs(S.el, '.se-buehne').classList.remove('power');
+    qs(S.el, '.se-info').textContent = '';
+    const neu = SL.drehen(zufall, false);
+    S.buehne.setzeFelder([{ walzen: 5, reihen: 3, raster: neu.feld, extras: neu.werte }]);
+    S.buehne.layout();
+    S.leiste.sperren(false);
+    S.leiste.startText('Start');
+    S.leiste.gewinn(S.offen);
+    S.leiste.risikoAn(S.offen > 0);
+  }
+  function powerInfo() {
+    const p = S.power;
+    qs(S.el, '.se-info').innerHTML = p ? 'POWER SPINS <b>' + (p.gesamt - p.rest) + ' / ' + p.gesamt + '</b> · ' + p.nf + ' Felder · Gewinn <b>' + euro(p.gewinn + p.restC) + '</b>' : '';
   }
   function warteMs(ms) {
     return new Promise(function (ok) {
@@ -34855,8 +35468,8 @@ const SzeneSonnenernte = (function () {
     FX.r = r;
   }
   /** Mitte einer Zelle in Koordinaten der Effektebene. */
-  function zellePos(w, r) {
-    const f = S.buehne.felder[0];
+  function zellePos(w, r, fi) {
+    const f = S.buehne.felder[fi || 0];
     const cr = S.buehne.cv.getBoundingClientRect();
     return { x: cr.left - FX.r.left + f.rect.x + (w + 0.5) * f.rect.z, y: cr.top - FX.r.top + f.rect.y + (r + 0.5) * f.rect.z, z: f.rect.z };
   }
@@ -35134,10 +35747,12 @@ const SzeneSonnenernte = (function () {
       requestAnimationFrame(haufenZeichnen);
     }
   }
-  async function feature(start) {
-    const plan = SL.sonnenSpins(zufall, start);
+  /** Sonnen-Spins spielen (auf Feld 0). Liefert den Gewinn in Cent; featureEnde() räumt danach auf. */
+  async function feature(start, planGegeben) {
+    const plan = planGegeben || SL.sonnenSpins(zufall, start);
     S.feature = { rest: 3, gewiss: 0 };
     FX.schnell = false;
+    S.leiste.risikoAn(false);
     S.leiste.sperren(true);
     S.leiste.startText('Schnell');
     S.buehne.zeigeGewinne([]);
@@ -35257,7 +35872,7 @@ const SzeneSonnenernte = (function () {
     }
     await warteMs(700);
     const x = plan.x;
-    if (plan.voll) {
+    if (plan.voll && SL.VOLL_FAKTOR > 1) {
       klang.spiele('JACKPOT');
       zaehler.classList.add('voll');
       feuerball(ziel.x, ziel.y, 120);
@@ -35267,24 +35882,27 @@ const SzeneSonnenernte = (function () {
     const c = cent(x);
     zaehler.textContent = euro(c);
     featureInfo(0, x, true);
-    S.offen += c;
     S.feature = null;
-    merken();
     klang.spiele(x >= 20 ? 'GEWINN_GROSS' : 'GEWINN_MITTEL');
-    S.leiste.gewinn(S.offen);
     await GrossGewinn.zeige(qs(S.el, '.sl'), c, S.einsatzRunde);
-    await warteMs(1600);
+    await warteMs(FX.schnell ? 500 : 1600);
     zaehler.classList.remove('voll');
+    return c;
+  }
+  function featureEnde(inPower) {
     schatzZeigen(false);
     qs(S.el, '.se-buehne').classList.remove('feature');
     qs(S.el, '.se-info').innerHTML = '';
-    const neu = SL.drehen(zufall);
+    if (inPower) {
+      return;
+    }
+    const f = S.buehne.felder[0];
+    const neu = SL.drehen(zufall, false);
     f.raster = neu.feld;
     f.extras = neu.werte;
     S.buehne.dirty = true;
     S.leiste.sperren(false);
     S.leiste.startText('Start');
-    S.leiste.risikoAn(S.offen > 0 && !S.leiste.auto());
   }
   function featureInfo(rest, x, ende, sammeln) {
     qs(S.el, '.se-info').innerHTML = ende ? 'SONNEN-SPINS GEWINN <b>' + euro(cent(x)) + '</b>' : (sammeln ? 'TALER WERDEN EINGESAMMELT …' : 'SONNEN-SPINS <b>' + rest + '</b> · Taler <b>' + euro(cent(x)) + '</b>');
@@ -35309,16 +35927,41 @@ const SzeneSonnenernte = (function () {
   const html = '<div class="sl se"><div class="se-toepfe"></div><div class="se-schatz" hidden><canvas class="se-haufen"></canvas><div class="se-s-toepfe"></div><div class="se-zaehler">0</div></div><div class="se-info"></div><div class="sl-haupt"><div class="sl-buehne se-buehne"><canvas class="sl-cv"></canvas></div></div>'
     + '<div class="sl-overlay"></div><canvas class="se-fx"></canvas><div class="sl-leiste"></div></div>';
   const regeln = function () {
-    const zeile = function (i) {
-      return '<tr><td>' + SL.NAMEN[i] + '</td><td>' + SL.PLAN[i].map(function (v) {
-        return komma(v / 10, v % 10 ? 1 : 0) + '×';
-      }).join('</td><td>') + '</td></tr>';
+    const H = SlotHilfe, sp = speicher;
+    const e = S.einsatzRunde || (S.leiste ? S.leiste.einsatz() : 100), f = Waehrung.faktor(SPIEL);
+    const geld = function (x) {
+      return euro(Math.floor(x * e * f + 1e-6));
     };
-    return '<p>5 Walzen, 3 Reihen, <b>10 Gewinnlinien</b> von links nach rechts. Die <b>7</b> ist Joker und ersetzt alle Früchte (nicht den Sonnentaler). Kirschen zahlen schon ab 2 (' + komma(SL.KIRSCHE_2 / 10, 1) + '×).</p>'
-      + '<table><tr><th>Symbol</th><th>3</th><th>4</th><th>5</th></tr>' + [0, 1, 2, 3, 4, 5, 6].map(zeile).join('') + '</table><p class="klein-c">Werte = Vielfache des Gesamteinsatzes je Linie.</p>'
-      + '<p><b>Sonnen-Spins:</b> Ab <b>5 Sonnentalern</b> irgendwo bleiben alle Taler stehen, du bekommst 3 Spins. Jeder neue Taler setzt die Spins wieder auf 3. '
-      + 'Jeder Taler zeigt einen Betrag (1 bis 50 × Einsatz) oder einen Topf: Mini 15×, Minor 30×, Maxi 75×, Super 150×, Grand 1.000× (höchstens einmal je Runde). '
-      + 'Sind alle 15 Felder voll, wird alles <b>verdreifacht</b>.</p><p>Auszahlungsquote etwa <b>96,4 %</b> (Linien etwa 66 %, Sonnen-Spins etwa 30 %). Risiko: Rot oder Schwarz.</p>';
+    const zeilen = [0, 1, 2, 3, 4, 5, 6, 7].map(function (i) {
+      return { sym: i, name: SL.NAMEN[i], werte: SL.PLAN[i].map(function (v) {
+        return geld(v / 10);
+      }) };
+    });
+    const toepfe = SL.TOEPFE.slice().reverse().map(function (t) {
+      return { sym: 8, name: t.name + (t.name === 'Grand' ? ' (einmal je Serie)' : ''), werte: [geld(t.x), komma(t.x, 0) + ' ×'] };
+    });
+    return H.reiter([
+      { titel: "So geht's", html: H.schritte([
+        '5 Walzen, 3 Reihen, <b>10 Gewinnlinien</b>. Gewinne zählen <b>von links</b> und auf den <b>drei mittleren Walzen</b>. Viele Symbole kommen gestapelt.',
+        '<b>Sonnentaler</b> tragen einen Wert. Ab <b>6 Talern</b> irgendwo starten die <b>Sonnen-Spins</b>.',
+        'Ab einem Gewinn von <b>' + geld(2) + '</b> (2 × Einsatz) kannst du ihn in <b>Power Spins auf 2 Feldern</b> tauschen, ab <b>' + geld(4) + '</b> auch auf <b>4 Feldern</b>.',
+        'Jeden Bargewinn kannst du im <b>Risiko</b> verdoppeln (Karte oder Risikoleiter, Hälfte sichern möglich).'
+      ]) },
+      { titel: 'Gewinnplan', html: '<p>Gewinne je Linie bei <b>' + euro(e) + '</b> Einsatz:</p>' + H.plan(sp, ['3 gleiche', '4 gleiche', '5 gleiche'], zeilen) },
+      { titel: 'Sonnen-Spins', html: '<div class="sh-bilder">' + H.bild(sp, 8, 54) + H.bild(sp, SILBER, 54) + '</div>' + H.schritte([
+        '6 oder mehr Sonnentaler starten die Sonnen-Spins: Alle Taler bleiben (silbern) stehen, die übrigen Felder drehen neu.',
+        'Du hast <b>3 Spins</b>. Jeder neue Taler setzt die Spins wieder auf 3.',
+        'Am Ende fliegen alle Taler als Feuerball in die Schatzkammer und werden ausgezahlt.'
+      ]) + H.plan(sp, ['Gewinn', '× Einsatz'], toepfe) + '<p class="klein-c">Andere Taler zeigen 1 bis 50 × Einsatz.</p>' },
+      { titel: 'Power Spins', html: '<div class="sh-bilder">' + H.bild(sp, 9, 54) + '</div>' + H.schritte([
+        'Nach einem Gewinn ab 2 × Einsatz: <b>Gewinn nehmen</b> oder <b>Power Spins</b>. Ab 4 × Einsatz wählst du zwischen 2 und 4 Feldern.',
+        'Ein Power Spin kostet 2 × (2 Felder) bzw. 4 × Einsatz (4 Felder) und läuft auf allen Feldern gleichzeitig.',
+        'Die <b>Goldmaske</b> verwandelt sich nach dem Stopp auf allen Feldern in dasselbe Symbol.',
+        'Auch auf Power-Feldern gibt es Sonnentaler: 6 auf einem Feld starten dort Sonnen-Spins.',
+        'Power Spins zahlen im Schnitt etwa <b>100 %</b> zurück – Tauschen kostet nichts, macht es nur spannender.'
+      ]) },
+      { titel: 'Quote', html: '<p>Auszahlungsquote im Grundspiel etwa <b>96 %</b> (Linien etwa 69 %, Sonnen-Spins etwa 27 %, per Simulation über Millionen Drehungen). Sonnen-Spins kommen etwa alle 175 Drehungen. Power Spins: etwa 100 %.</p>' }
+    ]);
   };
   function toepfeZeigen() {
     const e = S.einsatzRunde || S.leiste.einsatz();
@@ -35337,7 +35980,7 @@ const SzeneSonnenernte = (function () {
         if (zelle) {
           return zufall() < 0.3 ? SL.TALER : LEER;
         }
-        return SL.wahl(zufall, SL.KONF.w.concat([1.2]));
+        return SL.wahl(zufall, SL.KONF.w.concat([1.2, S.power ? 0.8 : 0]));
       },
       extra: function (g, f, w, r, x, y, z, t) {
         if (!t || (f.raster[w][r] !== SL.TALER && f.raster[w][r] !== SILBER)) {
@@ -35389,25 +36032,30 @@ const SzeneSonnenernte = (function () {
     g.fillStyle = radial(g, p.x + p.w / 2, p.y, Math.max(p.w, p.h), [[0, C(255, 190, 60)], [0.5, C(200, 70, 20)], [1, C(70, 15, 5)]]);
     g.fillRect(p.x, p.y, p.w, p.h);
     const s = Math.min(p.h * 0.42, p.w * 0.18);
-    const syms = [6, 0, 7, 0, 1];
+    const syms = [4, 0, 8, 0, 1];
     for (let i = 0; i < 5; i++) {
-      const sk = !Stil.sparmodus && syms[i] === 7 ? 1 + 0.08 * Math.sin(zeit * 5) : 1;
+      const sk = !Stil.sparmodus && syms[i] === 8 ? 1 + 0.08 * Math.sin(zeit * 5) : 1;
       const x = p.x + p.w / 2 + (i - 2) * s * 1.04, y = p.y + p.h * 0.52;
       g.drawImage(speicher.bild(syms[i], Math.round(s * 1.4)), x - s * sk / 2, y - s * sk / 2, s * sk, s * sk);
     }
   }
   const sz = domSzene({
-    name: SPIEL, titel: 'SONNENERNTE', klasse: 'slot', html: html, regeln: regeln, init: init,
+    name: SPIEL, titel: 'SONNENERNTE', klasse: 'slot', html: html, regeln: regeln, init: init, hilfeStart: true,
     betreten: function () {
       S.buehne.layout();
       toepfeZeigen();
     },
     verlassen: function () {
       S.leiste.autoAus();
+      if (S.wahl) {
+        S.offen += cent(S.wahl.x);
+        S.wahl = null;
+        qs(S.el, '.sl-overlay').innerHTML = '';
+      }
       offenNehmen();
     },
     darfVerlassen: function () {
-      return !S.laeuft && !S.feature;
+      return !S.laeuft && !S.feature && !S.power;
     },
     layout: function () {
       if (S.buehne) {
@@ -35441,9 +36089,9 @@ const SzeneSonnenernte = (function () {
   });
   sz.vorschau = vorschau;
   sz.quoteText = function () {
-    return 'QUOTE 96,4 %';
+    return 'QUOTE 96 % · POWER 100 %';
   };
-  sz.test = { S: S, start: start, feature: feature };
+  sz.test = { S: S, start: start, feature: feature, powerStarten: powerStarten, wahlZeigen: wahlZeigen };
   NEUE_SZENEN.SzeneSonnenernte = sz;
   return sz;
 })();
@@ -35964,7 +36612,7 @@ const SzeneBonbonregen = (function () {
       B.leiste.autoAus();
       return;
     }
-    if (!Kasse.abbuchen(SPIEL, preis)) {
+    if (!Kasse.abbuchen(SPIEL, preis, true, e)) {
       B.leiste.autoAus();
       return;
     }
