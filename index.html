@@ -1505,6 +1505,8 @@ input, textarea, select {
 .wb-auf .wb-knopf + .wb-knopf { margin-top: 8px; }
 .wb-knopf em { margin-left: auto; font: 400 22px "Lilita One", sans-serif; font-style: normal; color: #2b1606; white-space: nowrap; }
 .wb-knopf[data-s="lang"] { background: linear-gradient(180deg, #ffb35a, #ea6a0b); }
+.wb-applixir { position: fixed; inset: 0; z-index: 9500; background: rgba(0, 0, 0, 0.9); display: grid; place-items: center; }
+.wb-applixir #applixir-ad-container { width: min(100vw, 960px); max-height: 100vh; }
 /* ---------------------------------------------------------------- Taktikhandbuch (beide Roulettes) */
 .fenster.taktik { width: min(760px, 100%); background: linear-gradient(180deg, #13261a 0%, #0d1a12 100%); color: #f3f0e2; }
 .fenster.taktik .fenster-kopf h2 { color: #ffd76a; font-size: 24px; }
@@ -17948,7 +17950,7 @@ const HallenEinst = {
     return {
       startguthaben: 10000, aufladen: true, betraege: [1000, 2000, 5000, 10000], hoechst: 0, aus: {}, mitteilung: '', stand: 0,
       gcAn: true, gcStandard: 0, gcQuoten: {}, turmKonf: null, maxEinsatz: {}, neuladen: 0,
-      werbung: { an: true, nurWerbung: true, belohnung: 5000, sperre: 60, proTag: 30, anbieter: 'warten', adUnit: '', adsense: '', test: false, monetag: '', ersatz: true, kurzSek: 10, kurzBel: 2500, langSek: 20, langBel: 5000, bild: '', link: '', text: '' }
+      werbung: { an: true, nurWerbung: true, belohnung: 5000, sperre: 60, proTag: 30, anbieter: 'warten', adUnit: '', adsense: '', test: false, monetag: '', applixir: '', ersatz: true, kurzSek: 10, kurzBel: 2500, langSek: 20, langBel: 5000, bild: '', link: '', text: '' }
     };
   },
   /** Daten pruefen und auf sinnvolle Werte begrenzen (kommen ggf. aus dem Netz). */
@@ -17992,11 +17994,12 @@ const HallenEinst = {
       belohnung: zahl(wb.belohnung, 1, 100000000, 5000),
       sperre: zahl(wb.sperre, 0, 86400, 60),
       proTag: zahl(wb.proTag, 0, 1000, 30),
-      anbieter: ['adsense', 'gam', 'monetag', 'eigen', 'warten'].indexOf(wb.anbieter) >= 0 ? wb.anbieter : 'warten',
+      anbieter: ['applixir', 'adsense', 'gam', 'monetag', 'eigen', 'warten'].indexOf(wb.anbieter) >= 0 ? wb.anbieter : 'warten',
       adUnit: typeof wb.adUnit === 'string' ? wb.adUnit.trim().slice(0, 200) : '',
       adsense: typeof wb.adsense === 'string' && /^ca-pub-\d{6,20}$/.test(wb.adsense.trim()) ? wb.adsense.trim() : '',
       test: wb.test === true,
       monetag: typeof wb.monetag === 'string' && /^\d{3,12}$/.test(wb.monetag.trim()) ? wb.monetag.trim() : '',
+      applixir: typeof wb.applixir === 'string' && /^[A-Za-z0-9-]{8,80}$/.test(wb.applixir.trim()) ? wb.applixir.trim() : '',
       ersatz: wb.ersatz !== false,
       // zwei Längen für Pause/eigene Werbung: kurz und lang
       kurzSek: zahl(wb.kurzSek, 3, 120, 10),
@@ -20187,7 +20190,7 @@ function turmKonfAnwenden() {
 // Die Seite fragt regelmäßig die Versionsdatei ab. Gibt es eine neue Version (oder hat der Admin
 // „Alle Geräte neu laden“ gedrückt), lädt sie neu – sofort, wenn gerade nichts läuft, sonst nach der
 // laufenden Runde (spätestens nach 3 Minuten; offene Gewinne sind gespeichert und werden gutgeschrieben).
-const BUILD_VERSION = '20261009063146';
+const BUILD_VERSION = '20261009123420';
 const Aktualisierung = (function () {
   const geladen = Date.now();
   let grund = '', seit = 0, uhr = 0, letzte = 0, selbst = 0;
@@ -26248,7 +26251,8 @@ const SzeneLobby = (function () {
   const Z = {
     zeit: 0, ov: 'KEINS', mx: -1, my: -1, fokus: -1, kreditAnzeige: 0, gedrueckt: -1,
     hover: [], druck: [], quoten: { roulette: 'QUOTE 97,3 %', sonnenbuch: 'QUOTE 95,0 %', mines: 'QUOTE 99 %', plinko: 'QUOTE 99 %', chicken: 'QUOTE 98 %',
-      hoehenflug: 'QUOTE 97 %', goldroulette: 'QUOTE 97,5 %', schatzstollen: 'QUOTE 95,5 %' }, dialog: null, optionen: null, ersterBesuch: true, guthGeklickt: false
+      hoehenflug: 'QUOTE 97 %', goldroulette: 'QUOTE 97,5 %', schatzstollen: 'QUOTE 95,5 %' }, dialog: null, optionen: null, ersterBesuch: true, guthGeklickt: false,
+    scroll: 0
   };
   const meld = new Meldungen();
   const glut = new Partikel();
@@ -26258,6 +26262,9 @@ const SzeneLobby = (function () {
   let ovRahmen = null;
   let btnGeld = null, btnTon = null, btnEinst = null, btnInstall = null, btnSpieler = null, btnW = null;
   let spielKnoepfe = [];
+  // Spielkarten-Bereich ist scrollbar (bei vielen Spielen): eigene Knopfgruppe, Versatz Z.scroll
+  const spielGruppe = new KnopfGruppe();
+  const SC = { start: -1, startScroll: 0, zieht: false, v: 0, letztY: 0, letztT: 0 };
 
   const SPIELE = [
     {
@@ -26385,10 +26392,10 @@ const SzeneLobby = (function () {
   Object.assign(EUR_QUOTEN, Z.quoten);
 
   // ---------------------------------------------------------------- Layout
-  function rasterKarten(n, x0, y0, breite, hoehe, spalten, gap) {
+  function rasterKarten(n, x0, y0, breite, hoehe, spalten, gap, minH) {
     const zeilen = Math.ceil(n / spalten);
     const w = (breite - (spalten - 1) * gap) / spalten;
-    const h = (hoehe - (zeilen - 1) * gap) / zeilen;
+    const h = Math.max(minH || 0, (hoehe - (zeilen - 1) * gap) / zeilen);
     const karten = [];
     for (let i = 0; i < n; i++) {
       const zz = Math.floor(i / spalten);
@@ -26411,10 +26418,11 @@ const SzeneLobby = (function () {
       L.karten = rasterKarten(N, x0, 166, N * w + (N - 1) * gap, 566, N, gap);
     } else {
       const sp = N <= 8 ? 4 : 5;
-      L.karten = rasterKarten(N, 22, 166, 1236, 594, sp, 14);
+      L.karten = rasterKarten(N, 22, 166, 1236, 594, sp, 14, 250);
     }
     L.drei = N > 10;
     L.fussY = 782;
+    bereichSetzen(L, 160, 768);
     return L;
   }
 
@@ -26428,9 +26436,64 @@ const SzeneLobby = (function () {
     L.mitteilung = { x: 332, y: 232, w: 368, h: 42 };
     const y0 = 292, fuss = 44, gap = 12;
     L.drei = N > 10;
-    L.karten = rasterKarten(N, 20, y0, 680, H - y0 - fuss, L.drei ? 3 : 2, gap);
+    L.karten = rasterKarten(N, 20, y0, 680, H - y0 - fuss, L.drei ? 3 : 2, gap, L.drei ? 250 : 300);
     L.fussY = H - 18;
+    bereichSetzen(L, y0 - 6, H - fuss + 4);
     return L;
+  }
+
+  /** Scrollbereich der Karten festlegen (y0 bis y1 sichtbar). */
+  function bereichSetzen(L, y0, y1) {
+    let unten = 0;
+    L.karten.forEach(function (k) {
+      unten = Math.max(unten, k.y + k.h);
+    });
+    L.bereich = { y0: y0, y1: y1 };
+    L.maxScroll = Math.max(0, Math.ceil(unten + 10 - y1));
+    L.kartenBasis = L.karten.map(function (k) {
+      return { x: k.x, y: k.y, w: k.w, h: k.h };
+    });
+  }
+  function imBereich(y) {
+    return !LL.bereich || (y >= LL.bereich.y0 && y <= LL.bereich.y1);
+  }
+  /** Scrollversatz anwenden: Karten und ihre SPIELEN-Knöpfe verschieben. */
+  function scrollSetzen(v) {
+    if (!LL || !LL.kartenBasis) {
+      return;
+    }
+    Z.scroll = Math.max(0, Math.min(LL.maxScroll || 0, v));
+    for (let i = 0; i < N; i++) {
+      const b = LL.kartenBasis[i];
+      LL.karten[i].y = b.y - Z.scroll;
+      const kb = spielKnoepfe[i];
+      if (kb) {
+        const t = kartenTeile(LL.karten[i]);
+        kb.setze(t.knopf.x, t.knopf.y, t.knopf.w, t.knopf.h);
+      }
+    }
+  }
+  function fokusZeigen() {
+    if (!LL || Z.fokus < 0 || !LL.kartenBasis) {
+      return;
+    }
+    const b = LL.kartenBasis[Z.fokus];
+    if (b.y - Z.scroll < LL.bereich.y0) {
+      scrollSetzen(b.y - LL.bereich.y0 - 6);
+    } else if (b.y + b.h - Z.scroll > LL.bereich.y1) {
+      scrollSetzen(b.y + b.h - LL.bereich.y1 + 6);
+    }
+  }
+  try {
+    window.addEventListener('wheel', function (e) {
+      if (typeof szene === 'undefined' || szene !== szeneObj || Z.ov !== 'KEINS' || !LL || !LL.maxScroll || Fenster.offen()) {
+        return;
+      }
+      SC.v = 0;
+      scrollSetzen(Z.scroll + e.deltaY * (e.deltaMode === 1 ? 30 : 1) * 1.1);
+    }, { passive: true });
+  } catch (e) {
+    // ohne Mausrad
   }
 
   /** Innere Bereiche einer Spielkarte: Vorschau, Text, Knopf. */
@@ -26535,6 +26598,7 @@ const SzeneLobby = (function () {
       LL.guth.w = Math.min(250, gx - 10 - LL.guth.x);
     }
     spielKnoepfe = [];
+    spielGruppe.leeren();
     for (let i = 0; i < N; i++) {
       const t = kartenTeile(LL.karten[i]);
       const id = AKTIV[i].id;
@@ -26547,8 +26611,9 @@ const SzeneLobby = (function () {
       }
       b.still = true;
       spielKnoepfe.push(b);
-      knoepfe.add(b);
+      spielGruppe.add(b);
     }
+    scrollSetzen(Z.scroll);
   }
 
   function starteSpiel(id) {
@@ -27271,8 +27336,36 @@ const SzeneLobby = (function () {
     }
     zeichneKopf(g);
     const zeit = Stil.sparmodus ? 1.2 : Z.zeit;
+    const B = LL.bereich;
+    g.save();
+    if (B && LL.maxScroll > 0) {
+      g.beginPath();
+      g.rect(0, B.y0, LL.W, B.y1 - B.y0);
+      g.clip();
+    }
     for (let i = 0; i < N; i++) {
+      const k = LL.karten[i];
+      if (B && (k.y > B.y1 + 20 || k.y + k.h < B.y0 - 20)) {
+        continue;
+      }
       zeichneSpielkarteLobby(g, i, zeit);
+    }
+    spielGruppe.zeichne(g, Z.zeit);
+    g.restore();
+    if (B && LL.maxScroll > 0) {
+      // Scroll-Leiste und Hinweis, dass es weitergeht
+      const hh = B.y1 - B.y0;
+      const gesamt = hh + LL.maxScroll;
+      const lh = Math.max(40, hh * hh / gesamt);
+      const ly = B.y0 + (hh - lh) * (Z.scroll / LL.maxScroll);
+      g.fillStyle = 'rgba(255,220,150,0.18)';
+      g.fillRect(LL.W - 9, B.y0 + 4, 4, hh - 8);
+      g.fillStyle = 'rgba(255,220,150,0.75)';
+      g.fillRect(LL.W - 9, ly + 4, 4, lh - 8);
+      if (Z.scroll < LL.maxScroll - 4) {
+        const a = 0.55 + 0.35 * Math.sin(Z.zeit * 3);
+        text(g, '▼  MEHR SPIELE  ▼', titel(LL.hoch ? 15 : 13), C(255, 220, 150, Math.round(255 * a)), LL.W / 2, B.y1 - 4, 0);
+      }
     }
     knoepfe.zeichne(g, Z.zeit);
     // Fusszeile
@@ -27318,7 +27411,15 @@ const SzeneLobby = (function () {
       btnInstall.puls = Z.ersterBesuch && !Stil.sparmodus;
     }
     knoepfe.update(dt, Z.mx, Z.my, aktiv);
+    spielGruppe.update(dt, Z.mx, Z.my, aktiv && imBereich(Z.my));
     ovKnoepfe.update(dt, Z.mx, Z.my, true);
+    if (Math.abs(SC.v) > 5 && SC.start < 0) {
+      scrollSetzen(Z.scroll + SC.v * dt);
+      SC.v *= Math.pow(0.04, dt);
+      if (Z.scroll <= 0 || Z.scroll >= LL.maxScroll) {
+        SC.v = 0;
+      }
+    }
     if (Z.optionen) {
       Z.optionen.update(dt, Z.mx, Z.my);
     }
@@ -27329,6 +27430,9 @@ const SzeneLobby = (function () {
     return x >= G2.x && x <= G2.x + G2.w && y >= G2.y && y <= G2.y + G2.h;
   }
   function kartenTreffer(x, y) {
+    if (!imBereich(y)) {
+      return -1;
+    }
     for (let i = 0; i < N; i++) {
       const k = LL.karten[i];
       if (x >= k.x && x <= k.x + k.w && y >= k.y && y <= k.y + k.h) {
@@ -27467,6 +27571,17 @@ const SzeneLobby = (function () {
       if (knoepfe.runter(x, y)) {
         return;
       }
+      if (LL.maxScroll > 0 && imBereich(y)) {
+        SC.start = y;
+        SC.startScroll = Z.scroll;
+        SC.zieht = false;
+        SC.v = 0;
+        SC.letztY = y;
+        SC.letztT = performance.now();
+      }
+      if (imBereich(y) && spielGruppe.runter(x, y)) {
+        return;
+      }
       if (aufGuthaben(x, y)) {
         klang.spiele('KNOPF');
         if (Waehrung.verfuegbar()) {
@@ -27483,18 +27598,40 @@ const SzeneLobby = (function () {
         Z.mx = x;
         Z.my = y;
       }
+      if (gedrueckt && SC.start >= 0) {
+        if (!SC.zieht && Math.abs(y - SC.start) > 10) {
+          // Ziehen statt Antippen: gedrückte Karte/Knopf loslassen
+          SC.zieht = true;
+          Z.gedrueckt = -1;
+          spielGruppe.abbruch();
+        }
+        if (SC.zieht) {
+          const jetzt = performance.now();
+          const dtz = Math.max(1, jetzt - SC.letztT) / 1000;
+          SC.v = SC.v * 0.5 + (SC.letztY - y) / dtz * 0.5;
+          SC.letztY = y;
+          SC.letztT = jetzt;
+          scrollSetzen(SC.startScroll + (SC.start - y));
+        }
+      }
       if (maus && Z.fokus >= 0 && kartenTreffer(x, y) >= 0) {
         Z.fokus = -1;
       }
     },
     hoch: function (x, y, maus) {
+      const gezogen = SC.zieht;
+      SC.start = -1;
+      SC.zieht = false;
+      if (!gezogen) {
+        SC.v = 0;
+      }
       if (Z.ov !== 'KEINS') {
         ovKnoepfe.hoch(x, y, klang);
       } else if (knoepfe.gedrueckt) {
-        const b = knoepfe.gedrueckt;
-        const spiel = spielKnoepfe.indexOf(b) >= 0;
-        knoepfe.hoch(x, y, spiel ? null : klang);
-      } else if (Z.gedrueckt >= 0) {
+        knoepfe.hoch(x, y, klang);
+      } else if (spielGruppe.gedrueckt) {
+        spielGruppe.hoch(x, y, null);
+      } else if (Z.gedrueckt >= 0 && !gezogen) {
         const i = Z.gedrueckt;
         Z.gedrueckt = -1;
         if (kartenTreffer(x, y) === i) {
@@ -27508,6 +27645,9 @@ const SzeneLobby = (function () {
     },
     abbruch: function () {
       knoepfe.abbruch();
+      spielGruppe.abbruch();
+      SC.start = -1;
+      SC.zieht = false;
       ovKnoepfe.abbruch();
       Z.gedrueckt = -1;
       Z.mx = Z.my = -1;
@@ -27536,10 +27676,12 @@ const SzeneLobby = (function () {
         }
       } else if (code === vor || code === 'Tab') {
         Z.fokus = (Z.fokus + 1) % N;
+        fokusZeigen();
         klang.spiele('KNOPF', { gain: 0.6 });
         e.preventDefault();
       } else if (code === zurueckT) {
         Z.fokus = (Z.fokus + N - 1) % N;
+        fokusZeigen();
         klang.spiele('KNOPF', { gain: 0.6 });
       } else if (code === 'Enter' || code === 'Space' || code === 'NumpadEnter') {
         starteSpiel(AKTIV[Math.max(0, Z.fokus)].id);
@@ -28721,7 +28863,7 @@ const AdminPanel = (function () {
       + '<label class="ad-feld"><span>Werbe-Aufladen</span><select class="ad-w-an">' + opt('0', 'Aus', w.an ? '1' : '0') + opt('1', 'An', w.an ? '1' : '0') + '</select></label>'
       + '<label class="ad-feld"><span>Normales Aufladen daneben</span><select class="ad-w-nur">' + opt('0', 'Weiter erlaubt', w.nurWerbung ? '1' : '0') + opt('1', 'Nur noch per Werbung', w.nurWerbung ? '1' : '0') + '</select></label>'
       + '<label class="ad-feld"><span>Anbieter</span><select class="ad-w-anb">' + opt('warten', 'Nur Pause (ohne Einnahmen)', w.anbieter) + opt('eigen', 'Eigene Werbung (Bild/Link)', w.anbieter)
-        + opt('adsense', 'Google AdSense (Spiele-Werbung)', w.anbieter) + opt('monetag', 'Monetag (Rewarded)', w.anbieter) + opt('gam', 'Google Ad Manager', w.anbieter) + '</select></label>'
+        + opt('applixir', 'AppLixir (Belohnungs-Video)', w.anbieter) + opt('adsense', 'Google AdSense (Spiele-Werbung)', w.anbieter) + opt('monetag', 'Monetag (Rewarded)', w.anbieter) + opt('gam', 'Google Ad Manager', w.anbieter) + '</select></label>'
       + '<label class="ad-feld"><span>Wartezeit zwischen Spots (Sekunden)</span><input class="ad-w-sperre" inputmode="numeric" value="' + (w.sperre === undefined ? 60 : w.sperre) + '"></label>'
       + '<label class="ad-feld"><span>Spots je Spieler und Tag (0 = unbegrenzt)</span><input class="ad-w-tag" inputmode="numeric" value="' + (w.proTag === undefined ? 30 : w.proTag) + '"></label>'
       + '<label class="ad-feld"><span>Kurze Pause/Werbung: Sekunden</span><input class="ad-w-ks" inputmode="numeric" value="' + (w.kurzSek || 10) + '"></label>'
@@ -28731,13 +28873,14 @@ const AdminPanel = (function () {
       + '<label class="ad-feld"><span>Werbenetzwerk: Guthaben je Spot (€)</span><input class="ad-w-bel" inputmode="decimal" value="' + centText(w.belohnung || 5000) + '"></label>'
       + '<label class="ad-feld"><span>AdSense-Publisher-ID (ca-pub-…)</span><input class="ad-w-as" value="' + htmlSicher(w.adsense || '') + '" placeholder="ca-pub-1234567890123456"></label>'
       + '<label class="ad-feld"><span>AdSense-Test-Modus (Test-Spots, kein Geld)</span><select class="ad-w-test">' + opt('0', 'Aus', w.test ? '1' : '0') + opt('1', 'An', w.test ? '1' : '0') + '</select></label>'
+      + '<label class="ad-feld"><span>AppLixir-API-Key (Dashboard → Sites)</span><input class="ad-w-ax" value="' + htmlSicher(w.applixir || '') + '" placeholder="xxxx-xxxx-xxxx-xxxx"></label>'
       + '<label class="ad-feld"><span>Monetag-Zonen-ID</span><input class="ad-w-mt" inputmode="numeric" value="' + htmlSicher(w.monetag || '') + '" placeholder="1234567"></label>'
       + '<label class="ad-feld"><span>Ad-Manager-Anzeigenblock (z. B. /1234567/belohnung)</span><input class="ad-w-unit" value="' + htmlSicher(w.adUnit || '') + '" placeholder="/Netzwerk-Code/Anzeigenblock"></label>'
       + '<label class="ad-feld"><span>Werbenetzwerk liefert keinen Spot</span><select class="ad-w-ers">' + opt('1', 'Pause als Ersatz', w.ersatz === false ? '0' : '1') + opt('0', 'Kein Guthaben', w.ersatz === false ? '0' : '1') + '</select></label>'
       + '<label class="ad-feld"><span>Eigene Werbung: Bild-Adresse (https://…)</span><input class="ad-w-bild" value="' + htmlSicher(w.bild || '') + '"></label>'
       + '<label class="ad-feld"><span>Eigene Werbung: Link (https://…)</span><input class="ad-w-link" value="' + htmlSicher(w.link || '') + '"></label>'
       + '<label class="ad-feld"><span>Eigene Werbung: Text</span><input class="ad-w-text" maxlength="200" value="' + htmlSicher(w.text || '') + '"></label>'
-      + '</div><p class="ad-klein"><b>Schnellster Weg zu echter Werbung:</b> AdSense-Konto anlegen, Seite hinzufügen, Publisher-ID (ca-pub-…) hier eintragen, Anbieter „Google AdSense“ wählen. Mit Test-Modus „An“ erscheinen sofort Test-Spots (ohne Einnahmen); nach der Freigabe durch Google Test-Modus ausschalten. Alternativ Monetag: Zone „Rewarded Interstitial“ anlegen, Zonen-ID eintragen. '
+      + '</div><p class="ad-klein"><b>AppLixir:</b> Konto auf applixir.com anlegen, unter „Sites“ die genaue Adresse der Spielhalle eintragen, den API-Key hier eintragen, Anbieter „AppLixir“ wählen. Die ads.txt aus dem Dashboard muss im Hauptverzeichnis der Domain liegen. <b>Oder:</b> AdSense-Konto anlegen, Seite hinzufügen, Publisher-ID (ca-pub-…) hier eintragen, Anbieter „Google AdSense“ wählen. Mit Test-Modus „An“ erscheinen sofort Test-Spots (ohne Einnahmen); nach der Freigabe durch Google Test-Modus ausschalten. Alternativ Monetag: Zone „Rewarded Interstitial“ anlegen, Zonen-ID eintragen. '
       + 'In der EU ist ein Einwilligungs-Banner (CMP) nötig; bitte die Regeln des Netzwerks zu Casino-ähnlichen Inhalten prüfen. Die Pausen laufen nur, solange die Seite sichtbar ist.</p></div>';
   }
   function einstellungenHtml() {
@@ -29076,7 +29219,7 @@ const AdminPanel = (function () {
         e.werbung = {
           an: wv('.ad-w-an') === '1', nurWerbung: wv('.ad-w-nur') === '1', belohnung: geldEuro(wv('.ad-w-bel')) || 500,
           sperre: Number(wv('.ad-w-sperre')) || 0, proTag: Number(wv('.ad-w-tag')) || 0, anbieter: wv('.ad-w-anb'), adUnit: wv('.ad-w-unit'),
-          adsense: wv('.ad-w-as'), test: wv('.ad-w-test') === '1', monetag: wv('.ad-w-mt'),
+          adsense: wv('.ad-w-as'), test: wv('.ad-w-test') === '1', monetag: wv('.ad-w-mt'), applixir: wv('.ad-w-ax'),
           ersatz: wv('.ad-w-ers') !== '0', kurzSek: Number(wv('.ad-w-ks')) || 10, kurzBel: geldEuro(wv('.ad-w-kb')) || 0, langSek: Number(wv('.ad-w-ls')) || 20,
           langBel: geldEuro(wv('.ad-w-lb')) || 0, bild: wv('.ad-w-bild'), link: wv('.ad-w-link'), text: wv('.ad-w-text')
         };
@@ -29874,6 +30017,7 @@ const Rangliste = (function () {
 // bekommt dafür Spielgeld. Anbieter (vom Admin gewählt):
 //   adsense – Google AdSense für Browserspiele (Ad Placement API, adBreak type 'reward'); mit Test-Modus
 //   gam     – Google Ad Manager, Belohnungs-Anzeige („rewarded“) über die offizielle GPT-Bibliothek
+//   applixir – AppLixir, Belohnungs-Video für Browserspiele (API-Key aus dem AppLixir-Dashboard)
 //   monetag – Monetag „Rewarded Interstitial“ (SDK mit Zonen-ID)
 //   eigen   – eigene Werbung des Admins (Bild + Link + Text), kurz oder lang
 //   warten  – keine echte Werbung, nur eine kurze oder lange Pause mit Countdown
@@ -30014,6 +30158,97 @@ const Werbung = (function () {
           }
         }
       });
+    });
+  }
+
+  // ---------------------------------------------------------------- Anbieter: AppLixir (Belohnungs-Video)
+  // Offizielle Einbindung (HTML5 v6): Skript laden, Container-Div, initializeAndOpenPlayer(options);
+  // Belohnung nur beim Status „complete“.
+  let applixirGeladen = null;
+  function applixirLaden() {
+    if (typeof window.initializeAndOpenPlayer === 'function') {
+      return Promise.resolve();
+    }
+    if (applixirGeladen) {
+      return applixirGeladen;
+    }
+    applixirGeladen = new Promise(function (ok, fehler) {
+      const s = document.createElement('script');
+      s.src = 'https://cdn.applixir.com/applixir.app.v6.1.0.js';
+      s.onload = function () {
+        if (typeof window.initializeAndOpenPlayer === 'function') {
+          ok();
+        } else {
+          applixirGeladen = null;
+          fehler(new Error('Die Werbung lädt nicht.'));
+        }
+      };
+      s.onerror = function () {
+        applixirGeladen = null;
+        fehler(new Error('Die Werbung konnte nicht geladen werden (Werbeblocker?).'));
+      };
+      document.head.appendChild(s);
+      setTimeout(function () {
+        if (typeof window.initializeAndOpenPlayer !== 'function') {
+          applixirGeladen = null;
+          fehler(new Error('Die Werbung lädt nicht.'));
+        }
+      }, 12000);
+    });
+    return applixirGeladen;
+  }
+  async function applixirZeigen() {
+    const key = E().applixir;
+    if (!key) {
+      return { ok: false, grund: 'Kein AppLixir-API-Key eingetragen.' };
+    }
+    await applixirLaden();
+    return new Promise(function (fertig) {
+      // Vollbild-Ebene mit dem Container, in den AppLixir den Player setzt
+      const ebene = document.createElement('div');
+      ebene.className = 'wb-applixir';
+      ebene.innerHTML = '<div id="applixir-ad-container"></div>';
+      document.body.appendChild(ebene);
+      let fertigGemeldet = false, gestartet = false, belohnt = false;
+      const ende = function (r) {
+        if (fertigGemeldet) {
+          return;
+        }
+        fertigGemeldet = true;
+        clearTimeout(uhr);
+        setTimeout(function () {
+          ebene.remove();
+        }, 50);
+        fertig(r);
+      };
+      const uhr = setTimeout(function () {
+        if (!gestartet) {
+          ende({ ok: false, grund: 'Gerade ist keine Werbung verfügbar.' });
+        }
+      }, 20000);
+      const p = Spieler.profil();
+      try {
+        window.initializeAndOpenPlayer({
+          apiKey: key,
+          injectionElementId: 'applixir-ad-container',
+          userId: p ? String(p.id || '').slice(0, 60) : '',
+          adStatusCallbackFn: function (status) {
+            const t = status && status.type;
+            if (t === 'loaded' || t === 'started') {
+              gestartet = true;
+            } else if (t === 'complete') {
+              belohnt = true;
+            } else if (t === 'allAdsCompleted' || t === 'skipped' || t === 'manuallyEnded' || t === 'consentDeclined') {
+              ende(belohnt ? { ok: true } : { ok: false, grund: t === 'consentDeclined' ? 'Ohne Zustimmung keine Werbung.' : 'Der Spot wurde vor dem Ende geschlossen.' });
+            }
+          },
+          adErrorCallbackFn: function () {
+            ende(belohnt ? { ok: true } : { ok: false, grund: 'Gerade ist keine Werbung verfügbar.' });
+          }
+        });
+      } catch (err) {
+        ende({ ok: false, grund: 'Die Werbung lädt nicht.' });
+      }
     });
   }
 
@@ -30215,6 +30450,8 @@ const Werbung = (function () {
         r = await adsenseZeigen();
       } else if (e.anbieter === 'monetag') {
         r = await monetagZeigen();
+      } else if (e.anbieter === 'applixir') {
+        r = await applixirZeigen();
       } else if (e.anbieter === 'eigen') {
         r = await pauseZeigen(sek, true, 'Werbung');
       } else {
