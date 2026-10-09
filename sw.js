@@ -1,6 +1,6 @@
 // Turmspitze – Service Worker: speichert das Spiel fuer den Offline-Betrieb.
-// Strategie: sofort aus dem Speicher laden, im Hintergrund aktualisieren.
-const VERSION = 'turmspitze-202610081154';
+// Strategie: die Seite zuerst aus dem Netz (Updates sofort), Bilder usw. aus dem Speicher; offline alles aus dem Speicher.
+const VERSION = 'turmspitze-202610081217';
 const DATEIEN = [
   './',
   './index.html',
@@ -50,6 +50,25 @@ self.addEventListener('fetch', function (e) {
       return antwort;
     }).catch(function () {
       return caches.match(req, { ignoreSearch: true });
+    }));
+    return;
+  }
+  // Versionsdatei nie aus dem Speicher
+  if (/version\.json$/.test(new URL(req.url).pathname)) {
+    return;
+  }
+  // Die Seite selbst zuerst aus dem Netz holen (damit Updates sofort bei allen ankommen), offline aus dem Speicher
+  if (req.mode === 'navigate' || /\/(index\.html)?$/.test(new URL(req.url).pathname)) {
+    e.respondWith(fetch(req, { cache: 'no-store' }).then(function (antwort) {
+      if (antwort && antwort.ok) {
+        const kopie = antwort.clone();
+        caches.open(VERSION).then(function (cache) {
+          cache.put('./index.html', kopie);
+        });
+      }
+      return antwort;
+    }).catch(function () {
+      return caches.match('./index.html');
     }));
     return;
   }

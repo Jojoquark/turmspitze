@@ -1476,6 +1476,35 @@ input, textarea, select {
 .rl-fehler { color: #ffb0b0; font-size: 13px; }
 .rl-aus { display: flex; gap: 8px; align-items: center; margin-top: 12px; font-size: 13px; }
 .rl-klein { font-size: 11px; opacity: 0.6; margin: 6px 0 0; }
+/* Guthaben gegen Werbung */
+.wb-auf { margin: 6px 0 12px; }
+.wb-knopf { width: 100%; display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 3px solid #2b1606; border-radius: 16px; background: linear-gradient(180deg, #ffd56a, #f59e0b); color: #2b1606; text-align: left; box-shadow: 0 4px 0 #2b1606; cursor: pointer; }
+.wb-knopf:disabled { filter: grayscale(0.7); opacity: 0.6; cursor: default; }
+.wb-knopf b { display: block; font: 400 20px "Lilita One", sans-serif; }
+.wb-knopf small { display: block; font: 800 13px Nunito, sans-serif; }
+.wb-icon { flex: none; width: 42px; height: 42px; border-radius: 50%; background: #2b1606; color: #ffd56a; display: grid; place-items: center; font-size: 18px; padding-left: 3px; }
+.wb-info { margin: 6px 2px 0; font-size: 12px; opacity: 0.8; }
+.wb-pause { position: fixed; inset: 0; z-index: 9000; display: grid; place-items: center; padding: 16px; background: rgba(0, 0, 0, 0.82); }
+.wb-box { width: min(440px, 100%); border-radius: 18px; overflow: hidden; background: #15161a; color: #fff; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6); }
+.wb-kopf { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; font: 800 13px Nunito, sans-serif; text-transform: uppercase; letter-spacing: 0.08em; color: #b9bdc8; }
+.wb-zeit { min-width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: #ffd56a; color: #2b1606; font: 400 18px "Lilita One", sans-serif; }
+.wb-eigen { display: block; color: inherit; text-decoration: none; }
+.wb-eigen img { display: block; width: 100%; max-height: 50vh; object-fit: contain; background: #000; }
+.wb-eigen p { margin: 10px 14px; }
+.wb-platz { height: 220px; display: grid; place-items: center; align-content: center; gap: 10px; background: radial-gradient(circle at 50% 40%, #3a2a70, #15161a); }
+.wb-platz p { margin: 0; font: 400 26px "Lilita One", sans-serif; color: #ffd56a; }
+.wb-sonne { width: 70px; height: 70px; border-radius: 50%; background: radial-gradient(circle, #fff3a0, #f5b51c 60%, #a86200); box-shadow: 0 0 40px #f5b51c; animation: wbDreh 4s linear infinite; }
+@keyframes wbDreh { 50% { transform: scale(1.12); } }
+.wb-balken { height: 6px; background: rgba(255, 255, 255, 0.1); }
+.wb-balken i { display: block; height: 100%; width: 0; background: #ffd56a; transition: width 1s linear; }
+.wb-knoepfe { display: grid; grid-template-columns: 1fr 1.4fr; gap: 8px; padding: 12px; }
+.wb-knoepfe button { height: 48px; border: 0; border-radius: 12px; font: 400 17px "Lilita One", sans-serif; color: #fff; background: #2c2e36; }
+.wb-fertig { background: linear-gradient(180deg, #5fe08d, #1f9b4a) !important; }
+.wb-fertig:disabled { opacity: 0.35; }
+.wb-fertig.puls { animation: slPuls 1s infinite; }
+.wb-auf .wb-knopf + .wb-knopf { margin-top: 8px; }
+.wb-knopf em { margin-left: auto; font: 400 22px "Lilita One", sans-serif; font-style: normal; color: #2b1606; white-space: nowrap; }
+.wb-knopf[data-s="lang"] { background: linear-gradient(180deg, #ffb35a, #ea6a0b); }
 /* ---------------------------------------------------------------- Taktikhandbuch (beide Roulettes) */
 .fenster.taktik { width: min(760px, 100%); background: linear-gradient(180deg, #13261a 0%, #0d1a12 100%); color: #f3f0e2; }
 .fenster.taktik .fenster-kopf h2 { color: #ffd76a; font-size: 24px; }
@@ -5731,12 +5760,29 @@ function zeichneSpielkarte(g, c, x, y, w, drehung, flip, aufl) {
 class GuthabenDialog {
   constructor(W, H, hoch, beiWahl, beiZu) {
     this.w = hoch ? 620 : 640;
-    this.h = 400;
+    const mitWerbung = Werbung.an();
+    this.h = mitWerbung ? 470 : 400;
     this.x = (W - this.w) / 2;
     this.y = hoch ? Math.max(120, (H - this.h) / 2 - 60) : (H - this.h) / 2;
     this.knoepfe = [];
     const k0 = kreditJetzt();
-    const bs = Aufladen.erlaubt() ? Aufladen.betraege() : [];
+    const bs = Aufladen.erlaubt() && !Werbung.nurWerbung() ? Aufladen.betraege() : [];
+    if (mitWerbung) {
+      const st = Werbung.status(k0);
+      const yW = this.y + (bs.length ? 270 : 170);
+      const stufen = Werbung.mitStufen() ? [['kurz', 'KURZ'], ['lang', 'LANG']] : [['netz', 'WERBUNG ANSEHEN']];
+      const bwW = (this.w - 80 - (stufen.length - 1) * 16) / stufen.length;
+      stufen.forEach(function (sw, i) {
+        const titel = st.bereit ? sw[1] + ' · +' + euroKurz(Werbung.belohnung(sw[0])) : (st.warten > 0 ? 'NOCH ' + st.warten + ' S' : 'HEUTE NICHT MEHR');
+        const wb = new Knopf(titel, this.x + 40 + i * (bwW + 16), yW, bwW, 64, i ? C(255, 140, 20) : C(255, 190, 60), function () {
+          beiZu();
+          Werbung.ansehen(beiWahl, sw[0]);
+        });
+        wb.schrift = stufen.length > 1 ? 22 : 24;
+        wb.aktiv = st.bereit;
+        this.knoepfe.push(wb);
+      }, this);
+    }
     const n = bs.length;
     const bw = n ? (this.w - 80 - (n - 1) * 16) / n : 0;
     for (let i = 0; i < n; i++) {
@@ -5761,7 +5807,7 @@ class GuthabenDialog {
     comicPanel(g, this.x, this.y, this.w, this.h, 30, C(255, 250, 232), C(255, 232, 170), 4.5, 10);
     glanzText(g, 'GUTHABEN AUFLADEN', titel(30), this.x + 34, this.y + 52, -1, WEISS, GELB, ORANGE, 3.5, -1);
     text(g, 'Aktuelles Guthaben: ' + euro(kredit), sans(16), KONTUR, this.x + 36, this.y + 96, -1);
-    text(g, Aufladen.erlaubt() ? 'Wähle, wie viel Spielgeld dazukommt. Es gilt für alle Spiele.' : Aufladen.grenzText(), sans(14), C(130, 80, 30), this.x + 36, this.y + 124, -1);
+    text(g, Aufladen.erlaubt() && !Werbung.nurWerbung() ? 'Wähle, wie viel Spielgeld dazukommt. Es gilt für alle Spiele.' : Aufladen.grenzText(), sans(14), C(130, 80, 30), this.x + 36, this.y + 124, -1);
     for (let i = 0; i < this.knoepfe.length && !ohneKnoepfe; i++) {
       this.knoepfe[i].zeichne(g, zeit);
     }
@@ -17838,7 +17884,8 @@ const HallenEinst = {
   standard: function () {
     return {
       startguthaben: 10000, aufladen: true, betraege: [1000, 2000, 5000, 10000], hoechst: 0, aus: {}, mitteilung: '', stand: 0,
-      gcAn: true, gcStandard: 0, gcQuoten: {}, turmKonf: null, maxEinsatz: {}
+      gcAn: true, gcStandard: 0, gcQuoten: {}, turmKonf: null, maxEinsatz: {}, neuladen: 0,
+      werbung: { an: true, nurWerbung: true, belohnung: 5000, sperre: 60, proTag: 30, anbieter: 'warten', adUnit: '', adsense: '', test: false, monetag: '', ersatz: true, kurzSek: 10, kurzBel: 2500, langSek: 20, langBel: 5000, bild: '', link: '', text: '' }
     };
   },
   /** Daten pruefen und auf sinnvolle Werte begrenzen (kommen ggf. aus dem Netz). */
@@ -17873,6 +17920,32 @@ const HallenEinst = {
     }
     s.mitteilung = typeof x.mitteilung === 'string' ? x.mitteilung.slice(0, 200) : '';
     s.stand = zahl(x.stand, 0, 9e15, 0);
+    // Aufladen mit Werbung
+    const wb = x.werbung && typeof x.werbung === 'object' ? x.werbung : {};
+    s.werbung = {
+      // Standard: Guthaben gibt es nur gegen Werbung
+      an: wb.an !== false,
+      nurWerbung: wb.nurWerbung !== false,
+      belohnung: zahl(wb.belohnung, 1, 100000000, 5000),
+      sperre: zahl(wb.sperre, 0, 86400, 60),
+      proTag: zahl(wb.proTag, 0, 1000, 30),
+      anbieter: ['adsense', 'gam', 'monetag', 'eigen', 'warten'].indexOf(wb.anbieter) >= 0 ? wb.anbieter : 'warten',
+      adUnit: typeof wb.adUnit === 'string' ? wb.adUnit.trim().slice(0, 200) : '',
+      adsense: typeof wb.adsense === 'string' && /^ca-pub-\d{6,20}$/.test(wb.adsense.trim()) ? wb.adsense.trim() : '',
+      test: wb.test === true,
+      monetag: typeof wb.monetag === 'string' && /^\d{3,12}$/.test(wb.monetag.trim()) ? wb.monetag.trim() : '',
+      ersatz: wb.ersatz !== false,
+      // zwei Längen für Pause/eigene Werbung: kurz und lang
+      kurzSek: zahl(wb.kurzSek, 3, 120, 10),
+      kurzBel: zahl(wb.kurzBel, 0, 100000000, 2500),
+      langSek: zahl(wb.langSek, 3, 180, 20),
+      langBel: zahl(wb.langBel, 0, 100000000, 5000),
+      bild: typeof wb.bild === 'string' && /^https:\/\//.test(wb.bild.trim()) ? wb.bild.trim().slice(0, 400) : '',
+      link: typeof wb.link === 'string' && /^https:\/\//.test(wb.link.trim()) ? wb.link.trim().slice(0, 400) : '',
+      text: typeof wb.text === 'string' ? wb.text.slice(0, 200) : ''
+    };
+    // vom Admin ausgelöstes Neuladen aller Geräte (Zeitstempel)
+    s.neuladen = zahl(x.neuladen, 0, 9e15, 0);
     // Goldchips: Auszahlungsquote als Anteil (0,30 bis 1,50); 0 = wie bei Euro
     const quote = function (v) {
       v = Number(v);
@@ -18497,6 +18570,7 @@ const Spieler = (function () {
     n.login = typeof p.login === 'string' ? p.login.slice(0, 12) : '';
     n.aufgeladen = Math.round(p.aufgeladen || 0);
     n.aufladungen = Math.round(p.aufladungen || 0);
+    n.wb = p.wb && typeof p.wb === 'object' ? { tag: String(p.wb.tag || '').slice(0, 10), n: Math.max(0, Math.round(p.wb.n || 0)), t: Math.max(0, Number(p.wb.t) || 0), ges: Math.max(0, Math.round(p.wb.ges || 0)) } : { tag: '', n: 0, t: 0, ges: 0 };
     n.erstellt = p.erstellt || jetzt();
     n.zuletzt = p.zuletzt || 0;
     if (p.offen) {
@@ -18690,7 +18764,7 @@ const Spieler = (function () {
     if (t - S.letzterAbruf > 12000) {
       abrufen(false);
     }
-    if (t - S.letzteEinst > 45000) {
+    if (t - S.letzteEinst > 25000) {
       einstellungenAbrufen();
     }
   }
@@ -18705,6 +18779,7 @@ const Spieler = (function () {
       if (e && HallenEinst.uebernehmen(e)) {
         melden();
       }
+      Aktualisierung.einstellungenGeprueft();
     } catch (e) {
       // spaeter erneut
     }
@@ -18713,7 +18788,7 @@ const Spieler = (function () {
   function uploadDaten() {
     const p = S.profil;
     return {
-      name: p.name, kredit: Math.max(0, Math.round(p.kredit)), stats: p.stats, aufgeladen: p.aufgeladen, aufladungen: p.aufladungen,
+      name: p.name, kredit: Math.max(0, Math.round(p.kredit)), stats: p.stats, aufgeladen: p.aufgeladen, aufladungen: p.aufladungen, wb: p.wb || null,
       chips: Math.max(0, Math.round(p.chips || 0)), statsGc: p.statsGc || {}, gcGehabt: !!p.gcGehabt, login: p.login || 'passwort',
       zuletzt: { '.sv': 'timestamp' }, spiel: (typeof szene !== 'undefined' && szene && szene.name) ? String(szene.name) : '',
       geraet: geraetText()
@@ -18839,6 +18914,7 @@ const Spieler = (function () {
           p.gcGehabt = server.gcGehabt;
           p.aufgeladen = server.aufgeladen;
           p.aufladungen = server.aufladungen;
+          p.wb = server.wb;
           p.erstellt = server.erstellt;
           if (p.login === '' && server.login) {
             p.login = server.login;
@@ -19349,8 +19425,11 @@ const Aufladen = {
     if (Waehrung.gc()) {
       return 'Goldchips gibt es nur vom Admin – aufladen kann man sie nicht.';
     }
+    if (Werbung.nurWerbung()) {
+      return 'Guthaben gibt es hier für das Ansehen von Werbung.';
+    }
     if (!HallenEinst.d.aufladen) {
-      return 'Aufladen ist gerade abgeschaltet. Frag den Admin.';
+      return Werbung.an() ? 'Guthaben gibt es hier für das Ansehen von Werbung.' : 'Aufladen ist gerade abgeschaltet. Frag den Admin.';
     }
     if (Spieler.gesperrt()) {
       return 'Dein Konto ist gesperrt.';
@@ -19458,7 +19537,10 @@ function aufladenFenster(beiNeu) {
   const k0 = kreditJetzt();
   const bs = Aufladen.betraege();
   let html = '<p class="auf-aktuell">Dein Guthaben: <b>' + euro(k0) + '</b></p>';
-  if (Aufladen.erlaubt()) {
+  if (Werbung.an()) {
+    html += Werbung.knopfHtml(k0);
+  }
+  if (Aufladen.erlaubt() && !Werbung.nurWerbung()) {
     html += '<div class="auf-knoepfe">' + bs.map(function (b, i) {
       const m = Aufladen.moeglich(b, k0);
       return '<button class="auf-knopf' + (i === bs.length - 1 ? ' gruen' : '') + '" data-b="' + b + '"' + (m <= 0 ? ' disabled' : '') + '>+'
@@ -19467,6 +19549,7 @@ function aufladenFenster(beiNeu) {
   }
   html += '<p class="auf-info">' + htmlSicher(Aufladen.grenzText()) + '</p>';
   const f = Fenster.oeffne({ titel: 'Guthaben aufladen', html: html, klasse: 'comic' });
+  Werbung.knopfBinden(f, beiNeu);
   qsa(f.el, '.auf-knopf').forEach(function (b) {
     b.addEventListener('click', function () {
       const neu = Aufladen.buchen(Number(b.getAttribute('data-b')), kreditJetzt());
@@ -20032,6 +20115,140 @@ function turmKonfAnwenden() {
   }
   G.konfEur = null;
 }
+
+// ------------------------------------------------------------------ Updates für alle Geräte
+// Die Seite fragt regelmäßig die Versionsdatei ab. Gibt es eine neue Version (oder hat der Admin
+// „Alle Geräte neu laden“ gedrückt), lädt sie neu – sofort, wenn gerade nichts läuft, sonst nach der
+// laufenden Runde (spätestens nach 3 Minuten; offene Gewinne sind gespeichert und werden gutgeschrieben).
+const BUILD_VERSION = '20261008121758';
+const Aktualisierung = (function () {
+  const geladen = Date.now();
+  let grund = '', seit = 0, uhr = 0, letzte = 0, selbst = 0;
+  function ruhig() {
+    try {
+      if (Fenster.offen()) {
+        return false;
+      }
+      if (typeof szene === 'undefined' || !szene || szene === SzeneLobby) {
+        return true;
+      }
+      if (szene.ruhig) {
+        return !!szene.ruhig();
+      }
+    } catch (e) {
+      return true;
+    }
+    return false;
+  }
+  function neuLaden() {
+    try {
+      Kasse.speichern();
+      Konto.speichern();
+    } catch (e) {
+      // trotzdem neu laden
+    }
+    try {
+      if (navigator.serviceWorker && navigator.serviceWorker.getRegistration) {
+        navigator.serviceWorker.getRegistration().then(function (r) {
+          if (r) {
+            r.update();
+          }
+        });
+      }
+    } catch (e) {
+      // egal
+    }
+    setTimeout(function () {
+      const u = new URL(window.location.href);
+      u.searchParams.set('v', String(Date.now()));
+      window.location.replace(u.toString());
+    }, 400);
+  }
+  function anmelden(g) {
+    if (grund) {
+      return;
+    }
+    grund = g;
+    seit = Date.now();
+    Hinweis.zeige(g === 'admin' ? 'Der Admin hat neue Einstellungen veröffentlicht – die Spielhalle lädt gleich neu.' : 'Neue Version verfügbar – die Spielhalle lädt gleich neu.', 'gut', 5000);
+    pruefeNeuladen();
+  }
+  function pruefeNeuladen() {
+    if (!grund) {
+      return;
+    }
+    if (ruhig() || Date.now() - seit > 180000) {
+      neuLaden();
+    }
+  }
+  async function versionPruefen() {
+    if (BUILD_VERSION === 'dev' || location.protocol === 'file:') {
+      return;
+    }
+    if (Date.now() - letzte < 20000) {
+      return;
+    }
+    letzte = Date.now();
+    try {
+      const a = await fetch('./version.json?t=' + Date.now(), { cache: 'no-store' });
+      if (!a.ok) {
+        return;
+      }
+      const d = await a.json();
+      if (d && d.version && d.version !== BUILD_VERSION) {
+        // Schutz vor Endlosschleifen (z. B. wenn der Server kurz noch die alte Seite liefert)
+        try {
+          const v = JSON.parse(window.sessionStorage.getItem('casino.neuladen') || 'null');
+          if (v && v.ziel === d.version && Date.now() - v.t < 600000) {
+            return;
+          }
+          window.sessionStorage.setItem('casino.neuladen', JSON.stringify({ ziel: d.version, t: Date.now() }));
+        } catch (e) {
+          // ohne Speicher trotzdem einmal neu laden
+        }
+        anmelden('version');
+      }
+    } catch (e) {
+      // offline
+    }
+  }
+  function start() {
+    clearInterval(uhr);
+    uhr = setInterval(function () {
+      versionPruefen();
+      pruefeNeuladen();
+    }, 15000);
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden) {
+        letzte = 0;
+        versionPruefen();
+      }
+    });
+    window.addEventListener('focus', function () {
+      versionPruefen();
+    });
+    setTimeout(versionPruefen, 4000);
+  }
+  return {
+    start: start,
+    version: BUILD_VERSION,
+    /** nach jedem Abruf der Halleneinstellungen */
+    einstellungenGeprueft: function () {
+      const n = HallenEinst.d && HallenEinst.d.neuladen;
+      if (n > geladen && n !== selbst) {
+        anmelden('admin');
+      }
+    },
+    pruefeNeuladen: pruefeNeuladen,
+    /** Der Admin hat das Neuladen auf diesem Gerät selbst ausgelöst – hier nicht neu laden. */
+    selbstAusgeloest: function (ts) {
+      selbst = ts;
+    },
+    test: function () {
+      return { grund: grund, geladen: geladen };
+    }
+  };
+})();
 // ---- stakeui.js
 // ====================================================================================
 // stakeui.js – gemeinsame Bedienelemente der Originals (Mines, Plinko, Chicken):
@@ -26295,6 +26512,10 @@ const SzeneLobby = (function () {
     if (Waehrung.gc()) {
       return 'GOLDCHIPS AKTIV';
     }
+    if (Werbung.an() && (Werbung.nurWerbung() || !Aufladen.erlaubt())) {
+      const wbMax = Werbung.mitStufen() ? Math.max(Werbung.belohnung('kurz'), Werbung.belohnung('lang')) : Werbung.belohnung('netz');
+      return 'WERBUNG = BIS +' + euroKurz(wbMax).toUpperCase();
+    }
     if (!Aufladen.erlaubt()) {
       return 'GESPERRT';
     }
@@ -27093,6 +27314,9 @@ const SzeneLobby = (function () {
     name: 'lobby',
     betreten: function () {
       AppPopup.planen();
+      setTimeout(function () {
+        Aktualisierung.pruefeNeuladen();
+      }, 300);
       Z.kreditAnzeige = Konto.kredit;
       Z.ov = 'KEINS';
       Z.gedrueckt = -1;
@@ -27984,10 +28208,34 @@ const AdminPanel = (function () {
     }
     return x;
   }
+  /** Ranglisten-Einträge entfernen (sie entstehen beim nächsten Abgleich der Geräte neu). ids leer = alle. */
+  async function ranglisteLeeren(ids) {
+    if (!Spieler.online()) {
+      return;
+    }
+    try {
+      let liste = ids;
+      if (!liste) {
+        const d = await Online.db(null, 'GET', 'rangliste');
+        liste = Object.keys(d || {});
+      }
+      if (!liste.length) {
+        return;
+      }
+      const patch = {};
+      liste.forEach(function (id) {
+        patch[id] = null;
+      });
+      await Online.db(A.sitzung, 'PATCH', 'rangliste', patch);
+    } catch (e) {
+      // Rangliste evtl. noch nicht freigeschaltet
+    }
+  }
   async function statsReset(id, w) {
     w = w || 'alle';
     if (Spieler.online()) {
       await Online.db(A.sitzung, 'PATCH', 'spieler/' + id, resetPatch(w, ''));
+      await ranglisteLeeren([id]);
     } else {
       const L = Spieler.lokal();
       lokalLeeren(L.liste[id], w);
@@ -28015,6 +28263,7 @@ const AdminPanel = (function () {
           }
         }
       }
+      await ranglisteLeeren(null);
     } else {
       const L = Spieler.lokal();
       Object.keys(L.liste).forEach(function (id) {
@@ -28025,6 +28274,42 @@ const AdminPanel = (function () {
     }
     if (w !== 'gc') {
       internStatistikReset();
+    }
+  }
+  /** Guthaben ALLER Spieler setzen: Euro auf das Startguthaben (oder betrag), Goldchips auf 0 (oder betrag). */
+  async function alleGuthabenReset(w, betrag) {
+    const ziele = w === 'alle' ? ['eur', 'gc'] : [w];
+    if (Spieler.online()) {
+      const patch = {};
+      A.daten.forEach(function (p) {
+        ziele.forEach(function (wz) {
+          const b = betrag >= 0 ? betrag : (wz === 'eur' ? HallenEinst.d.startguthaben : 0);
+          patch[p.id + '/buchungen/' + neueId()] = { art: 'setzen', betrag: Math.round(b), waehrung: wz, zeit: { '.sv': 'timestamp' } };
+          // Stand in der Datenbank sofort mitziehen (Admin-Übersicht); die Geräte übernehmen die Buchung beim nächsten Abgleich
+          patch[p.id + '/' + (wz === 'gc' ? 'chips' : 'kredit')] = Math.round(b);
+        });
+      });
+      if (Object.keys(patch).length) {
+        try {
+          await Online.db(A.sitzung, 'PATCH', 'spieler', patch);
+        } catch (e) {
+          for (let i = 0; i < A.daten.length; i++) {
+            for (let k = 0; k < ziele.length; k++) {
+              const b = betrag >= 0 ? betrag : (ziele[k] === 'eur' ? HallenEinst.d.startguthaben : 0);
+              await guthaben(A.daten[i].id, 'setzen', b, ziele[k]);
+            }
+          }
+        }
+      }
+      await ranglisteLeeren(null);
+    } else {
+      const L = Spieler.lokal();
+      for (const id of Object.keys(L.liste)) {
+        for (let k = 0; k < ziele.length; k++) {
+          const b = betrag >= 0 ? betrag : (ziele[k] === 'eur' ? HallenEinst.d.startguthaben : 0);
+          await guthaben(id, 'setzen', b, ziele[k]);
+        }
+      }
     }
   }
   async function sperren(id, an) {
@@ -28069,7 +28354,10 @@ const AdminPanel = (function () {
     }
   }
   async function einstellungenSpeichern(e) {
-    const neu = HallenEinst.bereinigt(Object.assign({}, e, { stand: Date.now() }));
+    // Jede Änderung lässt alle anderen Geräte neu laden, damit Quoten, Grenzen usw. überall sofort gelten
+    const ts = Date.now();
+    Aktualisierung.selbstAusgeloest(ts);
+    const neu = HallenEinst.bereinigt(Object.assign({}, e, { stand: ts, neuladen: ts }));
     if (Spieler.online()) {
       await Online.db(A.sitzung, 'PUT', 'einstellungen', neu);
     }
@@ -28258,7 +28546,12 @@ const AdminPanel = (function () {
       + 'Guthaben und Goldchips bleiben unverändert. ' + (Spieler.online() ? 'Geräte, die gerade offline sind, ziehen beim nächsten Start nach.' : '') + '</p>'
       + '<div class="ad-reihe"><select class="ad-reset-w">' + [['alle', 'Euro und Goldchips'], ['eur', 'Nur Euro'], ['gc', 'Nur Goldchips']].map(function (o) {
         return '<option value="' + o[0] + '"' + (A.resetW === o[0] ? ' selected' : '') + '>' + o[1] + '</option>';
-      }).join('') + '</select><button class="ad-knopf rot ad-reset-alle">Alle Statistiken zurücksetzen</button></div>';
+      }).join('') + '</select><button class="ad-knopf rot ad-reset-alle">Alle Statistiken zurücksetzen</button></div>'
+      + '<p class="ad-klein">Die öffentliche Rangliste wird dabei ebenfalls geleert und füllt sich mit den neuen Werten wieder auf.</p>';
+    h += '<h3>Guthaben aller Spieler zurücksetzen</h3><p class="ad-klein">Setzt das Guthaben jedes Spielers auf einen Betrag – leer lassen = Euro auf das Startguthaben (' + centText(HallenEinst.d.startguthaben) + ' €), Goldchips auf 0. '
+      + 'Statistiken bleiben. ' + (Spieler.online() ? 'Geräte übernehmen den neuen Stand beim nächsten Abgleich (spätestens nach dem nächsten Start).' : '') + '</p>'
+      + '<div class="ad-reihe"><select class="ad-gr-w"><option value="eur">Euro</option><option value="gc">Goldchips</option><option value="alle">Euro und Goldchips</option></select>'
+      + '<input class="ad-gr-b" inputmode="decimal" placeholder="Betrag (leer = Standard)" style="max-width:190px"><button class="ad-knopf rot ad-gr-alle">Guthaben ALLER zurücksetzen</button></div>';
     return h;
   }
   function spielerHtml() {
@@ -28346,6 +28639,34 @@ const AdminPanel = (function () {
     const c = centAusText(text);
     return isNaN(c) ? NaN : c;
   }
+  function werbungHtml(e) {
+    const w = e.werbung || {};
+    const opt = function (v, t, a) {
+      return '<option value="' + v + '"' + (a === v ? ' selected' : '') + '>' + t + '</option>';
+    };
+    return '<div class="ad-feld ad-werbung"><span>Guthaben gegen Werbung</span><div class="ad-gitter">'
+      + '<label class="ad-feld"><span>Werbe-Aufladen</span><select class="ad-w-an">' + opt('0', 'Aus', w.an ? '1' : '0') + opt('1', 'An', w.an ? '1' : '0') + '</select></label>'
+      + '<label class="ad-feld"><span>Normales Aufladen daneben</span><select class="ad-w-nur">' + opt('0', 'Weiter erlaubt', w.nurWerbung ? '1' : '0') + opt('1', 'Nur noch per Werbung', w.nurWerbung ? '1' : '0') + '</select></label>'
+      + '<label class="ad-feld"><span>Anbieter</span><select class="ad-w-anb">' + opt('warten', 'Nur Pause (ohne Einnahmen)', w.anbieter) + opt('eigen', 'Eigene Werbung (Bild/Link)', w.anbieter)
+        + opt('adsense', 'Google AdSense (Spiele-Werbung)', w.anbieter) + opt('monetag', 'Monetag (Rewarded)', w.anbieter) + opt('gam', 'Google Ad Manager', w.anbieter) + '</select></label>'
+      + '<label class="ad-feld"><span>Wartezeit zwischen Spots (Sekunden)</span><input class="ad-w-sperre" inputmode="numeric" value="' + (w.sperre === undefined ? 60 : w.sperre) + '"></label>'
+      + '<label class="ad-feld"><span>Spots je Spieler und Tag (0 = unbegrenzt)</span><input class="ad-w-tag" inputmode="numeric" value="' + (w.proTag === undefined ? 30 : w.proTag) + '"></label>'
+      + '<label class="ad-feld"><span>Kurze Pause/Werbung: Sekunden</span><input class="ad-w-ks" inputmode="numeric" value="' + (w.kurzSek || 10) + '"></label>'
+      + '<label class="ad-feld"><span>Kurze Pause/Werbung: Guthaben (€)</span><input class="ad-w-kb" inputmode="decimal" value="' + centText(w.kurzBel === undefined ? 2500 : w.kurzBel) + '"></label>'
+      + '<label class="ad-feld"><span>Lange Pause/Werbung: Sekunden</span><input class="ad-w-ls" inputmode="numeric" value="' + (w.langSek || 20) + '"></label>'
+      + '<label class="ad-feld"><span>Lange Pause/Werbung: Guthaben (€)</span><input class="ad-w-lb" inputmode="decimal" value="' + centText(w.langBel === undefined ? 5000 : w.langBel) + '"></label>'
+      + '<label class="ad-feld"><span>Werbenetzwerk: Guthaben je Spot (€)</span><input class="ad-w-bel" inputmode="decimal" value="' + centText(w.belohnung || 5000) + '"></label>'
+      + '<label class="ad-feld"><span>AdSense-Publisher-ID (ca-pub-…)</span><input class="ad-w-as" value="' + htmlSicher(w.adsense || '') + '" placeholder="ca-pub-1234567890123456"></label>'
+      + '<label class="ad-feld"><span>AdSense-Test-Modus (Test-Spots, kein Geld)</span><select class="ad-w-test">' + opt('0', 'Aus', w.test ? '1' : '0') + opt('1', 'An', w.test ? '1' : '0') + '</select></label>'
+      + '<label class="ad-feld"><span>Monetag-Zonen-ID</span><input class="ad-w-mt" inputmode="numeric" value="' + htmlSicher(w.monetag || '') + '" placeholder="1234567"></label>'
+      + '<label class="ad-feld"><span>Ad-Manager-Anzeigenblock (z. B. /1234567/belohnung)</span><input class="ad-w-unit" value="' + htmlSicher(w.adUnit || '') + '" placeholder="/Netzwerk-Code/Anzeigenblock"></label>'
+      + '<label class="ad-feld"><span>Werbenetzwerk liefert keinen Spot</span><select class="ad-w-ers">' + opt('1', 'Pause als Ersatz', w.ersatz === false ? '0' : '1') + opt('0', 'Kein Guthaben', w.ersatz === false ? '0' : '1') + '</select></label>'
+      + '<label class="ad-feld"><span>Eigene Werbung: Bild-Adresse (https://…)</span><input class="ad-w-bild" value="' + htmlSicher(w.bild || '') + '"></label>'
+      + '<label class="ad-feld"><span>Eigene Werbung: Link (https://…)</span><input class="ad-w-link" value="' + htmlSicher(w.link || '') + '"></label>'
+      + '<label class="ad-feld"><span>Eigene Werbung: Text</span><input class="ad-w-text" maxlength="200" value="' + htmlSicher(w.text || '') + '"></label>'
+      + '</div><p class="ad-klein"><b>Schnellster Weg zu echter Werbung:</b> AdSense-Konto anlegen, Seite hinzufügen, Publisher-ID (ca-pub-…) hier eintragen, Anbieter „Google AdSense“ wählen. Mit Test-Modus „An“ erscheinen sofort Test-Spots (ohne Einnahmen); nach der Freigabe durch Google Test-Modus ausschalten. Alternativ Monetag: Zone „Rewarded Interstitial“ anlegen, Zonen-ID eintragen. '
+      + 'In der EU ist ein Einwilligungs-Banner (CMP) nötig; bitte die Regeln des Netzwerks zu Casino-ähnlichen Inhalten prüfen. Die Pausen laufen nur, solange die Seite sichtbar ist.</p></div>';
+  }
   function einstellungenHtml() {
     const e = A.einst || HallenEinst.d;
     let h = '<div class="ad-form2"><div class="ad-gitter">'
@@ -28362,10 +28683,12 @@ const AdminPanel = (function () {
         const v = e.maxEinsatz && e.maxEinsatz[id];
         return '<label><span>' + SPIEL_NAMEN[id] + '</span><input class="ad-e-max" data-spiel="' + id + '" inputmode="decimal" placeholder="∞" value="' + (v ? centText(v) : '') + '"></label>';
       }).join('') + '</div></div>'
+      + werbungHtml(e)
       + '<label class="ad-feld"><span>Mitteilung an alle (erscheint in der Spielauswahl, leer = keine)</span><input class="ad-e-mit" maxlength="200" value="' + htmlSicher(e.mitteilung || '') + '"></label>'
       + '<div class="ad-feld"><span>Turmspitze – Wahrscheinlichkeiten &amp; Spitzen-Gewinn (gilt für alle Spieler, nur hier änderbar)</span><div class="ad-reihe"><b>' + htmlSicher(e.turmKonf ? (e.turmKonf.name || 'Eigene') : 'Original') + '</b><button class="ad-knopf ad-e-turm">Bearbeiten</button>' + (e.turmKonf ? '<button class="ad-knopf ad-e-turm0">Auf Original</button>' : '') + '</div></div>'
       + gcEinstHtml(e)
-      + '<div class="ad-fehler"></div><div class="ad-reihe"><button class="ad-knopf gruen ad-e-sp">Einstellungen speichern</button></div>'
+      + '<div class="ad-fehler"></div><div class="ad-reihe"><button class="ad-knopf gruen ad-e-sp">Einstellungen speichern</button>'
+      + (Spieler.online() ? '<button class="ad-knopf ad-e-neu" title="Alle offenen Geräte laden die Spielhalle neu (nach der laufenden Runde)">Alle Geräte neu laden</button>' : '') + '</div>'
       + '<p class="ad-klein">' + (Spieler.online() ? 'Gilt sofort für alle Geräte (spätestens nach einer Minute).' : 'Gilt für dieses Gerät.') + ' Bei Euro sind Spielregeln und Auszahlungsquoten fest und für alle gleich.</p></div>';
     return h;
   }
@@ -28520,6 +28843,21 @@ const AdminPanel = (function () {
         }, 'Alle Statistiken zurückgesetzt' + (w === 'eur' ? ' (Euro)' : (w === 'gc' ? ' (Goldchips)' : '')));
       });
     }
+    const gra = qs(box, '.ad-gr-alle');
+    if (gra) {
+      bestaetigen(gra, 'Wirklich bei ALLEN?', function (b) {
+        const w = qs(box, '.ad-gr-w').value;
+        const t = qs(box, '.ad-gr-b').value.trim();
+        const betrag = t ? geldEuro(t) : -1;
+        if (t && !(betrag >= 0)) {
+          Hinweis.zeige('Bitte einen gültigen Betrag eingeben.', 'schlecht');
+          return;
+        }
+        aktion(b, function () {
+          return alleGuthabenReset(w, betrag);
+        }, 'Guthaben aller Spieler zurückgesetzt');
+      });
+    }
     qsa(box, '.ad-chip').forEach(function (c) {
       c.addEventListener('click', function () {
         A.tab = 'spieler';
@@ -28621,6 +28959,17 @@ const AdminPanel = (function () {
         }, 'Spieler gelöscht');
       });
     }
+    const eNeu = qs(box, '.ad-e-neu');
+    if (eNeu) {
+      eNeu.addEventListener('click', async function () {
+        try {
+          await einstellungenSpeichern(Object.assign({}, HallenEinst.d));
+          Hinweis.zeige('Alle Geräte laden innerhalb von etwa 30 Sekunden neu (laufende Runden werden zu Ende gespielt).', 'gut', 5000);
+        } catch (e) {
+          Hinweis.zeige('Fehlgeschlagen: ' + e.message, 'schlecht');
+        }
+      });
+    }
     const et = qs(box, '.ad-e-turm');
     if (et) {
       et.addEventListener('click', turmBearbeiten);
@@ -28647,6 +28996,17 @@ const AdminPanel = (function () {
           }), aus: {}, mitteilung: qs(box, '.ad-e-mit').value.trim()
         };
         e.turmKonf = HallenEinst.d.turmKonf;
+        const wv = function (sel) {
+          const el = qs(box, sel);
+          return el ? el.value : '';
+        };
+        e.werbung = {
+          an: wv('.ad-w-an') === '1', nurWerbung: wv('.ad-w-nur') === '1', belohnung: geldEuro(wv('.ad-w-bel')) || 500,
+          sperre: Number(wv('.ad-w-sperre')) || 0, proTag: Number(wv('.ad-w-tag')) || 0, anbieter: wv('.ad-w-anb'), adUnit: wv('.ad-w-unit'),
+          adsense: wv('.ad-w-as'), test: wv('.ad-w-test') === '1', monetag: wv('.ad-w-mt'),
+          ersatz: wv('.ad-w-ers') !== '0', kurzSek: Number(wv('.ad-w-ks')) || 10, kurzBel: geldEuro(wv('.ad-w-kb')) || 0, langSek: Number(wv('.ad-w-ls')) || 20,
+          langBel: geldEuro(wv('.ad-w-lb')) || 0, bild: wv('.ad-w-bild'), link: wv('.ad-w-link'), text: wv('.ad-w-text')
+        };
         e.maxEinsatz = {};
         qsa(box, '.ad-e-max').forEach(function (i) {
           const v = geldEuro(i.value);
@@ -28654,7 +29014,7 @@ const AdminPanel = (function () {
             e.maxEinsatz[i.getAttribute('data-spiel')] = v;
           }
         });
-        qsa(box, '[data-spiel]').forEach(function (c) {
+        qsa(box, 'input[type=checkbox][data-spiel]').forEach(function (c) {
           if (!c.checked) {
             e.aus[c.getAttribute('data-spiel')] = true;
           }
@@ -29434,6 +29794,437 @@ const Rangliste = (function () {
     laden();
   }
   return { oeffne: oeffne, hochladen: hochladen, eintrag: eintrag, test: R };
+})();
+// ---- werbung.js
+// ====================================================================================
+// werbung.js – Guthaben gegen Werbung: Der Spieler schaut einen Werbespot (Belohnungs-Werbung) und
+// bekommt dafür Spielgeld. Anbieter (vom Admin gewählt):
+//   adsense – Google AdSense für Browserspiele (Ad Placement API, adBreak type 'reward'); mit Test-Modus
+//   gam     – Google Ad Manager, Belohnungs-Anzeige („rewarded“) über die offizielle GPT-Bibliothek
+//   monetag – Monetag „Rewarded Interstitial“ (SDK mit Zonen-ID)
+//   eigen   – eigene Werbung des Admins (Bild + Link + Text), kurz oder lang
+//   warten  – keine echte Werbung, nur eine kurze oder lange Pause mit Countdown
+// Wartezeit zwischen zwei Spots und Tageslimit je Spieler. Kein Spot, kein Guthaben – außer der Admin
+// erlaubt bei fehlender Werbung eine längere Warte-Pause als Ersatz.
+// ====================================================================================
+
+const Werbung = (function () {
+  let laeuft = false;
+  function E() {
+    return (HallenEinst.d && HallenEinst.d.werbung) || { an: false };
+  }
+  function heute() {
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+  function zaehler() {
+    const p = Spieler.profil();
+    if (!p) {
+      return { tag: '', n: 0, t: 0, ges: 0 };
+    }
+    if (!p.wb || typeof p.wb !== 'object') {
+      p.wb = { tag: '', n: 0, t: 0, ges: 0 };
+    }
+    if (p.wb.tag !== heute()) {
+      p.wb.tag = heute();
+      p.wb.n = 0;
+    }
+    return p.wb;
+  }
+  function an() {
+    return !!E().an && !!Spieler.profil() && !Spieler.gesperrt() && !Waehrung.gc();
+  }
+  /** { bereit, warten (Sekunden), heute, max, grund } */
+  function status(kredit) {
+    const e = E(), z = zaehler();
+    const warten = Math.max(0, Math.ceil((z.t + e.sperre * 1000 - Date.now()) / 1000));
+    let grund = '';
+    if (e.proTag > 0 && z.n >= e.proTag) {
+      grund = 'Für heute sind alle ' + e.proTag + ' Werbe-Aufladungen verbraucht. Morgen geht es weiter.';
+    } else if (warten > 0) {
+      grund = 'Nächster Spot in ' + (warten >= 60 ? Math.floor(warten / 60) + ':' + String(warten % 60).padStart(2, '0') + ' min' : warten + ' s') + '.';
+    } else if (HallenEinst.d.hoechst > 0 && kredit >= HallenEinst.d.hoechst) {
+      grund = 'Aufladen geht nur bis ' + euro(HallenEinst.d.hoechst) + ' Guthaben.';
+    }
+    return { bereit: !grund, warten: warten, heute: z.n, max: e.proTag, grund: grund };
+  }
+  /** Pausen-Anbieter bieten zwei Längen an, echte Werbenetzwerke einen Spot. */
+  function mitStufen() {
+    return E().anbieter === 'warten' || E().anbieter === 'eigen';
+  }
+  function belohnung(stufe) {
+    const e = E();
+    if (mitStufen()) {
+      return stufe === 'kurz' ? e.kurzBel : e.langBel;
+    }
+    return e.belohnung;
+  }
+  function betrag(kredit, stufe) {
+    const b = belohnung(stufe);
+    const g = HallenEinst.d.hoechst;
+    return g > 0 ? Math.max(0, Math.min(b, g - kredit)) : b;
+  }
+
+  // ---------------------------------------------------------------- Anbieter: Google AdSense (Ad Placement API für Spiele)
+  let adsenseGeladen = null;
+  function adsenseLaden() {
+    if (adsenseGeladen) {
+      return adsenseGeladen;
+    }
+    adsenseGeladen = new Promise(function (ok, fehler) {
+      const e = E();
+      if (!e.adsense) {
+        fehler(new Error('Keine AdSense-Publisher-ID eingetragen.'));
+        return;
+      }
+      window.adsbygoogle = window.adsbygoogle || [];
+      window.adBreak = window.adConfig = function (o) {
+        window.adsbygoogle.push(o);
+      };
+      const s = document.createElement('script');
+      s.async = true;
+      s.setAttribute('data-ad-client', e.adsense);
+      if (e.test) {
+        s.setAttribute('data-adbreak-test', 'on');
+      }
+      s.setAttribute('crossorigin', 'anonymous');
+      s.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + encodeURIComponent(e.adsense);
+      s.onload = function () {
+        window.adConfig({ preloadAdBreaks: 'on', sound: klang.an ? 'on' : 'off' });
+        ok();
+      };
+      s.onerror = function () {
+        adsenseGeladen = null;
+        fehler(new Error('Die Werbung konnte nicht geladen werden (Werbeblocker?).'));
+      };
+      document.head.appendChild(s);
+      setTimeout(function () {
+        if (!window.adsbygoogle || !window.adsbygoogle.loaded) {
+          adsenseGeladen = null;
+          fehler(new Error('Die Werbung lädt nicht.'));
+        }
+      }, 10000);
+    });
+    return adsenseGeladen;
+  }
+  async function adsenseZeigen() {
+    await adsenseLaden();
+    return new Promise(function (fertig) {
+      let belohnt = false, gezeigt = false;
+      const uhr = setTimeout(function () {
+        if (!gezeigt) {
+          fertig({ ok: false, grund: 'Gerade ist keine Werbung verfügbar.' });
+        }
+      }, 12000);
+      window.adBreak({
+        type: 'reward',
+        name: 'guthaben',
+        beforeAd: function () {
+          gezeigt = true;
+        },
+        beforeReward: function (zeigen) {
+          gezeigt = true;
+          zeigen();
+        },
+        adViewed: function () {
+          belohnt = true;
+        },
+        adDismissed: function () {
+          belohnt = false;
+        },
+        adBreakDone: function (info) {
+          clearTimeout(uhr);
+          if (belohnt) {
+            fertig({ ok: true });
+          } else {
+            fertig({ ok: false, grund: info && info.breakStatus && info.breakStatus !== 'viewed' && info.breakStatus !== 'dismissed' ? 'Gerade ist keine Werbung verfügbar.' : 'Der Spot wurde vor dem Ende geschlossen.' });
+          }
+        }
+      });
+    });
+  }
+
+  // ---------------------------------------------------------------- Anbieter: Monetag (Rewarded Interstitial)
+  function monetagZeigen() {
+    return new Promise(function (fertig) {
+      const zone = E().monetag;
+      if (!zone) {
+        fertig({ ok: false, grund: 'Keine Monetag-Zonen-ID eingetragen.' });
+        return;
+      }
+      const name = 'show_' + zone;
+      const los = function () {
+        Promise.resolve(window[name]()).then(function () {
+          fertig({ ok: true });
+        }, function () {
+          fertig({ ok: false, grund: 'Gerade ist keine Werbung verfügbar.' });
+        });
+      };
+      if (typeof window[name] === 'function') {
+        los();
+        return;
+      }
+      const s = document.createElement('script');
+      s.src = 'https://libtl.com/sdk.js';
+      s.setAttribute('data-zone', zone);
+      s.setAttribute('data-sdk', name);
+      s.onload = function () {
+        if (typeof window[name] === 'function') {
+          los();
+        } else {
+          fertig({ ok: false, grund: 'Die Werbung lädt nicht.' });
+        }
+      };
+      s.onerror = function () {
+        fertig({ ok: false, grund: 'Die Werbung konnte nicht geladen werden (Werbeblocker?).' });
+      };
+      document.head.appendChild(s);
+    });
+  }
+
+  // ---------------------------------------------------------------- Anbieter: Google Ad Manager (Belohnungs-Anzeige)
+  function gptLaden() {
+    return new Promise(function (ok, fehler) {
+      window.googletag = window.googletag || { cmd: [] };
+      if (window.googletag.apiReady) {
+        ok();
+        return;
+      }
+      if (document.getElementById('gpt-skript')) {
+        window.googletag.cmd.push(ok);
+        return;
+      }
+      const s = document.createElement('script');
+      s.id = 'gpt-skript';
+      s.async = true;
+      s.src = 'https://securepubads.g.doubleclick.net/tag/js/gpt.js';
+      s.onload = function () {
+        window.googletag.cmd.push(ok);
+      };
+      s.onerror = function () {
+        fehler(new Error('Die Werbung konnte nicht geladen werden (Werbeblocker?).'));
+      };
+      document.head.appendChild(s);
+      setTimeout(function () {
+        fehler(new Error('Die Werbung lädt nicht.'));
+      }, 12000);
+    });
+  }
+  async function gamZeigen() {
+    const unit = E().adUnit;
+    if (!unit) {
+      return { ok: false, grund: 'Keine Anzeigenblock-ID eingetragen.' };
+    }
+    await gptLaden();
+    return new Promise(function (fertig) {
+      window.googletag.cmd.push(function () {
+        const gt = window.googletag;
+        let slot = null;
+        try {
+          slot = gt.defineOutOfPageSlot(unit, gt.enums.OutOfPageFormat.REWARDED);
+        } catch (e) {
+          slot = null;
+        }
+        if (!slot) {
+          fertig({ ok: false, grund: 'Belohnungs-Werbung wird auf diesem Gerät nicht unterstützt.' });
+          return;
+        }
+        slot.addService(gt.pubads());
+        let belohnt = false, aus = false;
+        const ende = function (r) {
+          if (aus) {
+            return;
+          }
+          aus = true;
+          clearTimeout(uhr);
+          try {
+            gt.destroySlots([slot]);
+          } catch (e) {
+            // egal
+          }
+          fertig(r);
+        };
+        const uhr = setTimeout(function () {
+          ende({ ok: false, grund: 'Gerade ist keine Werbung verfügbar.' });
+        }, 15000);
+        gt.pubads().addEventListener('rewardedSlotReady', function (ev) {
+          if (ev.slot === slot) {
+            clearTimeout(uhr);
+            ev.makeRewardedVisible();
+          }
+        });
+        gt.pubads().addEventListener('rewardedSlotGranted', function (ev) {
+          if (ev.slot === slot) {
+            belohnt = true;
+          }
+        });
+        gt.pubads().addEventListener('rewardedSlotClosed', function (ev) {
+          if (ev.slot === slot) {
+            ende(belohnt ? { ok: true } : { ok: false, grund: 'Der Spot wurde vor dem Ende geschlossen.' });
+          }
+        });
+        gt.pubads().addEventListener('slotRenderEnded', function (ev) {
+          if (ev.slot === slot && ev.isEmpty) {
+            ende({ ok: false, grund: 'Gerade ist keine Werbung verfügbar.' });
+          }
+        });
+        gt.enableServices();
+        gt.display(slot);
+      });
+    });
+  }
+
+  // ---------------------------------------------------------------- Anbieter: eigene Werbung / Warte-Pause
+  function pauseZeigen(sek, eigen, titel) {
+    return new Promise(function (fertig) {
+      const e = E();
+      const ov = document.createElement('div');
+      ov.className = 'wb-pause';
+      const inhalt = eigen && (e.bild || e.text)
+        ? (e.link ? '<a class="wb-eigen" href="' + htmlSicher(e.link) + '" target="_blank" rel="noopener sponsored">' : '<div class="wb-eigen">')
+          + (e.bild ? '<img src="' + htmlSicher(e.bild) + '" alt="Werbung">' : '') + (e.text ? '<p>' + htmlSicher(e.text) + '</p>' : '') + (e.link ? '</a>' : '</div>')
+        : '<div class="wb-platz"><div class="wb-sonne"></div><p>Werbepause</p></div>';
+      ov.innerHTML = '<div class="wb-box"><div class="wb-kopf"><span>' + htmlSicher(titel || 'Werbung') + '</span><b class="wb-zeit">' + sek + '</b></div>' + inhalt
+        + '<div class="wb-balken"><i></i></div><div class="wb-knoepfe"><button class="wb-ab">Abbrechen</button><button class="wb-fertig" disabled>Guthaben holen</button></div></div>';
+      document.body.appendChild(ov);
+      let rest = sek;
+      const zeit = qs(ov, '.wb-zeit'), balken = qs(ov, '.wb-balken i'), fertigK = qs(ov, '.wb-fertig');
+      // Läuft nur, solange die Seite sichtbar ist (kein Wegschalten)
+      const uhr = setInterval(function () {
+        if (document.hidden) {
+          return;
+        }
+        rest--;
+        zeit.textContent = String(Math.max(0, rest));
+        balken.style.width = Math.min(100, (sek - rest) / sek * 100) + '%';
+        if (rest <= 0) {
+          clearInterval(uhr);
+          fertigK.disabled = false;
+          fertigK.classList.add('puls');
+          klang.spiele('GEWINN_KLEIN');
+        }
+      }, 1000);
+      const ende = function (ok) {
+        clearInterval(uhr);
+        ov.remove();
+        fertig(ok ? { ok: true } : { ok: false, grund: 'Abgebrochen – kein Guthaben.' });
+      };
+      qs(ov, '.wb-ab').addEventListener('click', function () {
+        ende(false);
+      });
+      fertigK.addEventListener('click', function () {
+        if (!fertigK.disabled) {
+          ende(true);
+        }
+      });
+    });
+  }
+
+  /** Spot zeigen und bei Erfolg gutschreiben. beiNeu(neuesGuthaben). */
+  async function ansehen(beiNeu, stufe) {
+    if (laeuft || !an()) {
+      return;
+    }
+    const k = kreditJetzt();
+    const st = status(k);
+    if (!st.bereit) {
+      Hinweis.zeige(st.grund, 'schlecht', 3500);
+      return;
+    }
+    laeuft = true;
+    const e = E();
+    let r;
+    try {
+      const sek = stufe === 'kurz' ? e.kurzSek : e.langSek;
+      if (e.anbieter === 'gam') {
+        r = await gamZeigen();
+      } else if (e.anbieter === 'adsense') {
+        r = await adsenseZeigen();
+      } else if (e.anbieter === 'monetag') {
+        r = await monetagZeigen();
+      } else if (e.anbieter === 'eigen') {
+        r = await pauseZeigen(sek, true, 'Werbung');
+      } else {
+        r = await pauseZeigen(sek, false, 'Werbepause');
+      }
+    } catch (err) {
+      r = { ok: false, grund: err.message };
+    }
+    // Keine Werbung verfügbar: wenn erlaubt, doppelt so lange Warte-Pause als Ersatz
+    if (!r.ok && !mitStufen() && e.ersatz && /verfügbar|blockiert|geladen|Werbeblocker|lädt nicht|unterstützt|eingetragen/.test(r.grund || '')) {
+      Hinweis.zeige(r.grund + ' Stattdessen: kurze Pause.', '', 3000);
+      r = await pauseZeigen(e.langSek * 2, false, 'Pause statt Werbung');
+    }
+    laeuft = false;
+    if (!r.ok) {
+      Hinweis.zeige(r.grund || 'Kein Guthaben.', 'schlecht', 3500);
+      return;
+    }
+    const kJetzt = kreditJetzt();
+    const b = betrag(kJetzt, stufe);
+    if (b <= 0) {
+      return;
+    }
+    const z = zaehler();
+    z.n++;
+    z.ges = (z.ges || 0) + 1;
+    z.t = Date.now();
+    Statistik.aufladen(b);
+    klang.spiele('CASHOUT');
+    Hinweis.zeige('Danke! +' + euro(b) + ' Guthaben.', 'gut', 3000);
+    beiNeu(kJetzt + b);
+    Spieler.geaendert();
+  }
+
+  return {
+    an: an,
+    nurWerbung: function () {
+      return an() && !!E().nurWerbung;
+    },
+    status: status,
+    knopfHtml: function (k) {
+      const st = status(k), e = E();
+      const knopf = function (stufe, titel, unter) {
+        return '<button class="wb-knopf" data-s="' + stufe + '"' + (st.bereit ? '' : ' disabled') + '><span class="wb-icon">▶</span><span><b>' + titel + '</b><small>' + unter + '</small></span>'
+          + '<em>+' + htmlSicher(euroKurz(betrag(k, stufe) || belohnung(stufe))) + '</em></button>';
+      };
+      const knoepfe = mitStufen()
+        ? knopf('kurz', 'Kurze Werbung', e.kurzSek + ' Sekunden') + knopf('lang', 'Lange Werbung', e.langSek + ' Sekunden')
+        : knopf('netz', 'Werbung ansehen', 'Ein kurzer Werbespot');
+      return '<div class="wb-auf">' + knoepfe
+        + '<p class="wb-info">' + (st.grund ? htmlSicher(st.grund) : (e.proTag > 0 ? 'Heute noch ' + (e.proTag - st.heute) + ' von ' + e.proTag + '.' : '')) + '</p></div>';
+    },
+    knopfBinden: function (f, beiNeu) {
+      const kn = qsa(f.el, '.wb-knopf');
+      if (!kn.length) {
+        return;
+      }
+      kn.forEach(function (b) {
+        b.addEventListener('click', function () {
+          f.schliessen();
+          ansehen(beiNeu, b.getAttribute('data-s'));
+        });
+      });
+      // Countdown im Fenster aktualisieren
+      const uhr = setInterval(function () {
+        if (!document.body.contains(kn[0])) {
+          clearInterval(uhr);
+          return;
+        }
+        const st = status(kreditJetzt());
+        kn.forEach(function (b) {
+          b.disabled = !st.bereit;
+        });
+        const info = qs(f.el, '.wb-info');
+        if (info) {
+          info.textContent = st.grund || (E().proTag > 0 ? 'Heute noch ' + (E().proTag - st.heute) + ' von ' + E().proTag + '.' : '');
+        }
+      }, 1000);
+    },
+    belohnung: belohnung,
+    mitStufen: mitStufen,
+    ansehen: ansehen
+  };
 })();
 // ---- taktik.js
 // ====================================================================================
@@ -37415,6 +38206,7 @@ function starte() {
 }
 
 Pwa.registrieren();
+Aktualisierung.start();
 schriftenLaden().then(function () {
   spritesLeeren();
   const hot = window.claude && window.claude.hot;
