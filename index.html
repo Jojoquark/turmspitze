@@ -2393,6 +2393,69 @@ input, textarea, select {
   background: linear-gradient(180deg, #123a8c, #061a4c); border: 3px solid #e9c36e; box-shadow: 0 0 0 4px #1a3c9a, 0 0 60px rgba(80, 200, 255, 0.6); text-shadow: 0 2px 0 #000; }
 .nj-buehne.maske { animation: njMaske 0.8s ease-out; }
 @keyframes njMaske { 0% { filter: brightness(1); } 30% { filter: brightness(1.9) saturate(1.4); box-shadow: 0 0 0 4px #e9c36e, 0 0 80px 20px rgba(255, 220, 120, 0.9); } 100% { filter: brightness(1); } }
+
+/* ---------------------------------------------------------------- ANGELGLÜCK: See, Holzsteg, runder Dreh-Knopf */
+.ds-angelglueck {
+  font-family: Fredoka, Nunito, sans-serif;
+  background:
+    radial-gradient(ellipse 30% 10% at 20% 18%, rgba(255, 255, 255, 0.85), transparent 70%),
+    radial-gradient(ellipse 24% 8% at 80% 12%, rgba(255, 255, 255, 0.8), transparent 70%),
+    linear-gradient(180deg, #8fd6ff 0%, #c9efff 32%, #3aa0d8 33%, #1a6aa8 70%, #0a3a6a 100%);
+}
+.ds-angelglueck .ds-kopf { background: rgba(255, 255, 255, 0.3); backdrop-filter: blur(6px); }
+.ds-angelglueck .ds-ikon { background: rgba(255, 255, 255, 0.55); color: #0a4a7a; border-radius: 50%; }
+.ds-angelglueck .ds-titel { font: 700 26px/1 Fredoka, "Lilita One", sans-serif; color: #ffe14a; -webkit-text-stroke: 2px #0a3a6a; paint-order: stroke fill; text-shadow: 0 3px 0 #0a3a6a; }
+.ag-titel { text-align: center; padding: 10px 0 0; font: 700 clamp(30px, 9vmin, 64px)/1 Fredoka, "Lilita One", sans-serif; color: #ffe14a; -webkit-text-stroke: 3px #0a3a6a; paint-order: stroke fill; text-shadow: 0 5px 0 #0a3a6a, 0 10px 24px rgba(0, 40, 80, 0.4); letter-spacing: 0.02em; transform: rotate(-2deg); }
+@media (max-height: 560px) { .ag-titel { display: none; } }
+.ag-info { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; align-items: center; min-height: 0; font: 700 18px Fredoka, sans-serif; color: #fff; -webkit-text-stroke: 1px #0a3a6a; paint-order: stroke fill; padding: 4px 8px 0; }
+.ag-info:empty { padding: 0; }
+.ag-info b { color: #ffe14a; }
+.ag-haken { display: inline-flex; gap: 4px; }
+.ag-haken i { width: 16px; height: 16px; border-radius: 50%; border: 2px solid #fff; background: rgba(0, 0, 0, 0.25); }
+.ag-haken i.an { background: #ffe14a; box-shadow: 0 0 10px #ffe14a; }
+.ag .sl-haupt { justify-content: center; align-items: center; }
+.ag-buehne { flex: 0 1 auto; aspect-ratio: 1.72; height: calc(100% - 24px); max-width: calc(100% - 24px); border-radius: 22px;
+  background: linear-gradient(180deg, rgba(10, 80, 140, 0.55), rgba(5, 40, 80, 0.7));
+  border: 8px solid #b0742c; box-shadow: 0 0 0 3px #5a3410, inset 0 0 0 3px #e0a868, 0 16px 36px rgba(0, 30, 60, 0.5); }
+.ag-fx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 4; }
+.ag.frei .ag-buehne { border-color: #f0b03a; box-shadow: 0 0 0 3px #5a3410, 0 0 40px rgba(255, 220, 90, 0.7); }
+@media (max-width: 560px) { .ag-buehne { height: auto; width: calc(100% - 20px); } }
+.ds-angelglueck .sl-leiste { background: linear-gradient(180deg, rgba(10, 60, 110, 0), rgba(10, 60, 110, 0.7) 35%, rgba(5, 35, 70, 0.9)); border-top: 0; grid-template-columns: auto 1fr auto auto; padding-top: 4px; }
+.ds-angelglueck .sl-e-wert small, .ds-angelglueck .sl-gewinn small { font: 600 11px Fredoka, sans-serif; color: #cfeaff; letter-spacing: 0.1em; }
+.ds-angelglueck .sl-e-wert b { font: 700 19px Fredoka, sans-serif; }
+.ds-angelglueck .sl-gewinn b { font: 700 24px Fredoka, sans-serif; color: #fff; }
+.ds-angelglueck .sl-gewinn.an b { color: #ffe14a; -webkit-text-stroke: 1px #0a3a6a; paint-order: stroke fill; }
+.ds-angelglueck .sl-einsatz button { width: 40px; height: 40px; border-radius: 50%; background: #fff; color: #0a4a7a; font: 700 24px/1 Fredoka, sans-serif; box-shadow: 0 3px 0 #0a4a7a; }
+.ds-angelglueck .sl-auto { width: 52px; height: 52px; padding: 0; border-radius: 50%; font-size: 0; background: rgba(255, 255, 255, 0.92); box-shadow: 0 3px 0 #0a4a7a; }
+.ds-angelglueck .sl-auto::before { content: '▶▶'; font: 700 15px Fredoka, sans-serif; color: #0a4a7a; letter-spacing: -3px; }
+.ds-angelglueck .sl-auto.an { background: #ffe14a; }
+.ds-angelglueck .sl-auto.an::before { content: '■'; font-size: 18px; letter-spacing: 0; }
+.ds-angelglueck .sl-start { width: 84px; height: 84px; min-width: 0; padding: 0; margin: -22px 4px 0 0; border-radius: 50%; font-size: 0; position: relative;
+  background: radial-gradient(circle at 35% 30%, #ffffff 0%, #d8f3ff 30%, #3ab0f0 70%, #0a6ab8 100%); border: 4px solid #fff; box-shadow: 0 0 0 3px #0a6ab8, 0 6px 0 #063a6a, 0 10px 24px rgba(0, 40, 80, 0.45); }
+.ds-angelglueck .sl-start::before { content: ''; position: absolute; inset: 18px; border-radius: 50%; border: 6px solid #fff; border-right-color: transparent; transform: rotate(-30deg); }
+.ds-angelglueck .sl-start::after { content: ''; position: absolute; right: 16px; top: 18px; border-left: 10px solid #fff; border-top: 8px solid transparent; border-bottom: 8px solid transparent; transform: rotate(70deg); }
+.ds-angelglueck .sl-leiste.dreht .sl-start::before { animation: bbDreh 0.6s linear infinite; }
+@media (max-width: 560px) {
+  .ds-angelglueck .sl-leiste { grid-template-columns: auto 1fr auto auto; grid-template-areas: "e g a s"; }
+  .ds-angelglueck .sl-start { width: 72px; height: 72px; margin-top: -16px; }
+  .ds-angelglueck .sl-start::before { inset: 15px; border-width: 5px; }
+  .ds-angelglueck .sl-start::after { right: 13px; top: 15px; }
+  .ds-angelglueck .sl-auto { width: 46px; height: 46px; }
+}
+@media (max-width: 400px) {
+  .ds-angelglueck .sl-einsatz button { width: 34px; height: 34px; font-size: 20px; }
+  .ds-angelglueck .sl-auto { width: 40px; height: 40px; }
+  .ds-angelglueck .sl-start { width: 62px; height: 62px; margin-top: -12px; }
+  .ds-angelglueck .sl-start::before { inset: 13px; border-width: 5px; }
+  .ds-angelglueck .sl-start::after { right: 10px; top: 12px; }
+}
+.ag-banner { padding: 22px 30px; border-radius: 24px; text-align: center; background: radial-gradient(circle, #3ab0f0, #0a4a8a); border: 4px solid #fff; box-shadow: 0 0 0 4px #0a3a6a, 0 20px 50px rgba(0, 30, 60, 0.6); cursor: pointer; animation: seBanner 2.4s ease-out forwards; }
+.ag-b-t { font: 700 clamp(30px, 8vmin, 56px)/1 Fredoka, "Lilita One", sans-serif; color: #fff; -webkit-text-stroke: 2px #0a3a6a; paint-order: stroke fill; }
+.ag-b-t b { color: #ffe14a; }
+.ag-b-u { margin-top: 8px; font: 700 20px Fredoka, sans-serif; color: #e8f6ff; }
+.ag-banner small { display: block; margin-top: 10px; color: rgba(255, 255, 255, 0.7); font-size: 12px; }
+.ds-angelglueck .ds-regeln { background: #ffd84d; color: #2a1600; }
+.th-angelglueck .sh-tabs button.an { background: #3ab0f0; border-color: #3ab0f0; color: #fff; }
 </style>
 </head>
 <body>
@@ -17876,7 +17939,7 @@ const SPIEL_NAMEN = {
   turmspitze: 'Turmspitze', roulette: 'Roulette', blackjack: 'Black Jack', sonnenbuch: 'Sonnenbuch',
   goldroulette: 'Goldzahl-Roulette', schatzstollen: 'Schatzstollen', mines: 'Mines', plinko: 'Plinko', chicken: 'Chicken',
   hoehenflug: 'Höhenflug', poker: 'Poker', zaubermoench: 'Zaubermönch', niljuwelen: 'Nil-Juwelen', sonnenernte: 'Sonnenernte',
-  bonbonregen: 'Bonbonregen'
+  bonbonregen: 'Bonbonregen', angelglueck: 'Angelglück'
 };
 const HallenEinst = {
   schluessel: 'casino.halle.v1',
@@ -18019,7 +18082,7 @@ HallenEinst.d = HallenEinst.standard();
 const BASIS_QUOTE = {
   turmspitze: 0.960, roulette: 0.973, blackjack: 0.993, sonnenbuch: 0.950, goldroulette: 0.974, schatzstollen: 0.955,
   mines: 0.99, plinko: 0.99, chicken: 0.98, hoehenflug: 0.97, poker: 1, zaubermoench: 0.962, niljuwelen: 0.94,
-  sonnenernte: 0.96, bonbonregen: 0.965
+  sonnenernte: 0.96, bonbonregen: 0.965, angelglueck: 0.967
 };
 /** Betrag mit fester Waehrung (fuer Admin und Konto-Uebersicht, unabhaengig von der aktiven Waehrung). */
 function geldText(cent, w) {
@@ -18162,6 +18225,10 @@ const Waehrung = {
         const B = NS.SzeneBonbonregen.test.B;
         return B.laeuft || B.offen > 0 || B.frei;
       }, 'Bonbonregen'],
+      [function () {
+        const A = NS.SzeneAngelglueck.test.A;
+        return A.laeuft || A.offen > 0 || A.frei;
+      }, 'Angelglück'],
       [function () {
         const S2 = SzeneStollen.test.S2;
         return S2.laeuft || S2.offen > 0 || S2.bonus;
@@ -20120,7 +20187,7 @@ function turmKonfAnwenden() {
 // Die Seite fragt regelmäßig die Versionsdatei ab. Gibt es eine neue Version (oder hat der Admin
 // „Alle Geräte neu laden“ gedrückt), lädt sie neu – sofort, wenn gerade nichts läuft, sonst nach der
 // laufenden Runde (spätestens nach 3 Minuten; offene Gewinne sind gespeichert und werden gutgeschrieben).
-const BUILD_VERSION = '20261008121758';
+const BUILD_VERSION = '20261009063146';
 const Aktualisierung = (function () {
   const geladen = Date.now();
   let grund = '', seit = 0, uhr = 0, letzte = 0, selbst = 0;
@@ -26282,6 +26349,12 @@ const SzeneLobby = (function () {
       text: 'Ab 8 gleichen Süßigkeiten irgendwo gewinnt es – Gewinner platzen, neue fallen nach. Freispiele mit Bonbon-Bomben bis 100×.',
       tags: ['ÜBERALL GEWINNE', 'BOMBEN BIS 100×'], farbe: C(255, 90, 180),
       punkte: ['Kaskaden ohne Ende', 'Freispiele mit Multiplikatoren', 'Freispiele kaufen']
+    },
+    {
+      id: 'angelglueck', szene: 'SzeneAngelglueck', titel: 'ANGELGLÜCK', unter: 'FISCHE MIT GELDWERT · BIS 2.100×',
+      text: 'Fische tragen Geldwerte. In den Freispielen holt der Angler alle Fische ein – jeder 4. Angler: +10 Spins und ×2, ×3, ×10.',
+      tags: ['10 LINIEN', 'ANGLER SAMMELT'], farbe: C(40, 170, 230),
+      punkte: ['Geldfische 2× bis 200×', 'Multiplikator bis ×10', 'Bis 2.100×']
     }
   ];
   const EUR_QUOTEN = {};
@@ -37658,6 +37731,885 @@ const SzeneBonbonregen = (function () {
   NEUE_SZENEN.SzeneBonbonregen = sz;
   return sz;
 })();
+// ---- angel-logik.js
+// ====================================================================================
+// angel-logik.js – Mathematik von „Angelglück“ nach den Regeln von Big Bass Bonanza:
+// 5 Walzen × 3 Reihen, 10 Gewinnlinien von links. Fische tragen Geldwerte (2× bis 200× Einsatz).
+// 3/4/5 Scatter (springender Barsch) = 10/15/20 Freispiele. In den Freispielen erscheint der Angler
+// (Joker): Jeder Angler sammelt alle Geldwerte der Fische im Feld ein. Jeder 4. Angler bringt
+// +10 Freispiele und erhöht den Multiplikator der Fischwerte (2× → 3× → 10×, höchstens 3-mal).
+// Höchstgewinn 2.100 × Einsatz. Alle Werte in Vielfachen des Gesamteinsatzes.
+// ====================================================================================
+
+const AngelLogik = (function () {
+  // 0 Angler (Joker, nur Freispiele), 1 Angel, 2 Libelle, 3 Köderkiste, 4 Fisch (Geld), 5 A, 6 K, 7 D, 8 B, 9 Zehn, 10 Scatter
+  const ANGLER = 0, FISCH = 4, SCATTER = 10;
+  const N = 11;
+  const NAMEN = ['Angler', 'Angelrute', 'Libelle', 'Köderkiste', 'Fisch', 'A', 'K', 'D', 'B', '10', 'Barsch (Scatter)'];
+  // Gewinn je Linie (× Einsatz) für 2, 3, 4, 5 gleiche von links
+  const PLAN = [
+    [0, 0, 0, 0],
+    [0.8, 3, 16, 80],
+    [0, 2.5, 12, 50],
+    [0, 2.5, 12, 50],
+    [0, 1.6, 8, 30],
+    [0, 0.8, 4, 16],
+    [0, 0.8, 4, 16],
+    [0, 0.8, 1.6, 8],
+    [0, 0.8, 1.6, 8],
+    [0, 0.8, 1.6, 8]
+  ];
+  const SCATTER_PLAN = { 3: 2, 4: 20, 5: 200 };
+  const SCATTER_FS = { 3: 10, 4: 15, 5: 20 };
+  const LINIEN = [[1, 1, 1, 1, 1], [0, 0, 0, 0, 0], [2, 2, 2, 2, 2], [0, 1, 2, 1, 0], [2, 1, 0, 1, 2], [1, 0, 0, 0, 1], [1, 2, 2, 2, 1],
+    [0, 0, 1, 2, 2], [2, 2, 1, 0, 0], [1, 2, 1, 0, 1]];
+  // Geldwerte der Fische (× Einsatz) mit Gewichten
+  const FISCHWERTE = [[2, 40], [5, 26], [10, 14], [15, 8], [20, 5.5], [25, 3.5], [50, 1.6], [200, 0.25]];
+  const STUFEN = [1, 2, 3, 10];
+  const MAX = 2100;
+  // Auszahlungsquote (Simulation): ca. 96,7 % – Grundspiel ca. 64 %, Freispiele ca. 33 %
+  const KONF = {
+    stapel: 0.3,
+    sv: [0, 2, 3, 3, 4, 5, 5, 6, 6, 6],
+    w: [0, 1, 1.5, 1.5, 2.5, 6, 6, 47, 47, 47],
+    scatter: 0.085,     // Chance je Walze auf einen Scatter (Grundspiel)
+    fsScatter: 0.05,
+    fw: [0, 1.4, 2.2, 2.2, 5.2, 5, 5, 7, 7, 7],
+    angler: 0.0152,      // Chance je Feld auf einen Angler in den Freispielen
+    fstapel: 0.12
+  };
+
+  function wahl(rnd, gw) {
+    let t = 0;
+    for (let i = 0; i < gw.length; i++) {
+      t += gw[i];
+    }
+    let r = rnd() * t;
+    for (let i = 0; i < gw.length; i++) {
+      r -= gw[i];
+      if (r < 0) {
+        return i;
+      }
+    }
+    return gw.length - 1;
+  }
+  function fischwert(rnd) {
+    return FISCHWERTE[wahl(rnd, FISCHWERTE.map(function (x) {
+      return x[1];
+    }))][0];
+  }
+  /** Feld [walze][reihe] und Fischwerte werte[walze][reihe]. frei: Freispiel-Walzen mit Angler. */
+  function drehen(rnd, frei) {
+    const g = [], werte = [];
+    const gw = frei ? KONF.fw : KONF.w;
+    const st = frei ? KONF.fstapel : KONF.stapel;
+    for (let w = 0; w < 5; w++) {
+      let sp;
+      if (rnd() < st) {
+        const s = wahl(rnd, KONF.sv);
+        sp = [s, s, s];
+      } else {
+        sp = [wahl(rnd, gw), wahl(rnd, gw), wahl(rnd, gw)];
+      }
+      if (frei) {
+        for (let r = 0; r < 3; r++) {
+          if (rnd() < KONF.angler) {
+            sp[r] = ANGLER;
+          }
+        }
+      }
+      if (rnd() < (frei ? KONF.fsScatter : KONF.scatter)) {
+        sp[Math.floor(rnd() * 3)] = SCATTER;
+      }
+      const ws = sp.map(function (s) {
+        return s === FISCH ? fischwert(rnd) : null;
+      });
+      g.push(sp);
+      werte.push(ws);
+    }
+    return { feld: g, werte: werte };
+  }
+  /** Linien von links; der Angler ersetzt alle Symbole außer dem Scatter. */
+  function auswerten(g) {
+    let summe = 0;
+    const linien = [];
+    LINIEN.forEach(function (l, li) {
+      const z = [];
+      for (let w = 0; w < 5; w++) {
+        z.push(g[w][l[w]]);
+      }
+      let best = null;
+      for (let s = 1; s <= 9; s++) {
+        let n = 0;
+        while (n < 5 && (z[n] === s || z[n] === ANGLER)) {
+          n++;
+        }
+        const x = n >= 2 ? PLAN[s][n - 2] : 0;
+        if (x > 0 && (!best || x > best.x)) {
+          best = { linie: li, sym: s, n: n, x: x, von: 0 };
+        }
+      }
+      if (best) {
+        linien.push(best);
+        summe += best.x;
+      }
+    });
+    let sc = 0;
+    g.forEach(function (sp) {
+      sp.forEach(function (s) {
+        if (s === SCATTER) {
+          sc++;
+        }
+      });
+    });
+    const scx = SCATTER_PLAN[Math.min(5, sc)] || 0;
+    return { x: summe + scx, linien: linien, scatter: sc, scatterX: scx, fs: SCATTER_FS[Math.min(5, sc)] || 0 };
+  }
+  function zaehle(g, sym) {
+    let n = 0;
+    g.forEach(function (sp) {
+      sp.forEach(function (s) {
+        if (s === sym) {
+          n++;
+        }
+      });
+    });
+    return n;
+  }
+  /** Eine Freispiel-Drehung: Linien + Einsammeln (Angler × Summe der Fischwerte × Stufen-Multiplikator). */
+  function freiDrehung(rnd, stufe) {
+    const d = drehen(rnd, true);
+    const e = auswerten(d.feld);
+    const angler = zaehle(d.feld, ANGLER);
+    let fische = 0;
+    d.werte.forEach(function (sp) {
+      sp.forEach(function (v) {
+        if (v) {
+          fische += v;
+        }
+      });
+    });
+    const sammeln = angler > 0 && fische > 0 ? angler * fische * STUFEN[stufe] : 0;
+    return { feld: d.feld, werte: d.werte, erg: e, angler: angler, fische: fische, sammeln: sammeln, x: e.x + sammeln, mehr: e.fs > 0 ? (e.scatter >= 3 ? 0 : 0) : 0 };
+  }
+  /** Freispiele komplett (für Simulation). */
+  function freispiele(rnd, n) {
+    let rest = n, summe = 0, stufe = 0, gesammelt = 0;
+    while (rest > 0 && summe < MAX) {
+      rest--;
+      const f = freiDrehung(rnd, stufe);
+      summe += f.x;
+      gesammelt += f.angler;
+      while (stufe < 3 && gesammelt >= (stufe + 1) * 4) {
+        stufe++;
+        rest += 10;
+      }
+    }
+    return Math.min(summe, MAX);
+  }
+  return {
+    ANGLER: ANGLER, FISCH: FISCH, SCATTER: SCATTER, N: N, NAMEN: NAMEN, PLAN: PLAN, SCATTER_PLAN: SCATTER_PLAN, SCATTER_FS: SCATTER_FS, LINIEN: LINIEN,
+    FISCHWERTE: FISCHWERTE, STUFEN: STUFEN, MAX: MAX, KONF: KONF, wahl: wahl, fischwert: fischwert, drehen: drehen, auswerten: auswerten,
+    zaehle: zaehle, freiDrehung: freiDrehung, freispiele: freispiele
+  };
+})();
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = AngelLogik;
+}
+// ---- angelglueck.js
+// ====================================================================================
+// angelglueck.js – „Angelglück“ nach den Regeln von Big Bass Bonanza: 5 × 3, 10 Linien, Fische mit
+// Geldwerten, 3+ Scatter = Freispiele, in den Freispielen sammelt der Angler alle Fischwerte ein.
+// Jeder 4. Angler: +10 Freispiele und höherer Multiplikator (2×, 3×, 10×). Kein Risiko (wie beim Vorbild).
+// ====================================================================================
+
+const SzeneAngelglueck = (function () {
+  const SPIEL = 'angelglueck';
+  const AL = AngelLogik;
+  const A = { el: null, buehne: null, leiste: null, offen: 0, laeuft: false, autoUhr: 0, frei: null, einsatzRunde: 0 };
+
+  // ---------------------------------------------------------------- Symbole
+  function maleAngler(g, r) {
+    g.save();
+    // Rettungsring-Hintergrund
+    g.beginPath();
+    g.arc(0, r * 0.05, r * 0.86, 0, Math.PI * 2);
+    g.fillStyle = SlotMal.radial(g, 0, 0, r * 0.9, [[0, '#ffe08a'], [1, '#f08a10']]);
+    g.fill();
+    SlotMal.kontur(g, r * 0.06);
+    // Gesicht
+    g.beginPath();
+    g.arc(0, r * 0.12, r * 0.42, 0, Math.PI * 2);
+    g.fillStyle = '#ffcf9e';
+    g.fill();
+    SlotMal.kontur(g, r * 0.05);
+    // Bart
+    g.beginPath();
+    g.moveTo(-r * 0.4, r * 0.15);
+    g.quadraticCurveTo(0, r * 0.85, r * 0.4, r * 0.15);
+    g.quadraticCurveTo(0, r * 0.42, -r * 0.4, r * 0.15);
+    g.fillStyle = '#8a5a2a';
+    g.fill();
+    SlotMal.kontur(g, r * 0.04);
+    // Augen
+    g.fillStyle = '#1a1a1a';
+    [-1, 1].forEach(function (s) {
+      g.beginPath();
+      g.arc(s * r * 0.15, r * 0.02, r * 0.05, 0, Math.PI * 2);
+      g.fill();
+    });
+    // Hut
+    g.beginPath();
+    g.ellipse(0, -r * 0.3, r * 0.62, r * 0.14, 0, 0, Math.PI * 2);
+    g.fillStyle = '#3f7d3a';
+    g.fill();
+    SlotMal.kontur(g, r * 0.05);
+    g.beginPath();
+    g.moveTo(-r * 0.36, -r * 0.3);
+    g.quadraticCurveTo(-r * 0.32, -r * 0.78, 0, -r * 0.78);
+    g.quadraticCurveTo(r * 0.32, -r * 0.78, r * 0.36, -r * 0.3);
+    g.closePath();
+    g.fillStyle = '#4f9a48';
+    g.fill();
+    SlotMal.kontur(g, r * 0.05);
+    g.fillStyle = '#e8402a';
+    g.fillRect(-r * 0.36, -r * 0.42, r * 0.72, r * 0.1);
+    // Schriftzug
+    g.font = '700 ' + Math.round(r * 0.26) + 'px Fredoka, "Lilita One", sans-serif';
+    g.textAlign = 'center';
+    g.lineWidth = r * 0.07;
+    g.strokeStyle = '#5a2a00';
+    g.strokeText('WILD', 0, r * 0.86);
+    g.fillStyle = '#fff';
+    g.fillText('WILD', 0, r * 0.86);
+    g.restore();
+  }
+  function maleAngel(g, r) {
+    g.save();
+    g.rotate(-0.6);
+    SlotMal.rund(g, -r * 0.06, -r * 0.9, r * 0.12, r * 1.6, r * 0.05);
+    g.fillStyle = SlotMal.verlauf(g, -r * 0.06, 0, r * 0.06, 0, [[0, '#ffd27a'], [1, '#a8661e']]);
+    g.fill();
+    SlotMal.kontur(g, r * 0.04);
+    g.beginPath();
+    g.arc(r * 0.14, r * 0.35, r * 0.24, 0, Math.PI * 2);
+    g.fillStyle = SlotMal.radial(g, r * 0.14, r * 0.35, r * 0.24, [[0, '#e8eef5'], [1, '#6a7a8a']]);
+    g.fill();
+    SlotMal.kontur(g, r * 0.05);
+    g.beginPath();
+    g.arc(r * 0.14, r * 0.35, r * 0.08, 0, Math.PI * 2);
+    g.fillStyle = '#2a3a4a';
+    g.fill();
+    g.restore();
+    // Schnur mit Haken
+    g.strokeStyle = 'rgba(255,255,255,0.8)';
+    g.lineWidth = r * 0.025;
+    g.beginPath();
+    g.moveTo(r * 0.52, -r * 0.72);
+    g.lineTo(r * 0.55, r * 0.4);
+    g.stroke();
+    g.beginPath();
+    g.arc(r * 0.48, r * 0.42, r * 0.08, 0, Math.PI);
+    g.lineWidth = r * 0.05;
+    g.strokeStyle = '#c8d0da';
+    g.stroke();
+  }
+  function maleLibelle(g, r) {
+    g.save();
+    [[-1, -0.25], [1, -0.25], [-1, 0.05], [1, 0.05]].forEach(function (p) {
+      g.save();
+      g.translate(p[0] * r * 0.38, p[1] * r);
+      g.rotate(p[0] * (p[1] < 0 ? -0.25 : 0.25));
+      g.beginPath();
+      g.ellipse(0, 0, r * 0.4, r * 0.13, 0, 0, Math.PI * 2);
+      g.fillStyle = 'rgba(160,230,255,0.75)';
+      g.fill();
+      g.lineWidth = r * 0.03;
+      g.strokeStyle = '#2a7aa8';
+      g.stroke();
+      g.restore();
+    });
+    SlotMal.rund(g, -r * 0.08, -r * 0.45, r * 0.16, r * 1.25, r * 0.08);
+    g.fillStyle = SlotMal.verlauf(g, 0, -r * 0.45, 0, r * 0.8, [[0, '#2ad07a'], [1, '#0a6a8a']]);
+    g.fill();
+    SlotMal.kontur(g, r * 0.04);
+    g.beginPath();
+    g.arc(0, -r * 0.5, r * 0.15, 0, Math.PI * 2);
+    g.fillStyle = '#1a9ad0';
+    g.fill();
+    SlotMal.kontur(g, r * 0.04);
+    g.restore();
+  }
+  function maleKiste(g, r) {
+    g.save();
+    SlotMal.rund(g, -r * 0.78, -r * 0.2, r * 1.56, r * 0.86, r * 0.1);
+    g.fillStyle = SlotMal.verlauf(g, 0, -r * 0.2, 0, r * 0.66, [[0, '#4a9ad8'], [1, '#1a4a8a']]);
+    g.fill();
+    SlotMal.kontur(g, r * 0.06);
+    SlotMal.rund(g, -r * 0.82, -r * 0.42, r * 1.64, r * 0.3, r * 0.08);
+    g.fillStyle = '#6ab8f0';
+    g.fill();
+    SlotMal.kontur(g, r * 0.05);
+    SlotMal.rund(g, -r * 0.28, -r * 0.72, r * 0.56, r * 0.32, r * 0.1);
+    g.lineWidth = r * 0.09;
+    g.strokeStyle = '#2a2a2a';
+    g.stroke();
+    // Köder
+    ['#ff4a4a', '#ffd23a', '#3ad07a'].forEach(function (c, i) {
+      g.beginPath();
+      g.arc(-r * 0.45 + i * r * 0.45, r * 0.25, r * 0.13, 0, Math.PI * 2);
+      g.fillStyle = c;
+      g.fill();
+      SlotMal.kontur(g, r * 0.03);
+    });
+    g.restore();
+  }
+  function maleFisch(g, r, gold) {
+    g.save();
+    g.beginPath();
+    g.moveTo(-r * 0.78, 0);
+    g.quadraticCurveTo(-r * 0.2, -r * 0.62, r * 0.45, -r * 0.18);
+    g.lineTo(r * 0.85, -r * 0.48);
+    g.lineTo(r * 0.78, 0);
+    g.lineTo(r * 0.85, r * 0.48);
+    g.lineTo(r * 0.45, r * 0.18);
+    g.quadraticCurveTo(-r * 0.2, r * 0.62, -r * 0.78, 0);
+    g.closePath();
+    g.fillStyle = gold ? SlotMal.radial(g, -r * 0.1, -r * 0.1, r * 0.9, [[0, '#fff3a0'], [1, '#d08a10']])
+      : SlotMal.radial(g, -r * 0.1, -r * 0.1, r * 0.9, [[0, '#b8f070'], [0.6, '#4aa83a'], [1, '#1a5a2a']]);
+    g.fill();
+    SlotMal.kontur(g, r * 0.06);
+    // Streifen und Bauch
+    g.save();
+    g.clip();
+    g.fillStyle = 'rgba(255,255,230,0.55)';
+    g.fillRect(-r, r * 0.12, r * 2, r * 0.5);
+    g.fillStyle = 'rgba(0,40,0,0.25)';
+    for (let i = 0; i < 4; i++) {
+      g.fillRect(-r * 0.35 + i * r * 0.2, -r * 0.5, r * 0.07, r * 0.6);
+    }
+    g.restore();
+    g.beginPath();
+    g.arc(-r * 0.5, -r * 0.08, r * 0.09, 0, Math.PI * 2);
+    g.fillStyle = '#fff';
+    g.fill();
+    g.beginPath();
+    g.arc(-r * 0.48, -r * 0.08, r * 0.045, 0, Math.PI * 2);
+    g.fillStyle = '#111';
+    g.fill();
+    g.restore();
+  }
+  function maleScatter(g, r) {
+    g.save();
+    // Wasserspritzer
+    g.fillStyle = 'rgba(160,220,255,0.9)';
+    for (let i = 0; i < 7; i++) {
+      const a = Math.PI + i * Math.PI / 6;
+      g.beginPath();
+      g.ellipse(Math.cos(a) * r * 0.6, r * 0.5 + Math.sin(a) * r * 0.25, r * 0.1, r * 0.22, a, 0, Math.PI * 2);
+      g.fill();
+    }
+    g.rotate(-0.7);
+    g.translate(0, -r * 0.05);
+    g.scale(1.05, 1.05);
+    maleFisch(g, r * 0.9, false);
+    g.restore();
+    g.save();
+    g.font = '700 ' + Math.round(r * 0.3) + 'px Fredoka, "Lilita One", sans-serif';
+    g.textAlign = 'center';
+    g.lineWidth = r * 0.08;
+    g.strokeStyle = '#003a6a';
+    g.strokeText('SCATTER', 0, r * 0.9);
+    g.fillStyle = '#ffe14a';
+    g.fillText('SCATTER', 0, r * 0.9);
+    g.restore();
+  }
+  // Kartenwerte auf Holzschildern
+  function maleSchild(g, t, r, farbe, dunkel) {
+    g.save();
+    SlotMal.rund(g, -r * 0.7, -r * 0.62, r * 1.4, r * 1.24, r * 0.18);
+    g.fillStyle = SlotMal.verlauf(g, 0, -r * 0.6, 0, r * 0.6, [[0, '#e0a868'], [1, '#9a5a24']]);
+    g.fill();
+    SlotMal.kontur(g, r * 0.05, '#4a2a0a');
+    g.strokeStyle = 'rgba(90,50,10,0.35)';
+    g.lineWidth = r * 0.03;
+    for (let i = -1; i <= 1; i++) {
+      g.beginPath();
+      g.moveTo(-r * 0.62, i * r * 0.32);
+      g.lineTo(r * 0.62, i * r * 0.32 + r * 0.04);
+      g.stroke();
+    }
+    g.font = '700 ' + Math.round(r * (t.length > 1 ? 0.95 : 1.1)) + 'px Fredoka, "Lilita One", sans-serif';
+    g.textAlign = 'center';
+    g.textBaseline = 'middle';
+    g.lineJoin = 'round';
+    g.lineWidth = r * 0.14;
+    g.strokeStyle = dunkel;
+    g.strokeText(t, 0, r * 0.06);
+    g.fillStyle = SlotMal.verlauf(g, 0, -r * 0.4, 0, r * 0.4, [[0, '#ffffff'], [1, farbe]]);
+    g.fillText(t, 0, r * 0.06);
+    g.restore();
+  }
+  function maler(g, s, r) {
+    switch (s) {
+      case 0: maleAngler(g, r); break;
+      case 1: maleAngel(g, r); break;
+      case 2: maleLibelle(g, r); break;
+      case 3: maleKiste(g, r); break;
+      case 4: maleFisch(g, r * 0.95, false); break;
+      case 5: maleSchild(g, 'A', r, '#ff5a7a', '#5a0018'); break;
+      case 6: maleSchild(g, 'K', r, '#4a9aff', '#0a2060'); break;
+      case 7: maleSchild(g, 'D', r, '#3ad08a', '#04381c'); break;
+      case 8: maleSchild(g, 'B', r, '#ffb02e', '#5a2a00'); break;
+      case 9: maleSchild(g, '10', r, '#c07aff', '#30085a'); break;
+      case 10: maleScatter(g, r); break;
+      case 11: maleFisch(g, r * 0.95, true); break;
+      default:
+    }
+  }
+  const speicher = new SymbolSpeicher(maler);
+
+  // ---------------------------------------------------------------- Ablauf
+  function cent(x) {
+    const e = A.einsatzRunde || (A.leiste ? A.leiste.einsatz() : 0);
+    return Math.floor(x * e * Waehrung.faktor(SPIEL) + 1e-6);
+  }
+  function merken() {
+    Offen.setzen(SPIEL, A.offen + (A.frei ? A.frei.summe : 0), 'gewinn');
+  }
+  function offenNehmen() {
+    if (A.offen > 0) {
+      Kasse.gutschrift(SPIEL, A.offen);
+      A.offen = 0;
+      merken();
+      Kasse.speichern();
+    }
+  }
+  function warteMs(ms) {
+    return new Promise(function (ok) {
+      setTimeout(ok, A.schnell ? Math.min(ms, 120) : ms);
+    });
+  }
+  function gewinnListe(erg) {
+    return erg.linien.map(function (l) {
+      const li = AL.LINIEN[l.linie];
+      const zellen = [];
+      for (let k = 0; k < l.n; k++) {
+        zellen.push([k, li[k]]);
+      }
+      return { feld: 0, zellen: zellen, linie: li.map(function (r, w) {
+        return [w, r];
+      }), farbe: ['#ffd34d', '#ff8a65', '#7cf2b0', '#7fd0ff', '#ffd34d', '#ff9fb4', '#9fc8ff', '#a8ffcf', '#ffcf80', '#e0b8ff'][l.sym], text: 'Linie ' + (l.linie + 1) + ': ' + euro(cent(l.x)) };
+    });
+  }
+  function banner(t, u) {
+    return new Promise(function (ok) {
+      const ov = qs(A.el, '.sl-overlay');
+      ov.innerHTML = '<div class="ag-banner"><div class="ag-b-t">' + t + '</div>' + (u ? '<div class="ag-b-u">' + u + '</div>' : '') + '<small>Tippen zum Weiter</small></div>';
+      let fertig = false;
+      const zu = function () {
+        if (fertig) {
+          return;
+        }
+        fertig = true;
+        ov.innerHTML = '';
+        ok();
+      };
+      ov.firstChild.addEventListener('click', zu);
+      setTimeout(zu, A.schnell ? 400 : 2400);
+    });
+  }
+  async function start() {
+    if (A.frei) {
+      A.schnell = true;
+      A.buehne.schnell();
+      return;
+    }
+    if (A.laeuft) {
+      A.buehne.schnell();
+      return;
+    }
+    offenNehmen();
+    const e = A.leiste.einsatz();
+    if (e > Konto.kredit) {
+      Hinweis.zeige('Zu wenig Guthaben – oben „Aufladen“ antippen oder Einsatz senken.', 'schlecht');
+      klang.spiele('FEHLER');
+      A.leiste.autoAus();
+      return;
+    }
+    if (!Kasse.abbuchen(SPIEL, e)) {
+      A.leiste.autoAus();
+      return;
+    }
+    Kasse.speichern();
+    A.einsatzRunde = e;
+    A.laeuft = true;
+    A.schnell = false;
+    A.leiste.gewinn(0);
+    A.leiste.sperren(true);
+    const d = AL.drehen(zufall, false);
+    const erg = AL.auswerten(d.feld);
+    klang.spiele('WALZE_LAUF', { gain: 0.45 });
+    A.buehne.zeigeGewinne([]);
+    // Spannung: zwei Scatter auf den ersten Walzen -> die restlichen Walzen laufen länger
+    let sc = 0;
+    for (let w = 0; w < 3; w++) {
+      if (d.feld[w].indexOf(AL.SCATTER) >= 0) {
+        sc++;
+      }
+    }
+    await A.buehne.drehen(0, d.feld, { dauer: sc >= 2 ? 1.5 : 0.7, verz: 0.15, extras: d.werte });
+    A.laeuft = false;
+    A.leiste.sperren(false);
+    if (erg.x > 0) {
+      const gw = gewinnListe(erg);
+      if (erg.scatterX > 0) {
+        const zellen = [];
+        d.feld.forEach(function (sp, w) {
+          sp.forEach(function (s, r) {
+            if (s === AL.SCATTER) {
+              zellen.push([w, r]);
+            }
+          });
+        });
+        gw.push({ feld: 0, zellen: zellen, farbe: '#7fd0ff', text: 'Scatter: ' + euro(cent(erg.scatterX)) });
+      }
+      A.buehne.zeigeGewinne(gw);
+      klang.spiele(erg.x >= 10 ? 'GEWINN_GROSS' : (erg.x >= 2 ? 'GEWINN_MITTEL' : 'GEWINN_KLEIN'));
+      A.offen += cent(erg.x);
+      merken();
+      A.leiste.gewinn(A.offen);
+      await GrossGewinn.zeige(qs(A.el, '.sl'), cent(erg.x), A.einsatzRunde);
+    }
+    if (erg.fs > 0) {
+      A.leiste.autoAus();
+      await warteMs(900);
+      await freispiele(erg.fs);
+    }
+    if (A.leiste.auto()) {
+      A.autoUhr = erg.x > 0 ? 1.1 : 0.4;
+    }
+  }
+  // ---------------------------------------------------------------- Freispiele
+  function infoZeigen() {
+    const f = A.frei;
+    const box = qs(A.el, '.ag-info');
+    if (!f) {
+      box.innerHTML = '';
+      return;
+    }
+    let haken = '';
+    for (let i = 0; i < 4; i++) {
+      haken += '<i class="' + (i < f.angler % 4 || (f.stufe >= 3 && f.angler >= 12) ? 'an' : '') + '"></i>';
+    }
+    box.innerHTML = '<span>FREISPIELE <b>' + f.rest + '</b></span><span class="ag-haken">' + haken + '</span><span>FISCHE <b>×' + AL.STUFEN[f.stufe] + '</b></span><span>GEWINN <b>' + euro(f.summe) + '</b></span>';
+  }
+  /** Fischwerte fliegen zum Angler (Linie mit Haken) */
+  async function einsammeln(fs) {
+    const f = A.buehne.felder[0];
+    const R = f.rect;
+    const anglerZ = [], fischZ = [];
+    fs.feld.forEach(function (sp, w) {
+      sp.forEach(function (s, r) {
+        if (s === AL.ANGLER) {
+          anglerZ.push([w, r]);
+        }
+        if (fs.werte[w][r]) {
+          fischZ.push([w, r, fs.werte[w][r]]);
+        }
+      });
+    });
+    A.fluege = [];
+    for (let a = 0; a < anglerZ.length; a++) {
+      const az = anglerZ[a];
+      for (let i = 0; i < fischZ.length; i++) {
+        const fz = fischZ[i];
+        A.fluege.push({ x0: R.x + (fz[0] + 0.5) * R.z, y0: R.y + (fz[1] + 0.5) * R.z, x1: R.x + (az[0] + 0.5) * R.z, y1: R.y + (az[1] + 0.5) * R.z, t: -i * 0.12 - a * 0.5,
+          text: euroKurz(cent(fz[2] * AL.STUFEN[A.frei.stufe])), z: R.z });
+      }
+    }
+    klang.spiele('EXPANDIEREN', { gain: 0.6 });
+    await warteMs(700 + fischZ.length * 120 + anglerZ.length * 500);
+    A.fluege = [];
+    klang.spiele('MUENZE');
+  }
+  async function freispiele(n) {
+    A.frei = { rest: n, gesamt: n, summe: 0, angler: 0, stufe: 0 };
+    A.schnell = false;
+    qs(A.el, '.ag').classList.add('frei');
+    klang.spiele('FREISPIELE');
+    await banner('<b>' + n + '</b> FREISPIELE', 'Der Angler sammelt alle Fischwerte ein!');
+    infoZeigen();
+    while (A.frei.rest > 0 && A.frei.summe < cent(AL.MAX)) {
+      A.frei.rest--;
+      infoZeigen();
+      const fs = AL.freiDrehung(zufall, A.frei.stufe);
+      klang.spiele('DREH', { gain: 0.45 });
+      A.buehne.zeigeGewinne([]);
+      await A.buehne.drehen(0, fs.feld, { dauer: 0.65, verz: 0.14, extras: fs.werte });
+      let c = cent(fs.erg.x);
+      if (fs.erg.x > 0) {
+        A.buehne.zeigeGewinne(gewinnListe(fs.erg));
+        klang.spiele('GEWINN_KLEIN');
+      }
+      if (fs.angler > 0) {
+        klang.spiele('JACKPOT', { gain: 0.5 });
+        if (fs.fische > 0) {
+          await einsammeln(fs);
+          c += cent(fs.sammeln);
+          A.texte = [{ text: 'GEFANGEN ' + euro(cent(fs.sammeln)), t: 0 }];
+        }
+      }
+      A.frei.summe += c;
+      merken();
+      A.leiste.gewinn(A.frei.summe);
+      // Jeder 4. Angler: +10 Freispiele, höherer Multiplikator
+      const vorher = A.frei.angler;
+      A.frei.angler += fs.angler;
+      infoZeigen();
+      void vorher;
+      while (A.frei.stufe < 3 && A.frei.angler >= (A.frei.stufe + 1) * 4) {
+        A.frei.stufe++;
+        A.frei.rest += 10;
+        A.frei.gesamt += 10;
+        klang.spiele('FREISPIELE');
+        await banner('+10 FREISPIELE', 'Fischwerte jetzt ×' + AL.STUFEN[A.frei.stufe]);
+        infoZeigen();
+      }
+      await warteMs(c > 0 ? 700 : 300);
+    }
+    const summe = Math.min(A.frei.summe, cent(AL.MAX));
+    A.frei = null;
+    A.offen += summe;
+    merken();
+    A.leiste.gewinn(A.offen);
+    qs(A.el, '.ag').classList.remove('frei');
+    infoZeigen();
+    await banner('GEWINN', euro(summe));
+    await GrossGewinn.zeige(qs(A.el, '.sl'), summe, A.einsatzRunde);
+    A.buehne.zeigeGewinne([]);
+    const d = AL.drehen(zufall, false);
+    A.buehne.felder[0].raster = d.feld;
+    A.buehne.felder[0].extras = d.werte;
+    A.buehne.dirty = true;
+  }
+
+  const html = '<div class="sl ag"><div class="ag-titel">ANGELGLÜCK</div><div class="ag-info"></div><div class="sl-haupt"><div class="sl-buehne ag-buehne"><canvas class="sl-cv"></canvas><canvas class="ag-fx"></canvas></div></div>'
+    + '<div class="sl-overlay"></div><div class="sl-leiste"></div></div>';
+  const regeln = function () {
+    const H = SlotHilfe, sp = speicher;
+    const e = A.einsatzRunde || (A.leiste ? A.leiste.einsatz() : 100), f = Waehrung.faktor(SPIEL);
+    const geld = function (x) {
+      return x > 0 ? euro(Math.floor(x * e * f + 1e-6)) : '–';
+    };
+    const zeilen = [1, 2, 3, 4, 5, 6, 7, 8, 9].map(function (i) {
+      return { sym: i, name: AL.NAMEN[i], werte: AL.PLAN[i].map(geld) };
+    });
+    const fische = AL.FISCHWERTE.map(function (x) {
+      return x[0] + ' ×';
+    }).join(' · ');
+    return H.reiter([
+      { titel: "So geht's", html: H.schritte([
+        '5 Walzen, 3 Reihen, <b>10 Gewinnlinien</b> von links. Einsatz wählen und den runden Knopf drücken.',
+        '<b>Fische</b> tragen Geldwerte (' + fische + ' Einsatz). Im Grundspiel sind sie normale Symbole.',
+        '<b>3, 4 oder 5 Scatter</b> (springender Barsch) irgendwo = <b>10, 15 oder 20 Freispiele</b> und ' + geld(2) + ' / ' + geld(20) + ' / ' + geld(200) + '.',
+        'In den Freispielen erscheint der <b>Angler</b> (Joker). Jeder Angler im Feld <b>sammelt alle Fischwerte</b> ein.',
+        'Jeder <b>4. Angler</b> bringt <b>+10 Freispiele</b> und erhöht die Fischwerte: <b>×2</b>, dann <b>×3</b>, dann <b>×10</b>.'
+      ]) },
+      { titel: 'Gewinnplan', html: '<p>Gewinne je Linie bei <b>' + euro(e) + '</b> Einsatz:</p>' + H.plan(sp, ['2', '3', '4', '5'], zeilen) },
+      { titel: 'Freispiele', html: '<div class="sh-bilder">' + H.bild(sp, 10, 56) + H.bild(sp, 0, 56) + H.bild(sp, 11, 56) + '</div>' + H.schritte([
+        'Der Angler ersetzt alle Symbole außer dem Scatter und kommt nur in den Freispielen.',
+        'Landen Angler und Fische gleichzeitig, holt jeder Angler die Summe aller Fischwerte (× Multiplikator).',
+        'Die Haken oben zählen die Angler: 4 Haken = +10 Freispiele und nächster Multiplikator (höchstens dreimal).'
+      ]) },
+      { titel: 'Quote', html: '<p>Auszahlungsquote etwa <b>96,7 %</b> (Grundspiel etwa 63 %, Freispiele etwa 34 %; per Simulation über Millionen Drehungen). Freispiele kommen etwa alle 185 Drehungen, im Schnitt etwa 62 × Einsatz (Median etwa 25 ×). Höchstgewinn 2.100 × Einsatz. Kein Risiko-Spiel (wie beim Vorbild).</p>' }
+    ]);
+  };
+  function fxZeichnen() {
+    const cv = qs(A.el, '.ag-fx');
+    const r = cv.getBoundingClientRect();
+    if (!r.width) {
+      return;
+    }
+    const d = Math.min(window.devicePixelRatio || 1, 2);
+    if (cv.width !== Math.round(r.width * d)) {
+      cv.width = Math.round(r.width * d);
+      cv.height = Math.round(r.height * d);
+    }
+    const g = cv.getContext('2d');
+    g.setTransform(1, 0, 0, 1, 0, 0);
+    g.clearRect(0, 0, cv.width, cv.height);
+    if (!(A.fluege && A.fluege.length) && !(A.texte && A.texte.length)) {
+      return;
+    }
+    // Buehnen-Koordinaten (CSS-Pixel des Walzen-Canvas) -> Effekt-Canvas
+    const c0 = qs(A.el, '.ag-buehne .sl-cv').getBoundingClientRect();
+    g.setTransform(d, 0, 0, d, (c0.left - r.left) * d, (c0.top - r.top) * d);
+    (A.fluege || []).forEach(function (fl) {
+      const u = Math.max(0, Math.min(1, fl.t / 0.55));
+      if (fl.t < 0) {
+        return;
+      }
+      const e = u * u * (3 - 2 * u);
+      const x = fl.x0 + (fl.x1 - fl.x0) * e, y = fl.y0 + (fl.y1 - fl.y0) * e - Math.sin(u * Math.PI) * fl.z * 0.6;
+      // Angelschnur
+      g.strokeStyle = 'rgba(255,255,255,0.7)';
+      g.lineWidth = 2;
+      g.beginPath();
+      g.moveTo(fl.x1, fl.y1 - fl.z * 0.3);
+      g.quadraticCurveTo((fl.x1 + x) / 2, Math.min(fl.y1, y) - fl.z * 0.6, x, y);
+      g.stroke();
+      if (u < 1) {
+        g.font = '700 ' + Math.round(fl.z * 0.22) + 'px Fredoka, "Lilita One", sans-serif';
+        g.textAlign = 'center';
+        g.textBaseline = 'middle';
+        g.lineWidth = 4;
+        g.strokeStyle = '#003a6a';
+        g.strokeText(fl.text, x, y);
+        g.fillStyle = '#ffe14a';
+        g.fillText(fl.text, x, y);
+      }
+    });
+    const R = A.buehne.felder[0] && A.buehne.felder[0].rect;
+    (A.texte || []).forEach(function (t) {
+      if (!R) {
+        return;
+      }
+      const a = Math.max(0, 1 - t.t / 1.6);
+      g.globalAlpha = a;
+      g.font = '700 ' + Math.round(R.z * 0.32) + 'px Fredoka, "Lilita One", sans-serif';
+      g.textAlign = 'center';
+      g.lineWidth = 6;
+      g.strokeStyle = '#003a6a';
+      const y = R.y + R.h / 2 - t.t * 30;
+      g.strokeText(t.text, R.x + R.w / 2, y);
+      g.fillStyle = '#ffe14a';
+      g.fillText(t.text, R.x + R.w / 2, y);
+      g.globalAlpha = 1;
+    });
+  }
+  function init(el) {
+    A.el = el;
+    A.buehne = new WalzenBuehne(qs(el, '.sl-cv'), {
+      speicher: speicher,
+      zufallSym: function () {
+        return AL.wahl(zufall, A.frei ? AL.KONF.fw.map(function (w, i) {
+          return i === 0 ? 0.6 : w;
+        }).concat([0.4]) : AL.KONF.w.concat([0.4]));
+      },
+      extra: function (g, f, w, r, x, y, z, v) {
+        if (!v || f.raster[w][r] !== AL.FISCH) {
+          return;
+        }
+        const txt = euroKurz(cent(v * (A.frei ? AL.STUFEN[A.frei.stufe] : 1)));
+        g.save();
+        g.font = '700 ' + Math.round(Math.min(z * 0.24, z * 1.15 / Math.max(3, txt.length))) + 'px Fredoka, "Lilita One", sans-serif';
+        g.textAlign = 'center';
+        g.textBaseline = 'middle';
+        g.lineWidth = Math.max(3, z * 0.05);
+        g.strokeStyle = '#003a10';
+        g.strokeText(txt, x + z / 2, y + z * 0.82);
+        g.fillStyle = '#fff36a';
+        g.fillText(txt, x + z / 2, y + z * 0.82);
+        g.restore();
+      },
+      hintergrund: function (g, f, x, y, w, h) {
+        const z = f.rect.z;
+        for (let i = 0; i < f.walzen; i++) {
+          g.fillStyle = i % 2 ? 'rgba(255,255,255,0.10)' : 'rgba(255,255,255,0.04)';
+          g.fillRect(x + i * z, y, z, h);
+        }
+      }
+    });
+    const d = AL.drehen(zufall, false);
+    A.buehne.setzeFelder([{ walzen: 5, reihen: 3, raster: d.feld, extras: d.werte }]);
+    A.leiste = SlotLeiste({
+      el: el, spiel: SPIEL, einsaetze: [10, 20, 50, 100, 200, 500, 1000, 2000], start: start, risiko: function () {},
+      auto: function (an) {
+        if (an && !A.laeuft && !A.frei) {
+          start();
+        }
+      },
+      einsatzWechsel: function () {
+        if (A.frei) {
+          return false;
+        }
+        setTimeout(function () {
+          A.einsatzRunde = 0;
+          A.buehne.dirty = true;
+        }, 0);
+        return true;
+      }
+    });
+    qs(el, '.sl-risiko').hidden = true;
+  }
+  function vorschau(g, p, zeit) {
+    g.fillStyle = radial(g, p.x + p.w / 2, p.y, Math.max(p.w, p.h), [[0, C(120, 210, 255)], [0.6, C(30, 120, 190)], [1, C(10, 50, 100)]]);
+    g.fillRect(p.x, p.y, p.w, p.h);
+    const s = Math.min(p.h * 0.42, p.w * 0.18);
+    const syms = [4, 0, 10, 11, 1];
+    for (let i = 0; i < 5; i++) {
+      const sk = !Stil.sparmodus && i === Math.floor(zeit * 1.4) % 5 ? 1.12 : 1;
+      const x = p.x + p.w / 2 + (i - 2) * s * 1.04, y = p.y + p.h * 0.52 + Math.sin(zeit * 2 + i) * p.h * 0.03;
+      g.drawImage(speicher.bild(syms[i], Math.round(s * 1.4)), x - s * sk / 2, y - s * sk / 2, s * sk, s * sk);
+    }
+  }
+  const sz = domSzene({
+    name: SPIEL, titel: 'ANGELGLÜCK', klasse: 'slot', html: html, regeln: regeln, init: init, hilfeStart: true,
+    betreten: function () {
+      A.buehne.layout();
+    },
+    verlassen: function () {
+      A.leiste.autoAus();
+      offenNehmen();
+    },
+    darfVerlassen: function () {
+      return !A.laeuft && !A.frei;
+    },
+    layout: function () {
+      if (A.buehne) {
+        A.buehne.layout();
+      }
+    },
+    update: function (dt) {
+      A.buehne.update(dt);
+      A.buehne.zeichne();
+      (A.fluege || []).forEach(function (f) {
+        f.t += dt;
+      });
+      if (A.texte && A.texte.length) {
+        A.texte.forEach(function (t) {
+          t.t += dt;
+        });
+        A.texte = A.texte.filter(function (t) {
+          return t.t < 1.6;
+        });
+      }
+      fxZeichnen();
+      if (A.autoUhr > 0) {
+        A.autoUhr -= dt;
+        if (A.autoUhr <= 0 && A.leiste.auto() && !A.laeuft && !A.frei) {
+          start();
+        }
+      }
+    },
+    ruhig: function () {
+      return !A.laeuft && !A.frei && !A.buehne.gewinne.length && !A.leiste.auto();
+    },
+    taste: function (e) {
+      if (e.code === 'Space' && !e.repeat) {
+        start();
+      }
+    }
+  });
+  sz.vorschau = vorschau;
+  sz.quoteText = function () {
+    return 'QUOTE 96,7 %';
+  };
+  sz.test = { A: A, AL: AL, start: start, freispiele: freispiele };
+  NEUE_SZENEN.SzeneAngelglueck = sz;
+  return sz;
+})();
 // ---- main.js
 // ====================================================================================
 // main.js – Spielhalle: Szenenwechsel (Spielauswahl, Turmspitze, Roulette, Black Jack, Sonnenbuch),
@@ -38091,7 +39043,7 @@ function starte() {
   SZENEN.goldroulette = SzeneGoldroulette;
   SZENEN.schatzstollen = SzeneStollen;
   [['poker', 'SzenePoker'], ['zaubermoench', 'SzeneZaubermoench'], ['niljuwelen', 'SzeneNiljuwelen'], ['sonnenernte', 'SzeneSonnenernte'],
-    ['bonbonregen', 'SzeneBonbonregen']].forEach(function (x) {
+    ['bonbonregen', 'SzeneBonbonregen'], ['angelglueck', 'SzeneAngelglueck']].forEach(function (x) {
     const s = NEUE_SZENEN[x[1]];
     if (s) {
       SZENEN[x[0]] = s;
