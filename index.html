@@ -2222,6 +2222,15 @@ input, textarea, select {
 .sw-feed small { color: var(--sw-text); font-size: 11px; }
 .sw-feed b { color: #fff; font-size: 13px; }
 .sw-feed span { color: var(--sw-text); font-size: 12.5px; }
+
+/* Live-Wetten */
+.sw-livewette { font-size: 12.5px; color: var(--sw-text); margin: 0 0 10px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.sw-s-sel span.sw-live { display: inline-block; font-size: 9.5px; padding: 1px 5px; }
+.sw-s-sel .sw-s-sperre { color: var(--sw-gelb); white-space: normal; }
+.sw-s-sel em i { font-style: normal; font-size: 11px; margin-right: 3px; }
+.sw-hoch { color: #22c55e; }
+.sw-runter { color: #ef4444; }
+.sw-w-lv { color: #f43f5e !important; }
 /* ---------------------------------------------------------------- Walzenspiele (gemeinsam) */
 .ds-slot .ds-inhalt { display: flex; flex-direction: column; overflow: hidden; }
 .sl { position: relative; display: flex; flex-direction: column; flex: 1; min-height: 0; height: 100%; }
@@ -20683,7 +20692,7 @@ function turmKonfAnwenden() {
 // Die Seite fragt regelmäßig die Versionsdatei ab. Gibt es eine neue Version (oder hat der Admin
 // „Alle Geräte neu laden“ gedrückt), lädt sie neu – sofort, wenn gerade nichts läuft, sonst nach der
 // laufenden Runde (spätestens nach 3 Minuten; offene Gewinne sind gespeichert und werden gutgeschrieben).
-const BUILD_VERSION = '20261012090927';
+const BUILD_VERSION = '20261012094741';
 const Aktualisierung = (function () {
   const geladen = Date.now();
   let grund = '', seit = 0, uhr = 0, letzte = 0, selbst = 0;
@@ -26859,7 +26868,7 @@ const SzeneLobby = (function () {
     {
       id: 'sportwetten', szene: 'SzeneSportwetten', titel: 'SPORTWETTEN', unter: 'ECHTE SPIELE · 27 LIGEN · LIVE',
       text: 'Echte Spiele mit echten Ergebnissen: Bundesliga, Premier League, Champions League, NBA, NHL, ATP und WTA. 1X2, Doppelte Chance, Über/Unter, Torschützen, Kombi- und Systemwetten.',
-      tags: ['ECHTE SPIELE', 'KOMBIWETTEN'], farbe: C(0, 200, 90),
+      tags: ['ECHTE SPIELE', 'LIVE-WETTEN', 'KOMBIWETTEN'], farbe: C(0, 200, 90),
       punkte: ['Über 40 Märkte je Spiel', 'Live-Stände und echte Endergebnisse', 'Benachrichtigungen zu deinen Wetten']
     }
   ];
@@ -33684,6 +33693,41 @@ const SportLogik = (function () {
     return (lo + hi) / 2;
   }
 
+  /** Sicherer Wert (z. B. schon gefallene Punkte) und verschobene Verteilung (bisheriger Stand + Rest). */
+  function dPunkt(v) {
+    return { o: v, p: [1] };
+  }
+  function verschieben(d, k) {
+    return { o: d.o + k, p: d.p };
+  }
+  function dSumme(liste) {
+    return liste.reduce(function (a, b) {
+      return a ? dFalte(a, b) : b;
+    }, null);
+  }
+  function mittel(d) {
+    let s = 0;
+    for (let i = 0; i < d.p.length; i++) {
+      s += d.p[i] * (d.o + i);
+    }
+    return s;
+  }
+  /** Restzeit aus der Spieluhr („5:23“ oder „45.2“ Sekunden). */
+  function uhrSek(t) {
+    const x = String(t || '').trim();
+    let r = /^(\d+):(\d+(?:\.\d+)?)$/.exec(x);
+    if (r) {
+      return Number(r[1]) * 60 + Number(r[2]);
+    }
+    r = /^(\d+(?:\.\d+)?)$/.exec(x);
+    return r ? Number(r[1]) : null;
+  }
+  /** Spielminute im Fußball („31'“, „45'+2'“). */
+  function uhrMinute(t) {
+    const r = /^(\d+)\D*(?:\+\s*(\d+))?/.exec(String(t || ''));
+    return r ? Number(r[1]) + Number(r[2] || 0) : null;
+  }
+
   // ---------------------------------------------------------------- Sportarten und Ligen (ESPN-Pfade)
   const SPORTARTEN = [
     { id: 'fussball', name: 'Fußball', icon: '⚽' },
@@ -33771,8 +33815,51 @@ const SportLogik = (function () {
     });
     return kurz ? 30000 : 300000;
   }
-  function scoreboardUrl(liga, von, bis) {
-    return BASIS + liga.pfad + '/scoreboard?limit=500&dates=' + ymd(von) + (bis ? '-' + ymd(bis) : '');
+  /** ESPN zählt Spieltage nach US-Ostküstenzeit; Abfragen über mehrere Tage lehnt die Schnittstelle ab – daher je Tag eine Abfrage. */
+  function espnTag(ms) {
+    return ymd(ms - 4 * 3600000);
+  }
+  function tagUrl(liga, tag) {
+    return BASIS + liga.pfad + '/scoreboard?limit=500&dates=' + tag;
+  }
+  const fokusZeit = {};
+  /** Die gerade angesehene Liga lädt zusätzlich die ganze kommende Woche. */
+  function fokus(id) {
+    if (!LIGA[id]) {
+      return;
+    }
+    const jetzt = Date.now();
+    fokusZeit[id] = jetzt;
+    const z = stand(id);
+    if (!z.laedt && jetzt - (z.wocheZeit || 0) > 1800000 && jetzt - (z.wocheVersuch || 0) > 60000) {
+      z.wocheVersuch = jetzt;
+      laden(id, true);
+    }
+  }
+  function tageFuer(liga, z, voll, jetzt) {
+    const tage = [];
+    const dazu = function (ms) {
+      const t = espnTag(ms);
+      if (tage.indexOf(t) < 0) {
+        tage.push(t);
+      }
+    };
+    if (!voll) {
+      // laufende Spiele: nur heute (und spät am Abend begonnene von gestern)
+      dazu(jetzt);
+      dazu(jetzt - 8 * 3600000);
+      return tage;
+    }
+    [-1, 0, 1, 2].forEach(function (d) {
+      dazu(jetzt + d * TAG);
+    });
+    if (fokusZeit[liga.id] && jetzt - fokusZeit[liga.id] < 1800000 && jetzt - (z.wocheZeit || 0) > 1800000) {
+      [3, 4, 5, 6, 7].forEach(function (d) {
+        dazu(jetzt + d * TAG);
+      });
+      z.woche = true;
+    }
+    return tage;
   }
   function laden(id, erzwingen) {
     const liga = LIGA[id];
@@ -33787,16 +33874,34 @@ const SportLogik = (function () {
       return Promise.resolve();
     }
     const jetzt = Date.now();
+    const voll = erzwingen || !z.ok || jetzt - (z.vollZeit || 0) > 280000;
+    z.woche = false;
     // Tennis: aktuelle Turniere ohne Datum (dort stehen die angesetzten Matches)
-    const url = liga.sport === 'tennis' ? BASIS + liga.pfad + '/scoreboard' : scoreboardUrl(liga, jetzt - TAG, jetzt + 7 * TAG);
-    z.laedt = holer(url).then(function (j) {
-      verarbeiten(liga, j);
-      z.ok = true;
-      z.okZeit = Date.now();
-      z.fehler = '';
-    }).catch(function (e) {
-      z.fehler = String((e && e.message) || e || 'Fehler');
-    }).then(function () {
+    const urls = liga.sport === 'tennis' ? [BASIS + liga.pfad + '/scoreboard'] : tageFuer(liga, z, voll, jetzt).map(function (t) {
+      return tagUrl(liga, t);
+    });
+    let gut = 0, letzterFehler = '';
+    z.laedt = Promise.all(urls.map(function (u) {
+      return holer(u).then(function (j) {
+        verarbeiten(liga, j);
+        gut++;
+      }).catch(function (e) {
+        letzterFehler = String((e && e.message) || e || 'Fehler');
+      });
+    })).then(function () {
+      if (gut) {
+        z.ok = true;
+        z.okZeit = Date.now();
+        z.fehler = '';
+        if (voll) {
+          z.vollZeit = Date.now();
+        }
+        if (z.woche) {
+          z.wocheZeit = Date.now();
+        }
+      } else {
+        z.fehler = letzterFehler || 'Fehler';
+      }
       z.zeit = Date.now();
       z.laedt = null;
       melden();
@@ -33817,16 +33922,22 @@ const SportLogik = (function () {
     if (!liga || !(start > 0)) {
       return;
     }
-    const key = id + '|' + ymd(start);
+    const key = id + '|' + espnTag(start);
     if (nachZeit[key] && Date.now() - nachZeit[key] < 120000) {
       return;
     }
     nachZeit[key] = Date.now();
-    holer(scoreboardUrl(liga, start - TAG, start + TAG)).then(function (j) {
-      verarbeiten(liga, j);
-      melden();
-    }).catch(function () {
-      // beim nächsten Mal
+    const tage = [espnTag(start)];
+    if (ymd(start) !== tage[0]) {
+      tage.push(ymd(start));
+    }
+    tage.forEach(function (t) {
+      holer(liga.sport === 'tennis' ? BASIS + liga.pfad + '/scoreboard?dates=' + t : tagUrl(liga, t)).then(function (j) {
+        verarbeiten(liga, j);
+        melden();
+      }).catch(function () {
+        // beim nächsten Mal
+      });
     });
   }
 
@@ -34012,7 +34123,24 @@ const SportLogik = (function () {
       m.qsig = sig;
       neuBewerten(m);
     }
+    // Live: jede Änderung von Stand oder Spielzeit ergibt neue Quoten; nach einem Tor kurz keine Wetten
+    const S = SPORT[m.sport];
+    const lsig = m.st === 'live' ? 'live|' + S.liveSig(m) : m.st;
+    if (lsig !== m.lsig) {
+      const tsig = m.st === 'live' && S.torSig ? S.torSig(m) : '';
+      if (tsig && m.tsig && tsig !== m.tsig) {
+        m.sperre = Date.now() + SPERRE;
+      }
+      m.tsig = tsig;
+      m.lsig = lsig;
+      m.lmodell = undefined;
+      m.maerkte = null;
+      m.mIdx = null;
+      m.kz = null;
+      m.mv = (m.mv || 0) + 1;
+    }
   }
+  const SPERRE = 30000;
   function verarbeiten(liga, j) {
     ((j && j.events) || []).forEach(function (ev) {
       if (liga.sport === 'tennis') {
@@ -34031,16 +34159,40 @@ const SportLogik = (function () {
   }
   function neuBewerten(m) {
     m.modell = null;
+    m.lmodell = undefined;
     m.maerkte = null;
     m.mIdx = null;
     m.kz = null;
     m.mv = (m.mv || 0) + 1;
   }
+  /** Modell vor dem Anpfiff; während des Spiels das Live-Modell (Stand + Restzeit), sofern es eines gibt. */
   function modell(m) {
     if (!m.modell) {
       m.modell = SPORT[m.sport].modell(m);
     }
+    if (m.st === 'live') {
+      const l = liveModell(m);
+      if (l) {
+        return l;
+      }
+    }
     return m.modell;
+  }
+  function liveModell(m) {
+    if (m.st !== 'live') {
+      return null;
+    }
+    if (!m.modell) {
+      m.modell = SPORT[m.sport].modell(m);
+    }
+    if (m.lmodell === undefined) {
+      try {
+        m.lmodell = SPORT[m.sport].liveModell(m, m.modell) || null;
+      } catch (e) {
+        m.lmodell = null;
+      }
+    }
+    return m.lmodell;
   }
   /** Buchmacher-Quoten ohne Marge (proportional). */
   function geraeumt(q) {
@@ -34148,9 +34300,9 @@ const SportLogik = (function () {
     }
     return kaderCache[key];
   }
-  /** Lädt die Kader beider Teams (nur Fußball, nur vor dem Anpfiff) – danach gibt es Torschützenwetten. */
+  /** Lädt die Kader beider Teams (nur Fußball, vor und während des Spiels) – danach gibt es Torschützenwetten. */
   function kader(m) {
-    if (!m || m.sport !== 'fussball' || m.kader || m.kaderLaedt || m.st !== 'offen') {
+    if (!m || m.sport !== 'fussball' || m.kader || m.kaderLaedt || (m.st !== 'offen' && m.st !== 'live')) {
       return;
     }
     m.kaderLaedt = true;
@@ -34307,6 +34459,55 @@ const SportLogik = (function () {
     }
     return best;
   }
+  /** Torliste mit Teams; Eigentore stehen je nach Quelle beim begünstigten Team oder beim Team des Spielers –
+   *  es zählt die Variante, die zum Spielstand passt (sonst null). */
+  function torListe(m) {
+    const H = m.heim, G = m.gast;
+    if (H.score === null || G.score === null) {
+      return null;
+    }
+    const tore = m.details.filter(function (d) {
+      return d.tor && !d.so;
+    });
+    let liste = null;
+    [false, true].some(function (dreh) {
+      const l = tore.map(function (d) {
+        let t = d.team === H.id ? 'h' : (d.team === G.id ? 'a' : null);
+        if (dreh && d.og && t) {
+          t = t === 'h' ? 'a' : 'h';
+        }
+        return { t: t, s: d.og ? null : (d.ath && d.ath.id) || null, og: d.og, b: d.min.b, x: d.min.x };
+      });
+      if (l.filter(function (t) {
+        return t.t === 'h';
+      }).length === H.score && l.filter(function (t) {
+        return t.t === 'a';
+      }).length === G.score) {
+        liste = l;
+        return true;
+      }
+      return false;
+    });
+    if (liste) {
+      liste.sort(function (p, q) {
+        return p.b - q.b || p.x - q.x;
+      });
+    }
+    return liste;
+  }
+  function roteKarten(m) {
+    let h = 0, a = 0;
+    m.details.forEach(function (d) {
+      if (d.rot) {
+        if (d.team === m.heim.id) {
+          h++;
+        } else if (d.team === m.gast.id) {
+          a++;
+        }
+      }
+    });
+    return [h, a];
+  }
   const Fussball = {
     modell: function (m) {
       const q = m.quoten;
@@ -34348,6 +34549,84 @@ const SportLogik = (function () {
         KH: dPoisson(2.0 * Math.exp(-0.12 * st), 12), KA: dPoisson(2.2 * Math.exp(0.12 * st), 12)
       };
     },
+    liveSig: function (m) {
+      return [m.heim.score, m.gast.score, m.periode, m.uhr, m.statusName, m.details.length, roteKarten(m).join(':')].join('|');
+    },
+    torSig: function (m) {
+      return m.heim.score + ':' + m.gast.score + '|' + roteKarten(m).join(':');
+    },
+    /** Live: bisheriger Stand plus Resttore in der verbleibenden Spielzeit (Rote Karten ändern die Torraten). */
+    liveModell: function (m, B) {
+      const H = m.heim, G = m.gast;
+      if (H.score === null || G.score === null || m.periode > 2 || /EXTRA|_ET\b|AET|PEN|SHOOTOUT|OVERTIME/.test(m.statusName)) {
+        return null;
+      }
+      const pause = /HALF_?TIME/.test(m.statusName) || /^(HT|Halftime)$/i.test(m.info);
+      const t = uhrMinute(m.uhr);
+      if (t === null && !pause) {
+        return null;
+      }
+      const periode = pause ? 2 : (m.periode || (t > 45 ? 2 : 1));
+      let f1 = 0, f2 = 1;
+      if (!pause && periode === 1) {
+        f1 = klemm((t < 45 ? 47 - t : Math.max(0.5, 2.5 - (t - 45))) / 47, 0, 1);
+      } else if (!pause) {
+        f2 = klemm((t < 90 ? 94 - Math.max(45, t) : Math.max(0.5, 4.5 - (t - 90))) / 49, 0, 1);
+      }
+      const rot = roteKarten(m), k = rot[0] - rot[1];
+      const fH = Math.pow(k > 0 ? 0.72 : 1.22, Math.abs(k)), fA = Math.pow(k > 0 ? 1.22 : 0.72, Math.abs(k));
+      const r1h = B.lh * 0.45 * f1 * fH, r1a = B.la * 0.45 * f1 * fA, r2h = B.lh * 0.55 * f2 * fH, r2a = B.la * 0.55 * f2 * fA;
+      const liste = torListe(m);
+      let H1, A1, H2, A2, teilOk = true;
+      if (periode === 1) {
+        H1 = verschieben(dPoisson(r1h, 9), H.score);
+        A1 = verschieben(dPoisson(r1a, 9), G.score);
+        H2 = dPoisson(r2h, 9);
+        A2 = dPoisson(r2a, 9);
+      } else {
+        let h1 = 0, a1 = 0;
+        if (liste) {
+          liste.forEach(function (x) {
+            if (x.b <= 45) {
+              if (x.t === 'h') {
+                h1++;
+              } else {
+                a1++;
+              }
+            }
+          });
+        } else {
+          teilOk = false;
+        }
+        H1 = dPunkt(h1);
+        A1 = dPunkt(a1);
+        H2 = verschieben(dPoisson(r2h, 9), H.score - h1);
+        A2 = verschieben(dPoisson(r2a, 9), G.score - a1);
+      }
+      const lh = r1h + r2h, la = r1a + r2a;
+      return Object.assign({}, B, {
+        live: true, lh: lh, la: la, rho: 0, p00: Math.exp(-lh - la), H1: H1, A1: A1, H2: H2, A2: A2, teilOk: teilOk,
+        liste: liste, toreOk: !!liste && !liste.some(function (x) {
+          return !x.og && !x.s;
+        })
+      });
+    },
+    linien: {
+      nt: function (m, n) {
+        const H = m.heim.name, G = m.gast.name;
+        return M('nt@' + n, n + '. Tor', 'Beliebt', 'analytisch', MARGE.haupt, [
+          A('1', H, function (s) {
+            return s.tore.length >= n && s.tore[n - 1].t === 'h' ? 1 : 0;
+          }),
+          A('0', 'Kein weiteres Tor', function (s) {
+            return s.tore.length < n ? 1 : 0;
+          }),
+          A('2', G, function (s) {
+            return s.tore.length >= n && s.tore[n - 1].t === 'a' ? 1 : 0;
+          })
+        ], { b: 'hz', linie: n });
+      }
+    },
     dims: {
       haupt: function (md) {
         const z = [];
@@ -34360,10 +34639,11 @@ const SportLogik = (function () {
             }
             for (let c = 0; c < H2.length; c++) {
               for (let d = 0; d < A2.length; d++) {
-                const h = a + c, g = b + d;
-                const p = p1 * H2[c] * A2[d] * (h < 2 && g < 2 ? dcTau(h, g, md.lh, md.la, md.rho) : 1);
+                const h1 = md.H1.o + a, a1 = md.A1.o + b, h2 = md.H2.o + c, a2 = md.A2.o + d;
+                const h = h1 + h2, g = a1 + a2;
+                const p = p1 * H2[c] * A2[d] * (md.rho && h < 2 && g < 2 ? dcTau(h, g, md.lh, md.la, md.rho) : 1);
                 if (p >= 1e-11) {
-                  z.push([p, { h1: a, a1: b, h2: c, a2: d, h: a + c, a: b + d }]);
+                  z.push([p, { h1: h1, a1: a1, h2: h2, a2: a2, h: h, a: g }]);
                 }
               }
             }
@@ -34413,7 +34693,7 @@ const SportLogik = (function () {
       const tore = function (s) {
         return s.h + s.a;
       };
-      const HZ = { b: 'hz' };
+      const HZ = { b: 'hz', teil: 1 };
       const L = [];
       L.push(dreiWeg('1x2', 'Endergebnis (1X2)', 'Beliebt', 'haupt', MARGE.haupt, hh, aa, [H, G]));
       L.push(M('dc', 'Doppelte Chance', 'Beliebt', 'haupt', MARGE.haupt, [
@@ -34561,16 +34841,33 @@ const SportLogik = (function () {
       // ohne Tor: aus dem korrigierten Modell (P(0:0)); ohne Torschützen: zusätzlich nur Eigentore
       const p0 = md.p00, p0S = Math.min(0.999, p0 * Math.exp(lam * EIGENTOR));
       const ts = [], ets = [];
-      if (m.kader) {
+      // live: wer schon getroffen hat, ist entschieden; „Erster Torschütze“ nur, solange noch kein Spieler getroffen hat
+      const schon = {};
+      (md.liste || []).forEach(function (t) {
+        if (t.s) {
+          schon[t.s] = true;
+        }
+      });
+      const ohneTor = !md.live || !(md.liste || []).some(function (t) {
+        return !t.og;
+      });
+      if (m.kader && (!md.live || md.toreOk)) {
         [['h', m.kader.h, md.lh, m.heim.kurz || H], ['a', m.kader.a, md.la, m.gast.kurz || G]].forEach(function (x) {
           x[1].forEach(function (sp) {
+            if (schon[sp.id]) {
+              return;
+            }
             const rate = x[2] * sp.anteil;
             const info = sp.pos + ' · ' + x[3] + (sp.tore ? ' · ' + sp.tore + (sp.tore === 1 ? ' Saisontor' : ' Saisontore') : '');
             ts.push(Object.assign(Fussball.schuetze(x[0] + ':' + sp.id, sp.name, false), { p: 1 - Math.exp(-rate), info: info }));
-            ets.push(Object.assign(Fussball.schuetze(x[0] + ':' + sp.id, sp.name, true), { p: rate / lamS * (1 - p0S), info: info }));
+            if (ohneTor) {
+              ets.push(Object.assign(Fussball.schuetze(x[0] + ':' + sp.id, sp.name, true), { p: rate / lamS * (1 - p0S), info: info }));
+            }
           });
         });
-        ets.push(Object.assign(Fussball.schuetze('kein', '', true), { p: p0S }));
+        if (ohneTor) {
+          ets.push(Object.assign(Fussball.schuetze('kein', '', true), { p: p0S }));
+        }
       }
       const bau = function (erster) {
         return function (k) {
@@ -34579,7 +34876,15 @@ const SportLogik = (function () {
       };
       L.push(M('ts', 'Torschütze (jederzeit)', 'Torschützen', 'analytisch', MARGE.spezial, ts, { b: 'tore', auswahlAus: bau(false) }));
       L.push(M('ets', 'Erster Torschütze', 'Torschützen', 'analytisch', MARGE.spezial, ets, { b: 'tore', auswahlAus: bau(true) }));
-      L.push(M('erstestor', 'Erstes Tor', 'Torschützen', 'analytisch', MARGE.normal, [
+      if (md.live && md.liste) {
+        // live: wer schießt das nächste Tor?
+        const nt = Fussball.linien.nt(m, md.liste.length + 1);
+        nt.a[0].p = md.lh / lam * (1 - p0);
+        nt.a[1].p = p0;
+        nt.a[2].p = md.la / lam * (1 - p0);
+        L.splice(1, 0, nt);
+      }
+      L.push(M('erstestor', 'Erstes Tor', 'Torschützen', 'analytisch', MARGE.normal, md.live && m.heim.score + m.gast.score > 0 ? [] : [
         Object.assign(A('1', H, function (s) {
           return s.tore.length && s.tore[0].t === 'h' ? 1 : 0;
         }), { p: md.lh / lam * (1 - p0) }),
@@ -34616,35 +34921,10 @@ const SportLogik = (function () {
       if (H.score === null || G.score === null) {
         return { leer: true };
       }
-      const tore = m.details.filter(function (d) {
-        return d.tor && !d.so;
-      });
-      // Eigentore: je nach Quelle beim begünstigten Team oder beim Team des Spielers – es zählt die Variante, die zum Endstand passt
-      let liste = null;
-      [false, true].some(function (dreh) {
-        const l = tore.map(function (d) {
-          let t = d.team === H.id ? 'h' : (d.team === G.id ? 'a' : null);
-          if (dreh && d.og && t) {
-            t = t === 'h' ? 'a' : 'h';
-          }
-          return { t: t, s: d.og ? null : (d.ath && d.ath.id) || null, og: d.og, b: d.min.b, x: d.min.x };
-        });
-        if (l.filter(function (t) {
-          return t.t === 'h';
-        }).length === H.score && l.filter(function (t) {
-          return t.t === 'a';
-        }).length === G.score) {
-          liste = l;
-          return true;
-        }
-        return false;
-      });
+      const liste = torListe(m);
       const verl = /AET|PEN|EXTRA|_ET\b/.test(m.statusName) || m.periode > 2;
       const z = { h: H.score, a: G.score, tore: [], ok: { hz: false, tore: false, ecken: false, karten: false } };
       if (liste) {
-        liste.sort(function (p, q) {
-          return p.b - q.b || p.x - q.x;
-        });
         const reg = liste.filter(function (t) {
           return t.b <= 90;
         });
@@ -34764,13 +35044,14 @@ const SportLogik = (function () {
     }
     return sieg + P[6][6] * (x * y / (x * y + (1 - x) * (1 - y)));
   }
-  /** Verteilung eines Satzes: [{ga, gb, p, tb, nA}] – nA: schlägt A im nächsten Satz zuerst auf? */
-  function satzVert(pA, pB, aZuerst) {
+  /** Verteilung eines Satzes: [{ga, gb, p, tb, nA}] – nA: schlägt A im nächsten Satz zuerst auf?
+   *  Live beginnt der Satz beim aktuellen Spielstand (i0:j0). */
+  function satzVert(pA, pB, aZuerst, i0, j0) {
     const gA = spielP(pA), gB = spielP(pB);
     const P = {};
-    P['0,0'] = 1;
+    P[(i0 || 0) + ',' + (j0 || 0)] = 1;
     const aus = [];
-    for (let n = 0; n <= 11; n++) {
+    for (let n = (i0 || 0) + (j0 || 0); n <= 11; n++) {
       for (let i = 0; i <= n; i++) {
         const j = n - i;
         const pr = P[i + ',' + j];
@@ -34845,26 +35126,39 @@ const SportLogik = (function () {
       match: function (md) {
         const ziel = (md.bo + 1) / 2;
         const satz = { true: satzVert(md.pA, md.pB, true), false: satzVert(md.pA, md.pB, false) };
+        const s0 = md.start || { sa: 0, sb: 0, ga: 0, gb: 0, tb: 0, cur: null };
         let akt = new Map();
-        mapAdd(akt, '0,0,1,0,0,0', 0.5, { sa: 0, sb: 0, az: true, ga: 0, gb: 0, tb: 0 });
-        mapAdd(akt, '0,0,0,0,0,0', 0.5, { sa: 0, sb: 0, az: false, ga: 0, gb: 0, tb: 0 });
         const fertig = new Map();
+        const weiter = function (ziel2, p, z, o) {
+          const q = p * o.p;
+          if (q < 1e-13) {
+            return;
+          }
+          const sa = z.sa + (o.ga > o.gb ? 1 : 0), sb = z.sb + (o.ga > o.gb ? 0 : 1);
+          const ga = z.ga + o.ga, gb = z.gb + o.gb, tb = z.tb || o.tb;
+          if (sa === ziel || sb === ziel) {
+            mapAdd(fertig, sa + ',' + sb + ',' + ga + ',' + gb + ',' + tb, q, { sa: sa, sb: sb, ga: ga, gb: gb, tb: tb });
+          } else {
+            mapAdd(ziel2, sa + ',' + sb + ',' + (o.nA ? 1 : 0) + ',' + ga + ',' + gb + ',' + tb, q, { sa: sa, sb: sb, az: o.nA, ga: ga, gb: gb, tb: tb });
+          }
+        };
+        if (s0.cur) {
+          // laufender Satz: wer ihn begonnen hat, ist unbekannt – beide Fälle je zur Hälfte
+          [true, false].forEach(function (az) {
+            satzVert(md.pA, md.pB, az, s0.cur[0], s0.cur[1]).forEach(function (o) {
+              weiter(akt, 0.5, s0, o);
+            });
+          });
+        } else {
+          [true, false].forEach(function (az) {
+            mapAdd(akt, s0.sa + ',' + s0.sb + ',' + (az ? 1 : 0), 0.5, { sa: s0.sa, sb: s0.sb, az: az, ga: s0.ga, gb: s0.gb, tb: s0.tb });
+          });
+        }
         while (akt.size) {
           const neu = new Map();
           akt.forEach(function (v) {
-            const z = v.s;
-            satz[z.az].forEach(function (o) {
-              const q = v.p * o.p;
-              if (q < 1e-13) {
-                return;
-              }
-              const sa = z.sa + (o.ga > o.gb ? 1 : 0), sb = z.sb + (o.ga > o.gb ? 0 : 1);
-              const ga = z.ga + o.ga, gb = z.gb + o.gb, tb = z.tb || o.tb;
-              if (sa === ziel || sb === ziel) {
-                mapAdd(fertig, sa + ',' + sb + ',' + ga + ',' + gb + ',' + tb, q, { sa: sa, sb: sb, ga: ga, gb: gb, tb: tb });
-              } else {
-                mapAdd(neu, sa + ',' + sb + ',' + (o.nA ? 1 : 0) + ',' + ga + ',' + gb + ',' + tb, q, { sa: sa, sb: sb, az: o.nA, ga: ga, gb: gb, tb: tb });
-              }
+            satz[v.s.az].forEach(function (o) {
+              weiter(neu, v.p, v.s, o);
             });
           });
           akt = neu;
@@ -34872,9 +35166,13 @@ const SportLogik = (function () {
         return ausMap(fertig);
       },
       satz1: function (md) {
+        const s0 = md.start;
+        if (s0 && s0.s1) {
+          return [[1, { s1a: s0.s1[0], s1b: s0.s1[1] }]];
+        }
         const z = [];
         [true, false].forEach(function (az) {
-          satzVert(md.pA, md.pB, az).forEach(function (o) {
+          satzVert(md.pA, md.pB, az, s0 && s0.cur ? s0.cur[0] : 0, s0 && s0.cur ? s0.cur[1] : 0).forEach(function (o) {
             z.push([o.p * 0.5, { s1a: o.ga, s1b: o.gb }]);
           });
         });
@@ -34980,6 +35278,52 @@ const SportLogik = (function () {
       });
       return L;
     },
+    liveSig: function (m) {
+      return m.heim.ls.concat(m.gast.ls).map(function (x) {
+        return x.v + '/' + x.tb;
+      }).join(',') + '|' + m.statusName;
+    },
+    /** Live: entschiedene Sätze und Spielstand im laufenden Satz (der Punktestand im Spiel ist nicht bekannt). */
+    liveModell: function (m, B) {
+      const la = m.heim.ls, lb = m.gast.ls;
+      if (la.length !== lb.length) {
+        return null;
+      }
+      const ziel = (B.bo + 1) / 2;
+      const s0 = { sa: 0, sb: 0, ga: 0, gb: 0, tb: 0, cur: null, s1: null };
+      for (let i = 0; i < la.length; i++) {
+        const a = la[i].v, b = lb[i].v;
+        const tbGespielt = la[i].tb !== null || lb[i].tb !== null;
+        const fertig = ((a >= 6 || b >= 6) && Math.abs(a - b) >= 2) || a === 7 || b === 7 || (tbGespielt && a !== b);
+        if (!fertig) {
+          if (i < la.length - 1 || a > 6 || b > 6) {
+            return null;
+          }
+          s0.cur = [a, b];
+          if (i === 0) {
+            s0.s1 = null;
+          }
+          break;
+        }
+        if (a > b) {
+          s0.sa++;
+        } else {
+          s0.sb++;
+        }
+        s0.ga += a;
+        s0.gb += b;
+        if (a + b === 13 || tbGespielt) {
+          s0.tb = 1;
+        }
+        if (i === 0) {
+          s0.s1 = [a, b];
+        }
+      }
+      if (s0.sa >= ziel || s0.sb >= ziel) {
+        return null;
+      }
+      return Object.assign({}, B, { live: true, start: s0, teilOk: true });
+    },
     kennzahlen: function (m) {
       if (m.kz) {
         return m.kz;
@@ -35071,15 +35415,62 @@ const SportLogik = (function () {
       }
       const qh = (sum + diff) / 8, qa = (sum - diff) / 8;
       const ot = 5 / l.viertel;
-      return {
-        Q: dNormal(qh, l.sd), QA: dNormal(qa, l.sd),
+      const Q = dNormal(qh, l.sd), QA = dNormal(qa, l.sd);
+      return Basketball.kennwerte({
+        Q: Q, QA: QA, VH: [Q, Q, Q, Q], VA: [QA, QA, QA, QA], teilOk: true,
         OH: dNormal(qh * ot, l.sd * Math.sqrt(ot)), OA: dNormal(qa * ot, l.sd * Math.sqrt(ot)),
         qh: qh, qa: qa, quelle: quelle
+      });
+    },
+    /** Erwartete Punkte (Ende, Halbzeit, 1. Viertel) für die Linien. */
+    kennwerte: function (md) {
+      md.eh = mittel(dSumme(md.VH));
+      md.ea = mittel(dSumme(md.VA));
+      if (md.teilOk) {
+        md.ehz = mittel(dSumme(md.VH.slice(0, 2))) + mittel(dSumme(md.VA.slice(0, 2)));
+        md.eq1 = mittel(md.VH[0]) + mittel(md.VA[0]);
+      }
+      return md;
+    },
+    liveSig: function (m) {
+      return [m.heim.score, m.gast.score, m.periode, m.uhr, m.statusName, m.heim.ls.length].join('|');
+    },
+    /** Live: gespielte Viertel stehen fest, im laufenden Viertel zählt die Restzeit, danach volle Viertel. */
+    liveModell: function (m, B) {
+      const H = m.heim, G = m.gast, l = m.liga, p = m.periode, sek = uhrSek(m.uhr);
+      if (H.score === null || G.score === null || !(p >= 1 && p <= 4) || sek === null) {
+        return null;
+      }
+      const f = klemm(sek / (l.viertel * 60), 0, 1);
+      const rest = function (q, anteil, v) {
+        return anteil > 0.003 ? verschieben(dNormal(q * anteil, l.sd * Math.sqrt(anteil)), v) : dPunkt(v);
       };
+      const la = H.ls, lb = G.ls;
+      const summe = function (x) {
+        return x.reduce(function (a, y) {
+          return a + y.v;
+        }, 0);
+      };
+      const md = Object.assign({}, B, { live: true });
+      if (la.length === p && lb.length === p && summe(la) === H.score && summe(lb) === G.score) {
+        md.teilOk = true;
+        md.VH = [0, 1, 2, 3].map(function (i) {
+          return i < p - 1 ? dPunkt(la[i].v) : (i === p - 1 ? rest(B.qh, f, la[i].v) : B.Q);
+        });
+        md.VA = [0, 1, 2, 3].map(function (i) {
+          return i < p - 1 ? dPunkt(lb[i].v) : (i === p - 1 ? rest(B.qa, f, lb[i].v) : B.QA);
+        });
+      } else {
+        const r = 4 - p + f;
+        md.teilOk = false;
+        md.VH = [rest(B.qh, r, H.score)];
+        md.VA = [rest(B.qa, r, G.score)];
+      }
+      return Basketball.kennwerte(md);
     },
     dims: {
       end: function (md) {
-        const TH = dFalte(dFalte(md.Q, md.Q), dFalte(md.Q, md.Q)), TA = dFalte(dFalte(md.QA, md.QA), dFalte(md.QA, md.QA));
+        const TH = dSumme(md.VH), TA = dSumme(md.VA);
         const m = new Map();
         let gleich = new Map();
         for (let i = 0; i < TH.p.length; i++) {
@@ -35126,12 +35517,12 @@ const SportLogik = (function () {
         return ausMap(m);
       },
       hz: function (md) {
-        return paare(dFalte(md.Q, md.Q), dFalte(md.QA, md.QA), function (x, y) {
+        return paare(dSumme(md.VH.slice(0, 2)), dSumme(md.VA.slice(0, 2)), function (x, y) {
           return { hh: x, ha: y };
         });
       },
       q1: function (md) {
-        return paare(md.Q, md.QA, function (x, y) {
+        return paare(md.VH[0], md.VA[0], function (x, y) {
           return { q1h: x, q1a: y };
         });
       }
@@ -35166,12 +35557,12 @@ const SportLogik = (function () {
       hzou: function (m, l) {
         return ueberUnter('hzou@' + l, '1. Halbzeit Punkte', 'Halbzeit & Viertel', 'hz', MARGE.normal, l, function (s) {
           return s.hh + s.ha;
-        }, { b: 'q' });
+        }, { b: 'q', teil: 1 });
       },
       q1ou: function (m, l) {
         return ueberUnter('q1ou@' + l, '1. Viertel Punkte', 'Halbzeit & Viertel', 'q1', MARGE.normal, l, function (s) {
           return s.q1h + s.q1a;
-        }, { b: 'q' });
+        }, { b: 'q', teil: 1 });
       }
     },
     maerkte: function (m) {
@@ -35185,7 +35576,7 @@ const SportLogik = (function () {
           return s.a > s.h ? 1 : 0;
         })
       ]));
-      const diff = 4 * (md.qh - md.qa), sum = 4 * (md.qh + md.qa);
+      const diff = md.eh - md.ea, sum = md.eh + md.ea;
       const l0 = -halbeLinie(diff);
       [0, -4, 4, -8, 8].forEach(function (d, i) {
         const x = LN.hc(m, l0 + d);
@@ -35202,8 +35593,8 @@ const SportLogik = (function () {
         }
         L.push(x);
       });
-      L.push(LN.tph(m, halbeLinie(4 * md.qh)));
-      L.push(LN.tpa(m, halbeLinie(4 * md.qa)));
+      L.push(LN.tph(m, halbeLinie(md.eh)));
+      L.push(LN.tpa(m, halbeLinie(md.ea)));
       L.push(M('ug', 'Punkte gerade/ungerade', 'Punkte', 'end', MARGE.haupt, [
         A('g', 'Gerade', function (s) {
           return (s.h + s.a) % 2 === 0 ? 1 : 0;
@@ -35235,14 +35626,18 @@ const SportLogik = (function () {
         return s.hh;
       }, function (s) {
         return s.ha;
-      }, [H, G], { b: 'q' }));
-      L.push(LN.hzou(m, halbeLinie(2 * (md.qh + md.qa))));
+      }, [H, G], { b: 'q', teil: 1 }));
+      if (md.teilOk) {
+        L.push(LN.hzou(m, halbeLinie(md.ehz)));
+      }
       L.push(dreiWeg('q1', '1. Viertel (1X2)', 'Halbzeit & Viertel', 'q1', MARGE.normal, function (s) {
         return s.q1h;
       }, function (s) {
         return s.q1a;
-      }, [H, G], { b: 'q' }));
-      L.push(LN.q1ou(m, halbeLinie(md.qh + md.qa)));
+      }, [H, G], { b: 'q', teil: 1 }));
+      if (md.teilOk) {
+        L.push(LN.q1ou(m, halbeLinie(md.eq1)));
+      }
       return L;
     },
     haupt: 'sieg',
@@ -35380,7 +35775,52 @@ const SportLogik = (function () {
       }
       const P1 = dPoisson(ph, 7), P2 = dPoisson(pa, 7);
       const t = eishockeyTeile(ph, pa);
-      return { P1: P1, P2: P2, TH: dFalte(dFalte(P1, P1), P1), TA: dFalte(dFalte(P2, P2), P2), otH: t.otH, otA: t.otA, so: 0.5, ph: ph, pa: pa, quelle: quelle };
+      return Eishockey.kennwerte({ P1: P1, P2: P2, PH: [P1, P1, P1], PA: [P2, P2, P2], teilOk: true, otH: t.otH, otA: t.otA, so: 0.5, ph: ph, pa: pa, quelle: quelle });
+    },
+    kennwerte: function (md) {
+      md.TH = dSumme(md.PH);
+      md.TA = dSumme(md.PA);
+      md.eh = mittel(md.TH);
+      md.ea = mittel(md.TA);
+      return md;
+    },
+    liveSig: function (m) {
+      return [m.heim.score, m.gast.score, m.periode, m.uhr, m.statusName, m.heim.ls.length].join('|');
+    },
+    torSig: function (m) {
+      return m.heim.score + ':' + m.gast.score;
+    },
+    /** Live: gespielte Drittel stehen fest, im laufenden Drittel zählt die Restzeit (Verlängerung: keine Live-Wetten). */
+    liveModell: function (m, B) {
+      const H = m.heim, G = m.gast, p = m.periode, sek = uhrSek(m.uhr);
+      if (H.score === null || G.score === null || !(p >= 1 && p <= 3) || sek === null) {
+        return null;
+      }
+      const f = klemm(sek / 1200, 0, 1);
+      const rest = function (rate, anteil, v) {
+        return verschieben(dPoisson(rate * anteil, 12), v);
+      };
+      const la = H.ls, lb = G.ls;
+      const summe = function (x) {
+        return x.reduce(function (a, y) {
+          return a + y.v;
+        }, 0);
+      };
+      const md = Object.assign({}, B, { live: true });
+      if (la.length === p && lb.length === p && summe(la) === H.score && summe(lb) === G.score) {
+        md.teilOk = true;
+        md.PH = [0, 1, 2].map(function (i) {
+          return i < p - 1 ? dPunkt(la[i].v) : (i === p - 1 ? rest(B.ph, f, la[i].v) : B.P1);
+        });
+        md.PA = [0, 1, 2].map(function (i) {
+          return i < p - 1 ? dPunkt(lb[i].v) : (i === p - 1 ? rest(B.pa, f, lb[i].v) : B.P2);
+        });
+      } else {
+        md.teilOk = false;
+        md.PH = [rest(B.ph, 3 - p + f, H.score)];
+        md.PA = [rest(B.pa, 3 - p + f, G.score)];
+      }
+      return Eishockey.kennwerte(md);
     },
     dims: {
       reg: function (md) {
@@ -35402,7 +35842,7 @@ const SportLogik = (function () {
         return z;
       },
       p1: function (md) {
-        return paare(md.P1, md.P2, function (x, y) {
+        return paare(md.PH[0], md.PA[0], function (x, y) {
           return { p1h: x, p1a: y };
         });
       }
@@ -35453,7 +35893,7 @@ const SportLogik = (function () {
           return s.h <= s.a ? 1 : 0;
         })
       ], R));
-      const t0 = halbeLinie(3 * (md.ph + md.pa) - 0.5);
+      const t0 = halbeLinie(md.eh + md.ea - (md.live ? 0 : 0.5));
       [0, -1, 1, 2].forEach(function (d) {
         const x = LN.ou(m, t0 + d);
         if (d === 0) {
@@ -35485,8 +35925,8 @@ const SportLogik = (function () {
           return s.h > 0 && s.a > 0 ? 0 : 1;
         })
       ], R));
-      L.push(LN.th(m, halbeLinie(3 * md.ph - 0.5)));
-      L.push(LN.tg(m, halbeLinie(3 * md.pa - 0.5)));
+      L.push(LN.th(m, halbeLinie(md.eh - (md.live ? 0 : 0.5))));
+      L.push(LN.tg(m, halbeLinie(md.ea - (md.live ? 0 : 0.5))));
       L.push(M('ug', 'Tore gerade/ungerade', 'Tore', 'reg', MARGE.haupt, [
         A('g', 'Gerade', function (s) {
           return (s.h + s.a) % 2 === 0 ? 1 : 0;
@@ -35511,15 +35951,16 @@ const SportLogik = (function () {
           return s.sieger === x[2] && s.verl === x[3] ? 1 : 0;
         });
       })));
+      const R1 = { b: 'reg', teil: 1 };
       L.push(dreiWeg('p1', '1. Drittel (1X2)', 'Drittel', 'p1', MARGE.normal, function (s) {
         return s.p1h;
       }, function (s) {
         return s.p1a;
-      }, [H, G], R));
+      }, [H, G], R1));
       [0.5, 1.5].forEach(function (l) {
         L.push(ueberUnter('p1ou' + String(l).replace('.', ''), '1. Drittel Tore', 'Drittel', 'p1', MARGE.normal, l, function (s) {
           return s.p1h + s.p1a;
-        }, R));
+        }, R1));
       });
       return L;
     },
@@ -35586,12 +36027,21 @@ const SportLogik = (function () {
     }
     return z;
   }
+  /** Live nicht angeboten: Ecken/Karten und Teilmärkte, wenn der Stand je Abschnitt unbekannt ist. */
+  function liveAus(md, x) {
+    return !!(md && md.live && ((x.teil && !md.teilOk) || x.dim === 'ecken' || x.dim === 'karten'));
+  }
   function maerkte(m) {
     if (!m.maerkte) {
-      m.maerkte = SPORT[m.sport].maerkte(m);
+      const alle = SPORT[m.sport].maerkte(m);
+      const md = modell(m);
       m.mIdx = {};
-      m.maerkte.forEach(function (x) {
+      alle.forEach(function (x) {
         m.mIdx[x.k] = x;
+        x.aus = liveAus(md, x);
+      });
+      m.maerkte = alle.filter(function (x) {
+        return !x.aus;
       });
     }
     return m.maerkte;
@@ -35606,6 +36056,7 @@ const SportLogik = (function () {
       const l = Number(t[1]);
       if (f && isFinite(l)) {
         x = f(m, l);
+        x.aus = liveAus(modell(m), x) || x.dim === 'analytisch';
         m.mIdx[k] = x;
       }
     }
@@ -35644,6 +36095,12 @@ const SportLogik = (function () {
   /** Quoten eines Markts (Dezimalquoten, null = nicht angeboten). */
   function quoten(m, mk) {
     if (mk.q) {
+      return mk.q;
+    }
+    if (mk.aus) {
+      mk.q = mk.a.map(function () {
+        return null;
+      });
       return mk.q;
     }
     const pw = wahrscheinlichkeiten(m, mk);
@@ -35727,10 +36184,54 @@ const SportLogik = (function () {
   function status(m) {
     return m.st;
   }
-  /** Wetten nur vor dem Anpfiff und nur mit frischen Daten. */
+  /** Wetten vor dem Anpfiff (frische Daten) und live, solange es ein Live-Modell und aktuelle Daten gibt. */
   function wettbar(m, jetzt) {
     jetzt = jetzt || Date.now();
-    return !!m && m.st === 'offen' && m.start > jetzt + 30000 && jetzt - (m.aktualisiert || 0) < 20 * MIN;
+    if (!m) {
+      return false;
+    }
+    if (m.st === 'offen') {
+      return m.start > jetzt + 30000 && jetzt - (m.aktualisiert || 0) < 20 * MIN;
+    }
+    return m.st === 'live' && liveGrund(m, jetzt) === '';
+  }
+  /** Warum live gerade nicht gewettet werden kann ('' = es geht). */
+  function liveGrund(m, jetzt) {
+    jetzt = jetzt || Date.now();
+    if (!m || m.st !== 'live') {
+      return 'Das Spiel läuft nicht.';
+    }
+    if (/SUSPENDED|INTERRUPT|DELAY/.test(m.statusName)) {
+      return 'Das Spiel ist unterbrochen – Live-Wetten sind ausgesetzt.';
+    }
+    if (!liveModell(m)) {
+      return m.sport === 'tennis' ? 'Für diesen Spielstand gibt es keine Live-Quoten.' : 'In der Verlängerung gibt es keine Live-Wetten.';
+    }
+    if (jetzt - (m.aktualisiert || 0) > 100000) {
+      return 'Live-Daten werden aktualisiert – gleich geht es weiter.';
+    }
+    if (m.sperre && jetzt < m.sperre) {
+      return 'Tor! Live-Wetten sind 30 Sekunden gesperrt, bis die Quoten neu berechnet sind.';
+    }
+    return '';
+  }
+  /** Nur kurz gesperrt (Tor oder Daten werden gerade erneuert) – Tipps bleiben im Wettschein. */
+  function kurzGesperrt(m, jetzt) {
+    return !!m && m.st === 'live' && !!liveModell(m) && !wettbar(m, jetzt) && !/SUSPENDED|INTERRUPT|DELAY/.test(m.statusName);
+  }
+  /** Spielstand beim Platzieren einer Live-Wette (für „Meine Wetten“). */
+  function liveText(m) {
+    if (!m || m.st !== 'live') {
+      return '';
+    }
+    const l = live(m);
+    if (!l) {
+      return '';
+    }
+    if (m.sport === 'tennis') {
+      return 'Sätze ' + l.h + ':' + l.a + (l.saetze && l.saetze.length ? ' (' + l.saetze[l.saetze.length - 1] + ')' : '');
+    }
+    return l.h + ':' + l.a + (l.info ? ' · ' + l.info : '');
   }
   function spiele(ligaId) {
     const aus = [];
@@ -35752,9 +36253,9 @@ const SportLogik = (function () {
       return 'Kein Buchmacher-Markt verfügbar – Quoten aus Bilanz und Form berechnet';
     }
     if (q === 'rang') {
-      return 'Kein Buchmacher-Markt verfügbar – Quoten aus dem Setzplatz berechnet';
+      return m.sport === 'tennis' ? 'Für Tennis liefert ESPN keine Buchmacherquoten – Quoten aus der Weltrangliste berechnet' : 'Kein Buchmacher-Markt verfügbar – Quoten aus dem Setzplatz berechnet';
     }
-    return 'Kein Buchmacher-Markt verfügbar – Quoten aus dem Ligadurchschnitt berechnet';
+    return m.sport === 'tennis' ? 'Für Tennis liefert ESPN keine Buchmacherquoten und keinen Weltranglistenplatz – Quoten für zwei gleich starke Spieler' : 'Kein Buchmacher-Markt verfügbar – Quoten aus dem Ligadurchschnitt berechnet';
   }
   function heute(ms) {
     try {
@@ -35767,7 +36268,7 @@ const SportLogik = (function () {
 
   return {
     SPORTARTEN: SPORTARTEN, LIGEN: LIGEN, LIGA: LIGA, MARGE: MARGE,
-    laden: laden, ladeAlle: ladeAlle, nachladen: nachladen, kader: kader,
+    laden: laden, ladeAlle: ladeAlle, nachladen: nachladen, kader: kader, fokus: fokus,
     ligaStand: function (id) {
       return stand(id);
     },
@@ -35775,7 +36276,7 @@ const SportLogik = (function () {
     spiel: function (id) {
       return spielListe.get(id) || null;
     },
-    status: status, wettbar: wettbar, maerkte: maerkte, markt: markt, quoten: quoten, wahrscheinlichkeiten: wahrscheinlichkeiten,
+    status: status, wettbar: wettbar, liveGrund: liveGrund, liveText: liveText, kurzGesperrt: kurzGesperrt, maerkte: maerkte, markt: markt, quoten: quoten, wahrscheinlichkeiten: wahrscheinlichkeiten,
     verteilung: verteilung, wertung: wertung, zustand: zustand, live: live, endText: endText, statistik: statistik, hauptMarkt: hauptMarkt,
     modell: modell, quelleText: quelleText, deutsch: deutsch, heute: heute,
     version: function () {
@@ -36245,7 +36746,7 @@ const Wettbuch = (function () {
       for (let j = 0; j < liste[i].sel.length; j++) {
         const m = SportLogik.spiel(liste[i].sel[j].m);
         if (!SportLogik.wettbar(m, jetzt)) {
-          return 'Ein Spiel hat schon begonnen. Bitte den Wettschein prüfen.';
+          return m && m.st === 'live' ? SportLogik.liveGrund(m, jetzt) : 'Auf ein Spiel kann nicht mehr gewettet werden. Bitte den Wettschein prüfen.';
         }
       }
     }
@@ -36305,7 +36806,7 @@ const SzeneSportwetten = (function () {
       const d = JSON.parse(window.localStorage.getItem(SCHEIN_KEY) || 'null');
       if (d && Array.isArray(d.sel)) {
         V.schein.sel = d.sel.filter(function (s) {
-          return s && typeof s.m === 'string' && typeof s.mk === 'string' && typeof s.a === 'string' && s.t > Date.now();
+          return s && typeof s.m === 'string' && typeof s.mk === 'string' && typeof s.a === 'string' && s.t > Date.now() - 5 * 3600000;
         }).slice(0, 12);
         V.schein.art = ['einzel', 'kombi', 'system'].indexOf(d.art) >= 0 ? d.art : 'einzel';
         V.schein.e = Math.max(10, Math.min(100000000, Math.round(d.e) || 500));
@@ -36416,7 +36917,7 @@ const SzeneSportwetten = (function () {
       return null;
     }
     const q = L.quoten(m, mk)[idx];
-    return { m: m, mk: mk, a: mk.a[idx], q: Wettbuch.quoteAktiv(q) };
+    return { m: m, mk: mk, a: mk.a[idx], q: Wettbuch.quoteAktiv(q), s: s };
   }
 
   // ---------------------------------------------------------------- Aufbau
@@ -36582,6 +37083,7 @@ const SzeneSportwetten = (function () {
     return h;
   }
   function ansichtLiga(jetzt) {
+    L.fokus(V.liga);
     const liga = L.LIGA[V.liga];
     const alle = L.spiele(liga.id);
     let h = '<div class="sw-titel"><h2>' + liga.flagge + ' ' + htmlSicher(liga.name) + '</h2><p>' + sportIcon(liga.sport) + ' Echte Spiele' + (standZeit([liga]) ? ' · ' + standZeit([liga]) : '') + '</p></div>';
@@ -36620,7 +37122,9 @@ const SzeneSportwetten = (function () {
       + '<div class="sw-match-zeit" data-uhr="' + m.id + '">' + htmlSicher(m.st === 'offen' ? tagText(m.start) + ', ' + uhrzeit(m.start) + ' Uhr · ' + (m.start > jetzt ? 'Anpfiff in ' + countdown(m.start - jetzt) : 'gleich') : zeitText(m, jetzt)) + '</div>'
       + (m.ort ? '<div class="sw-klein">📍 ' + htmlSicher(m.ort) + '</div>' : '')
       + '<div class="sw-match-detail">' + detailHtml(m) + '</div></div>';
-    const alle = L.maerkte(m);
+    const alle = L.maerkte(m).filter(function (x) {
+      return m.st !== 'live' || L.quoten(m, x).some(Boolean);
+    });
     const gruppen = [];
     alle.forEach(function (x) {
       if (gruppen.indexOf(x.g) < 0) {
@@ -36634,7 +37138,8 @@ const SzeneSportwetten = (function () {
       return '<button data-grp="' + htmlSicher(g) + '"' + (g === V.grp ? ' class="an"' : '') + '>' + htmlSicher(g) + '</button>';
     }).join('') + '</div>';
     if (m.st === 'live') {
-      h += '<p class="sw-hinweis-k">Das Spiel läuft – Wetten sind nur vor dem Anpfiff möglich.</p>';
+      const grund = L.liveGrund(m, jetzt);
+      h += grund ? '<p class="sw-hinweis-k">🔒 ' + htmlSicher(grund) + '</p>' : '<p class="sw-livewette"><span class="sw-live">LIVE</span> Live-Wetten: Die Quoten ändern sich mit Spielstand und Spielzeit. Es gilt die Quote beim Platzieren.</p>';
     } else if (m.st === 'ende') {
       h += '<p class="sw-hinweis-k">Abgerechnet mit dem echten Endstand: grün = gewonnen, gelb = Einsatz zurück.</p>';
     } else if (m.st === 'abgesagt') {
@@ -36660,6 +37165,11 @@ const SzeneSportwetten = (function () {
           return q[i];
         }).sort(function (a, b) {
           return q[a] - q[b];
+        });
+      } else if (m.st === 'live' && mk.a.length > 3) {
+        // live: nicht mehr mögliche Ergebnisse ausblenden
+        idx = idx.filter(function (i) {
+          return q[i];
         });
       }
       const spalten = mk.raster ? 3 : (mk.a.length === 2 || mk.a.length === 4 ? 2 : (mk.a.length > 9 ? 2 : 3));
@@ -36800,7 +37310,7 @@ const SzeneSportwetten = (function () {
         } else if (s.t) {
           stand = tagText(s.t) + ', ' + uhrzeit(s.t) + ' Uhr';
         }
-        h += '<button class="sw-w-sel" data-spiel="' + s.m + '"><i>' + ic + '</i><span><b>' + htmlSicher(s.txt.a) + '</b><small>' + htmlSicher(s.txt.mk) + ' · ' + htmlSicher(s.txt.sp) + '</small><small>' + htmlSicher(stand) + '</small></span><em>' + quoteText(s.o) + '</em></button>';
+        h += '<button class="sw-w-sel" data-spiel="' + s.m + '"><i>' + ic + '</i><span><b>' + htmlSicher(s.txt.a) + '</b><small>' + htmlSicher(s.txt.mk) + ' · ' + htmlSicher(s.txt.sp) + '</small><small>' + htmlSicher(stand) + '</small>' + (s.txt.lv ? '<small class="sw-w-lv">Live-Wette bei ' + htmlSicher(s.txt.lv) + '</small>' : '') + '</span><em>' + quoteText(s.o) + '</em></button>';
       });
       h += '<div class="sw-w-fuss"><span>Einsatz <b>' + geldText(w.e, w.w) + '</b></span>' + (w.art !== 'system' ? '<span>Quote <b>' + quoteText(gesQ) + '</b></span>' : '')
         + (w.st === 'offen' ? '<span>Möglicher Gewinn <b>' + geldText(Wettbuch.moeglich(w), w.w) + '</b></span>' : '<span>Auszahlung <b class="' + (w.aus > 0 ? 'plus' : '') + '">' + geldText(w.aus || 0, w.w) + '</b></span>') + '</div></div>';
@@ -36821,11 +37331,11 @@ const SzeneSportwetten = (function () {
         return s.t > jetzt;
       }
       const x = auswahlInfo(s);
-      return x && L.wettbar(m, jetzt) && x.q;
+      return x && x.q && (L.wettbar(m, jetzt) || L.kurzGesperrt(m, jetzt));
     });
     if (V.schein.sel.length !== vorher) {
       scheinSpeichern();
-      Hinweis.zeige(vorher - V.schein.sel.length === 1 ? 'Ein Spiel hat begonnen – der Tipp wurde aus dem Wettschein genommen.' : 'Spiele haben begonnen – Tipps wurden aus dem Wettschein genommen.', '', 3200);
+      Hinweis.zeige(vorher - V.schein.sel.length === 1 ? 'Ein Tipp ist nicht mehr verfügbar und wurde aus dem Wettschein genommen.' : 'Einige Tipps sind nicht mehr verfügbar und wurden aus dem Wettschein genommen.', '', 3200);
       return true;
     }
     return false;
@@ -36895,10 +37405,24 @@ const SzeneSportwetten = (function () {
     if (gleicheSpiele() && b.n >= 2) {
       h += '<p class="sw-s-warn">Mehrere Tipps aus demselben Spiel gehen nur als Einzelwetten.</p>';
     }
+    V.angezeigt = {};
+    const jetzt = Date.now();
     h += '<div class="sw-s-liste">' + b.sel.map(function (x) {
-      return '<div class="sw-s-sel"><button class="sw-s-weg" data-weg="' + x.m.id + '|' + x.mk.k + '|' + x.a.k + '" aria-label="Entfernen">✕</button><span><b>' + htmlSicher(x.a.n) + '</b><small>' + htmlSicher(x.mk.n) + '</small><small>'
-        + htmlSicher(x.m.heim.name + ' – ' + x.m.gast.name) + ' · ' + tagText(x.m.start) + ' ' + uhrzeit(x.m.start) + '</small></span><em>' + quoteText(x.q) + '</em></div>';
+      const key = x.m.id + '|' + x.mk.k + '|' + x.a.k;
+      V.angezeigt[key] = x.q;
+      const vorher = x.s && x.s.q;
+      const pfeil = vorher && x.q !== vorher ? (x.q > vorher ? '<i class="sw-hoch">▲</i>' : '<i class="sw-runter">▼</i>') : '';
+      const live = x.m.st === 'live';
+      const zeit = live ? '<span class="sw-live">LIVE</span> ' + htmlSicher(L.liveText(x.m)) : tagText(x.m.start) + ' ' + uhrzeit(x.m.start);
+      const gesperrt = live && !L.wettbar(x.m, jetzt) ? '<small class="sw-s-sperre">🔒 ' + htmlSicher(L.liveGrund(x.m, jetzt)) + '</small>' : '';
+      return '<div class="sw-s-sel"><button class="sw-s-weg" data-weg="' + key + '" aria-label="Entfernen">✕</button><span><b>' + htmlSicher(x.a.n) + '</b><small>' + htmlSicher(x.mk.n) + '</small><small>'
+        + htmlSicher(x.m.heim.name + ' – ' + x.m.gast.name) + (live ? '</small><small>' : ' · ') + zeit + '</small>' + gesperrt + '</span><em>' + pfeil + quoteText(x.q) + '</em></div>';
     }).join('') + '</div>';
+    if (b.sel.some(function (x) {
+      return x.s && x.s.q && x.q !== x.s.q;
+    })) {
+      h += '<p class="sw-s-warn">Quoten haben sich geändert (▲ höher, ▼ niedriger). Es gilt die angezeigte Quote.</p>';
+    }
     if (b.art === 'system') {
       h += '<div class="sw-s-system">System <select data-sys="1">';
       for (let k = 2; k < b.n; k++) {
@@ -36916,7 +37440,9 @@ const SzeneSportwetten = (function () {
       }).join(' · ')) + '</b>' : '<span>Einsatz je Kombi</span><b>' + geldText(Math.floor(b.e / b.zeilen), Waehrung.aktiv) + '</b>')
       + '<span>Einsatz gesamt</span><b>' + geldText(b.gesamt, Waehrung.aktiv) + '</b>'
       + '<span>Möglicher Gewinn</span><b class="plus">' + geldText(b.gewinn, Waehrung.aktiv) + '</b></div>';
-    const fehler = einsatzFehler(b);
+    const fehler = einsatzFehler(b) || (b.sel.some(function (x) {
+      return !L.wettbar(x.m, jetzt);
+    }) ? 'Live-Wetten kurz gesperrt' : '');
     h += '<button class="sw-s-los" data-platzieren="1"' + (fehler ? ' disabled' : '') + '>' + (fehler || (b.wetten > 1 ? b.wetten + ' Wetten platzieren' : 'Wette platzieren') + ' · ' + geldText(b.gesamt, Waehrung.aktiv)) + '</button>';
     h += '<p class="sw-klein">Nur Spielgeld, ohne echten Wert. Höchstgewinn ' + geldText(Wettbuch.MAX_AUSZAHLUNG, Waehrung.aktiv) + ' je Wette.</p>';
     return h;
@@ -36947,8 +37473,22 @@ const SzeneSportwetten = (function () {
     if (!b.n || einsatzFehler(b)) {
       return;
     }
+    // Quote hat sich seit dem Anzeigen geändert (live häufig): erst zeigen, dann platzieren
+    const anders = b.sel.some(function (x) {
+      return !V.angezeigt || V.angezeigt[x.m.id + '|' + x.mk.k + '|' + x.a.k] !== x.q;
+    });
+    if (anders) {
+      renderSchein(true);
+      klang.spiele('FEHLER');
+      Hinweis.zeige('Die Quoten haben sich gerade geändert. Bitte noch einmal prüfen.', 'schlecht');
+      return;
+    }
     const sel = b.sel.map(function (x) {
-      return { m: x.m.id, mk: x.mk.k, a: x.a.k, o: x.q, t: x.m.start, txt: { sp: x.m.heim.name + ' – ' + x.m.gast.name, mk: x.mk.n, a: x.a.n } };
+      const t = { sp: x.m.heim.name + ' – ' + x.m.gast.name, mk: x.mk.n, a: x.a.n };
+      if (x.m.st === 'live') {
+        t.lv = L.liveText(x.m);
+      }
+      return { m: x.m.id, mk: x.mk.k, a: x.a.k, o: x.q, t: x.m.start, txt: t };
     });
     let liste;
     if (b.art === 'einzel') {
@@ -36976,7 +37516,11 @@ const SzeneSportwetten = (function () {
   function signatur() {
     // ändert sich mit neuen Daten, Abrechnungen und Mitteilungen – dann alles neu
     const d = Wettbuch.daten();
-    return V.ansicht + V.sport + V.liga + V.tab + V.spiel + V.grp + V.wTab + '|' + (d ? d.offen.length + ',' + d.hist.length : '') + '|' + L.version() + '|' + WettInfo.feed.l.length;
+    const jetzt = Date.now();
+    const sperren = V.schein.sel.map(function (s) {
+      return L.wettbar(L.spiel(s.m), jetzt) ? 1 : 0;
+    }).join('') + (V.spiel ? (L.wettbar(L.spiel(V.spiel), jetzt) ? 1 : 0) : '');
+    return V.ansicht + V.sport + V.liga + V.tab + V.spiel + V.grp + V.wTab + '|' + (d ? d.offen.length + ',' + d.hist.length : '') + '|' + L.version() + '|' + WettInfo.feed.l.length + '|' + sperren;
   }
   function renderInhalt(oben) {
     const jetzt = Date.now();
@@ -36992,9 +37536,9 @@ const SzeneSportwetten = (function () {
     V.inhalt.innerHTML = h;
     V.inhalt.scrollTop = oben ? 0 : alt;
   }
-  function renderSchein() {
+  function renderSchein(immer) {
     const fokus = document.activeElement && document.activeElement.getAttribute && document.activeElement.getAttribute('data-einsatz');
-    if (fokus) {
+    if (fokus && !immer) {
       // während der Eingabe nur die Zahlen auffrischen
       return;
     }
@@ -37050,6 +37594,10 @@ const SzeneSportwetten = (function () {
     const x = wert.split('|');
     const m = L.spiel(x[0]);
     const s = { m: x[0], mk: x[1], a: x[2], t: m ? m.start : 0 };
+    const info = auswahlInfo(s);
+    if (info) {
+      s.q = info.q;
+    }
     const i = V.schein.sel.findIndex(function (y) {
       return y.m === s.m && y.mk === s.mk && y.a === s.a;
     });
@@ -37232,7 +37780,7 @@ const SzeneSportwetten = (function () {
 
   function regeln() {
     return '<p><b>Sportwetten auf echte Spiele – nur mit Spielgeld.</b> Spielpläne, Live-Stände und Endergebnisse kommen live aus den öffentlichen Spieldaten von ESPN: Fußball (Bundesliga, 2. Liga, DFB-Pokal, Premier League, LaLiga, Serie A, Ligue 1, Champions League und weitere), Tennis (ATP und WTA), Basketball (NBA, WNBA) und Eishockey (NHL). Ist gerade Saison- oder Länderspielpause, stehen in einer Liga keine Spiele.</p>'
-      + '<p><b>So wird gespielt:</b> Quote antippen – der Tipp landet im Wettschein. Einsatz eingeben, Wettart wählen, „Wette platzieren“. Gewettet wird bis kurz vor dem Anpfiff. Sobald das echte Spiel vorbei ist, wird automatisch mit dem echten Ergebnis abgerechnet und der Gewinn gutgeschrieben – auch wenn du gerade ein anderes Spiel spielst.</p>'
+      + '<p><b>So wird gespielt:</b> Quote antippen – der Tipp landet im Wettschein. Einsatz eingeben, Wettart wählen, „Wette platzieren“. Gewettet wird vor dem Anpfiff und live während des Spiels. Sobald das echte Spiel vorbei ist, wird automatisch mit dem echten Ergebnis abgerechnet und der Gewinn gutgeschrieben – auch wenn du gerade ein anderes Spiel spielst.</p>'
       + '<table><tr><th>Wettart</th><th>Gewinnt, wenn …</th></tr>'
       + '<tr><td>Einzel</td><td>der Tipp stimmt. Mehrere Tipps auf dem Schein werden zu mehreren Einzelwetten (Einsatz je Wette).</td></tr>'
       + '<tr><td>Kombi</td><td>alle Tipps stimmen. Die Quoten werden multipliziert. Nur Tipps aus verschiedenen Spielen.</td></tr>'
@@ -37240,6 +37788,7 @@ const SzeneSportwetten = (function () {
       + '<p><b>Märkte</b> (je nach Sportart): Endergebnis 1X2, Doppelte Chance, Unentschieden = Geld zurück, Über/Unter, beide Teams treffen, Handicap, Halbzeit, Halbzeit/Endstand, genaues Ergebnis, Anzahl Tore, gerade/ungerade, Torschütze (jederzeit und erster, aus dem echten Kader), erstes Tor, Ecken, Gelbe Karten, Satzwetten, Spiele-Handicap, Tiebreak, Viertel, Drittel, Verlängerung, Siegmarge und mehr.</p>'
       + '<p><b>Regeln:</b> Fußball zählt 90 Minuten plus Nachspielzeit, ohne Verlängerung und Elfmeterschießen. Eishockey: „reguläre Spielzeit“ ohne Verlängerung, „Sieger“ inklusive Verlängerung und Penaltyschießen. Basketball: alle Märkte inklusive Verlängerung, außer Halbzeit und Viertel. Tennis: Bei Aufgabe oder kampflosem Sieg zählen alle Tipps auf das Match mit Quote 1,00. Eigentore zählen nicht für Torschützenwetten; spielt ein Spieler nicht oder trifft nicht, ist der Tipp verloren. Abgesagte oder verschobene Spiele und Märkte, für die die Spieldaten nicht reichen (z. B. fehlende Ecken- oder Kartenzahlen), zählen mit Quote 1,00 („zurück“). Hat ein Spiel 6 Tage nach dem Termin kein Ergebnis, zählt der Tipp ebenfalls mit 1,00.</p>'
       + '<p><b>Quoten:</b> Gibt es für ein Spiel Buchmacher-Quoten (DraftKings), wird unser Modell genau darauf eingestellt (Fußball: Torraten so, dass 1X2 und Über/Unter passen; Basketball: Handicap und Punkte; Eishockey: Sieger und Tore). Sonst schätzt es die Stärke aus Bilanz, Form bzw. Setzplatz. Daraus werden alle weiteren Märkte exakt berechnet. Die Auszahlungsquote liegt bei 95 % für Hauptmärkte, 94 % für weitere Märkte und 92 % für Sonderwetten (genaues Ergebnis, Torschützen, Halbzeit/Endstand). Ändern sich die Quoten vor dem Anpfiff, gilt für deine Wette die Quote beim Platzieren.</p>'
+      + '<p><b>Live-Wetten:</b> Läuft ein Spiel, rechnet das Modell mit dem aktuellen Spielstand und der Restzeit weiter (Fußball: Minute, Tore und Rote Karten; Basketball: Viertel und Spieluhr; Eishockey: Drittel und Spieluhr; Tennis: Sätze und Spiele im laufenden Satz). Entschiedene Wetten verschwinden, dazu kommt beim Fußball „Nächstes Tor“. Nach einem Tor sind Live-Wetten 30 Sekunden gesperrt, bis der neue Stand da ist; in der Verlängerung gibt es keine Live-Wetten. Ändert sich eine Quote, während du den Wettschein ansiehst, wird sie markiert (▲/▼) und muss erst bestätigt werden.</p>'
       + '<p><b>Benachrichtigungen:</b> Unter „Meine Wetten“ → 🔔 stellst du ein, worüber du informiert wirst: Anpfiff, Tore, entschiedene Tipps und Abrechnung – auf Wunsch auch als Systembenachrichtigung, solange die Spielhalle geöffnet ist.</p>'
       + '<p><b>Tagesrangliste:</b> 🏆 zeigt, wer heute (deutsche Zeit) über alle Spiele am meisten Plus gemacht hat und wer den größten Einzelgewinn hatte. Um Mitternacht beginnt sie neu.</p>'
       + '<p>Es wird nur mit Spielgeld gespielt. Es gibt keine Einzahlung, keine Auszahlung und keine Preise. Die Spieldaten sind ohne Gewähr.</p>';
