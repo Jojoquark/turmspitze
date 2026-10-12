@@ -1,6 +1,6 @@
 # Turmspitze – Spielhalle
 
-Eine Spielhalle als Web-App mit **fünfzehn Spielen**, einem gemeinsamen Guthaben, einer zweiten Währung (Goldchips), Spielerkonten mit Google-/Apple-Anmeldung und Admin-Bereich.
+Eine Spielhalle als Web-App mit **siebzehn Spielen** (darunter simulierte Sportwetten), einem gemeinsamen Guthaben, einer zweiten Währung (Goldchips), Spielerkonten mit Google-/Apple-Anmeldung und Admin-Bereich.
 
 **Spielhalle (deutsche Klassiker)**
 
@@ -23,6 +23,14 @@ Eine Spielhalle als Web-App mit **fünfzehn Spielen**, einem gemeinsamen Guthabe
 - **Nil-Juwelen**: nach der Mechanik von *Lucky Pharaoh* (Merkur): 5 × 3, 10 Linien, Gewinne von links, von rechts und auf den drei mittleren Walzen, gestapelte Symbole. Gewinne ab 4 × Einsatz lassen sich in **Power Spins** tauschen (vier Felder gleichzeitig, Goldmaske verwandelt sich auf allen Feldern in dasselbe Symbol). Quote 94,4 % (bar) bis 96,4 % (mit Power Spins).
 - **Sonnenernte**: nach der Mechanik von *77777 Sunny Spins* (Merkur): Früchte, 10 Linien, die 7 ist Joker. Ab 5 Sonnentalern starten die **Sonnen-Spins** (Taler bleiben stehen, neue setzen auf 3 zurück, Töpfe Mini bis Grand, volles Feld × 3). Quote etwa 96,4 %.
 - **Bonbonregen**: der derzeit beliebteste Online-Slot-Typ, nach der Mechanik von *Sweet Bonanza* (Pragmatic Play): 6 × 5, Gewinne ab 8 gleichen Symbolen irgendwo, Kaskaden, Freispiele mit Bonbon-Bomben bis 100×, Einsatz-Plus und Freispiele kaufen. Quote etwa 96,5 %, Höchstgewinn 21.100 ×.
+
+**Sportwetten (simuliert, nur Spielgeld)**
+
+- **Sportwetten**: Wettbüro mit 15 erfundenen Ligen in 6 Sportarten – Fußball (Deutschland 1. und 2. Liga, England, Spanien, Italien, Frankreich), Tennis (Herren- und Damen-Tour, Grand Slam mit 3 Gewinnsätzen), Basketball, Eishockey (je Deutschland und Nordamerika), Handball und Volleyball. Jede Liga spielt in festem Takt: alle 10 bis 16 Minuten beginnt ein neuer Spieltag, ein Spiel läuft 4 bis 8 Minuten live mit Spielstand, Torschützen, Sätzen bzw. Vierteln. Dazu Ergebnisse und Tabellen.
+- Über 40 Märkte je Fußballspiel: 1X2, Doppelte Chance, Unentschieden = Geld zurück, Über/Unter 0,5 bis 5,5, beide treffen, Handicap, Halbzeit, Halbzeit/Endstand, genaues Ergebnis, Anzahl Tore, Torschütze (jederzeit, erster), erstes Tor, Ecken, gelbe Karten und Kombi-Märkte. Andere Sportarten mit ihren typischen Märkten (Satzwetten, Spiele-Handicap, Tiebreak, Puck Line, Drittel, Viertel, Verlängerung, Siegmarge …).
+- Wettschein mit **Einzel-, Kombi- und Systemwetten** (z. B. 2 aus 4). Abgerechnet wird automatisch, auch während man ein anderes Spiel spielt. „Meine Wetten“ zeigt offene und abgerechnete Wetten.
+- Die Quoten werden exakt aus demselben Modell berechnet, mit dem die Spiele ausgespielt werden (Auszahlungsquote 95 % Hauptmärkte, 94 % weitere Märkte, 92 % Sonderwetten). Alle Geräte sehen dieselben Spiele, Quoten und Ergebnisse.
+- **Tagesrangliste**: in der Rangliste (🏆) die Reiter **Heute** (Plus aller Spiele seit Mitternacht, deutsche Zeit) und **Wetten heute** (nur Sportwetten, mit bester gewonnener Quote) – mit dem Sieger von gestern.
 
 Die Auszahlungsquoten der vier neuen Automaten wurden per Simulation (mehrere Millionen Drehungen) auf die veröffentlichten Werte der Vorbilder abgestimmt; die genauen Walzenbelegungen der Originale sind nicht öffentlich.
 
