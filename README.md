@@ -1,6 +1,6 @@
 # Turmspitze – Spielhalle
 
-Eine Spielhalle als Web-App mit **siebzehn Spielen** (darunter simulierte Sportwetten), einem gemeinsamen Guthaben, einer zweiten Währung (Goldchips), Spielerkonten mit Google-/Apple-Anmeldung und Admin-Bereich.
+Eine Spielhalle als Web-App mit **siebzehn Spielen** (darunter Sportwetten auf echte Spiele mit Spielgeld), einem gemeinsamen Guthaben, einer zweiten Währung (Goldchips), Spielerkonten mit Google-/Apple-Anmeldung und Admin-Bereich.
 
 **Spielhalle (deutsche Klassiker)**
 
@@ -24,13 +24,14 @@ Eine Spielhalle als Web-App mit **siebzehn Spielen** (darunter simulierte Sportw
 - **Sonnenernte**: nach der Mechanik von *77777 Sunny Spins* (Merkur): Früchte, 10 Linien, die 7 ist Joker. Ab 5 Sonnentalern starten die **Sonnen-Spins** (Taler bleiben stehen, neue setzen auf 3 zurück, Töpfe Mini bis Grand, volles Feld × 3). Quote etwa 96,4 %.
 - **Bonbonregen**: der derzeit beliebteste Online-Slot-Typ, nach der Mechanik von *Sweet Bonanza* (Pragmatic Play): 6 × 5, Gewinne ab 8 gleichen Symbolen irgendwo, Kaskaden, Freispiele mit Bonbon-Bomben bis 100×, Einsatz-Plus und Freispiele kaufen. Quote etwa 96,5 %, Höchstgewinn 21.100 ×.
 
-**Sportwetten (simuliert, nur Spielgeld)**
+**Sportwetten (echte Spiele, nur Spielgeld)**
 
-- **Sportwetten**: Wettbüro mit 15 erfundenen Ligen in 6 Sportarten – Fußball (Deutschland 1. und 2. Liga, England, Spanien, Italien, Frankreich), Tennis (Herren- und Damen-Tour, Grand Slam mit 3 Gewinnsätzen), Basketball, Eishockey (je Deutschland und Nordamerika), Handball und Volleyball. Jede Liga spielt in festem Takt: alle 10 bis 16 Minuten beginnt ein neuer Spieltag, ein Spiel läuft 4 bis 8 Minuten live mit Spielstand, Torschützen, Sätzen bzw. Vierteln. Dazu Ergebnisse und Tabellen.
-- Über 40 Märkte je Fußballspiel: 1X2, Doppelte Chance, Unentschieden = Geld zurück, Über/Unter 0,5 bis 5,5, beide treffen, Handicap, Halbzeit, Halbzeit/Endstand, genaues Ergebnis, Anzahl Tore, Torschütze (jederzeit, erster), erstes Tor, Ecken, gelbe Karten und Kombi-Märkte. Andere Sportarten mit ihren typischen Märkten (Satzwetten, Spiele-Handicap, Tiebreak, Puck Line, Drittel, Viertel, Verlängerung, Siegmarge …).
-- Wettschein mit **Einzel-, Kombi- und Systemwetten** (z. B. 2 aus 4). Abgerechnet wird automatisch, auch während man ein anderes Spiel spielt. „Meine Wetten“ zeigt offene und abgerechnete Wetten.
-- Die Quoten werden exakt aus demselben Modell berechnet, mit dem die Spiele ausgespielt werden (Auszahlungsquote 95 % Hauptmärkte, 94 % weitere Märkte, 92 % Sonderwetten). Alle Geräte sehen dieselben Spiele, Quoten und Ergebnisse.
-- **Tagesrangliste**: in der Rangliste (🏆) die Reiter **Heute** (Plus aller Spiele seit Mitternacht, deutsche Zeit) und **Wetten heute** (nur Sportwetten, mit bester gewonnener Quote) – mit dem Sieger von gestern.
+- **Sportwetten**: Wettbüro mit **echten Spielen und echten Ergebnissen** aus 27 Ligen: Fußball (Bundesliga, 2. Bundesliga, DFB-Pokal, Premier League, Championship, LaLiga, Serie A, Ligue 1, Eredivisie, Portugal, Österreich, Schweiz, Türkei, Schottland, Champions League, Europa League, Conference League, Nations League, Länderspiele, MLS, Brasilien, Argentinien), Tennis (ATP und WTA, Einzel), Basketball (NBA, WNBA) und Eishockey (NHL). Spielplan, Live-Stand, Torschützen, Sätze, Viertel und Drittel kommen von der frei zugänglichen ESPN-Schnittstelle (`site.api.espn.com`, ohne Schlüssel). Die App lädt alle 5 Minuten neu, bei laufenden Spielen alle 30 Sekunden. Ohne Internet erscheint ein Hinweis mit „Erneut versuchen".
+- Über 40 Märkte je Fußballspiel: 1X2, Doppelte Chance, Unentschieden = Geld zurück, Über/Unter 0,5 bis 5,5, beide treffen, Handicap, Halbzeit, Halbzeit/Endstand, genaues Ergebnis, Anzahl Tore, Torschütze (jederzeit, erster; aus dem echten Kader), erstes Tor, Ecken, gelbe Karten und Kombi-Märkte. Andere Sportarten mit ihren typischen Märkten (Satzwetten, Spiele-Handicap, Tiebreak, Puck Line, Drittel, Viertel, Verlängerung, Siegmarge …).
+- Wettschein mit **Einzel-, Kombi- und Systemwetten** (z. B. 2 aus 4). Wetten sind bis kurz vor Anpfiff möglich. Abgerechnet wird automatisch nach dem echten Ergebnis, auch während man ein anderes Spiel spielt. Fehlt eine nötige Angabe (z. B. Ecken) oder wird ein Spiel abgesagt bzw. ein Tennismatch aufgegeben, gibt es den Einsatz zurück. „Meine Wetten“ zeigt offene und abgerechnete Wetten.
+- **Quoten**: Wo ESPN Buchmacherquoten (DraftKings) liefert, wird das Modell daran ausgerichtet (Fußball: Poisson mit Dixon-Coles-Korrektur, Basketball: Normalverteilung je Viertel, Eishockey: Poisson je Drittel, Tennis: Aufschlagmodell). Ohne Quoten rechnet es mit Bilanz bzw. Weltranglistenplatz. Auszahlungsquote 95 % Hauptmärkte, 94 % weitere Märkte, 92 % Sonderwetten.
+- **Benachrichtigungen** zu den eigenen Wetten: Anpfiff, Tore, Spielende, Absage, Zwischenstand bei Kombis und Gewinn/Verlust. Sie erscheinen als Hinweis in der App und unter „Meine Wetten → Mitteilungen“ (🔔 mit Zähler). Auf Wunsch auch als Systemmitteilung, wenn die App im Hintergrund offen ist (kein Push-Server, bei geschlossener App kommt nichts). Jede Art lässt sich einzeln abschalten.
+- **Tagesrangliste** für die ganze Spielhalle: in der Rangliste (🏆) die Reiter **Heute Plus** (Plus aller Spiele seit Mitternacht, deutsche Zeit) und **Heute Top-Gewinn** (größter Einzelgewinn des Tages, mit Spiel) – jeweils mit dem Sieger von gestern.
 
 Die Auszahlungsquoten der vier neuen Automaten wurden per Simulation (mehrere Millionen Drehungen) auf die veröffentlichten Werte der Vorbilder abgestimmt; die genauen Walzenbelegungen der Originale sind nicht öffentlich.
 

@@ -1,6 +1,6 @@
 // Turmspitze – Service Worker: speichert das Spiel fuer den Offline-Betrieb.
 // Strategie: die Seite zuerst aus dem Netz (Updates sofort), Bilder usw. aus dem Speicher; offline alles aus dem Speicher.
-const VERSION = 'turmspitze-202610120758';
+const VERSION = 'turmspitze-202610120909';
 const DATEIEN = [
   './',
   './index.html',
@@ -84,5 +84,18 @@ self.addEventListener('fetch', function (e) {
       });
       return treffer || netz;
     });
+  }));
+});
+
+// Tippt man auf eine Wett-Benachrichtigung, kommt die Spielhalle nach vorn
+self.addEventListener('notificationclick', function (e) {
+  e.notification.close();
+  e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (liste) {
+    for (let i = 0; i < liste.length; i++) {
+      if (liste[i].focus) {
+        return liste[i].focus();
+      }
+    }
+    return self.clients.openWindow ? self.clients.openWindow('./') : undefined;
   }));
 });
