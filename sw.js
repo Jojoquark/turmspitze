@@ -1,6 +1,6 @@
 // Turmspitze – Service Worker: speichert das Spiel fuer den Offline-Betrieb.
 // Strategie: die Seite zuerst aus dem Netz (Updates sofort), Bilder usw. aus dem Speicher; offline alles aus dem Speicher.
-const VERSION = 'turmspitze-202610120947';
+const VERSION = 'turmspitze-202610142355';
 const DATEIEN = [
   './',
   './index.html',

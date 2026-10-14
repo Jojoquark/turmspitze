@@ -23,6 +23,7 @@ Eine Spielhalle als Web-App mit **siebzehn Spielen** (darunter Sportwetten auf e
 - **Nil-Juwelen**: nach der Mechanik von *Lucky Pharaoh* (Merkur): 5 × 3, 10 Linien, Gewinne von links, von rechts und auf den drei mittleren Walzen, gestapelte Symbole. Gewinne ab 4 × Einsatz lassen sich in **Power Spins** tauschen (vier Felder gleichzeitig, Goldmaske verwandelt sich auf allen Feldern in dasselbe Symbol). Quote 94,4 % (bar) bis 96,4 % (mit Power Spins).
 - **Sonnenernte**: nach der Mechanik von *77777 Sunny Spins* (Merkur): Früchte, 10 Linien, die 7 ist Joker. Ab 5 Sonnentalern starten die **Sonnen-Spins** (Taler bleiben stehen, neue setzen auf 3 zurück, Töpfe Mini bis Grand, volles Feld × 3). Quote etwa 96,4 %.
 - **Bonbonregen**: der derzeit beliebteste Online-Slot-Typ, nach der Mechanik von *Sweet Bonanza* (Pragmatic Play): 6 × 5, Gewinne ab 8 gleichen Symbolen irgendwo, Kaskaden, Freispiele mit Bonbon-Bomben bis 100×, Einsatz-Plus und Freispiele kaufen. Quote etwa 96,5 %, Höchstgewinn 21.100 ×.
+- **Angelglück**: Angler-Slot nach der Mechanik von *Big Bass Bonanza* (Pragmatic Play / Reel Kingdom): 5 × 3, 10 Linien, der Schwimmer zahlt bis 200× ab 2 Symbolen. In den Freispielen sammelt der Angler alle Geldfische im Feld unabhängig ein. Der 12-stufige Angler-Trail bringt bis zu dreimal +10 Freispiele und Multiplikatoren (×2, ×3, ×10). Dynamit-Feature bei toten Angler-Spins und Freispiele kaufen für 100× Einsatz. Quote etwa 96,7 %, Höchstgewinn 2.100 ×.
 
 **Sportwetten (echte Spiele, nur Spielgeld)**
 
