@@ -272,6 +272,8 @@ input, textarea, select {
   user-select: none;
 }
 .ds.ds-ein { animation: dsEin 0.28s ease-out; }
+@media (prefers-reduced-motion: reduce) { .ds.ds-ein { animation: none !important; } }
+.kein-anim .ds.ds-ein { animation: none !important; }
 @keyframes dsEin { from { opacity: 0; } }
 .ds button { cursor: pointer; }
 .ds-kopf {
@@ -2242,7 +2244,7 @@ input, textarea, select {
 .sw-runter { color: #ef4444; }
 .sw-w-lv { color: #f43f5e !important; }
 /* ---------------------------------------------------------------- Walzenspiele (gemeinsam) */
-.ds-slot .ds-inhalt { display: flex; flex-direction: column; overflow: hidden; }
+.ds.slot .ds-inhalt, .slot .ds-inhalt, .ds-slot .ds-inhalt { display: flex; flex-direction: column; overflow: hidden; height: 100%; flex: 1; min-height: 0; }
 .sl { position: relative; display: flex; flex-direction: column; flex: 1; min-height: 0; height: 100%; }
 .sl-haupt { flex: 1; min-height: 0; display: flex; gap: 10px; padding: 6px 10px; }
 .sl-buehne { position: relative; flex: 1 1 auto; min-width: 0; min-height: 0; border-radius: 16px; overflow: hidden; }
@@ -2827,19 +2829,18 @@ input, textarea, select {
     radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.25), transparent 40%),
     radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.2), transparent 45%),
     linear-gradient(180deg, #1682c5 0%, #0c568f 24%, #073863 55%, #031c36 82%, #010f1e 100%);
-  position: relative;
   overflow: hidden;
 }
 .ds-angelglueck .ds-kopf { background: rgba(5, 30, 60, 0.55); backdrop-filter: blur(8px); border-bottom: 1px solid rgba(255, 255, 255, 0.15); }
 .ds-angelglueck .ds-ikon { background: rgba(255, 255, 255, 0.2); color: #fff; border-radius: 50%; box-shadow: 0 0 10px rgba(0, 180, 255, 0.3); }
 .ds-angelglueck .ds-titel { font: 700 26px/1 Fredoka, "Lilita One", sans-serif; color: #ffe14a; -webkit-text-stroke: 2px #0a3a6a; paint-order: stroke fill; text-shadow: 0 3px 0 #0a3a6a; }
 
-.ag-kopf-leiste { width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 5; }
-.ag-titel { text-align: center; padding: 6px 0 2px; font: 700 clamp(26px, 7.5vmin, 56px)/1 Fredoka, "Lilita One", sans-serif; color: #ffe14a; -webkit-text-stroke: 3px #042142; paint-order: stroke fill; text-shadow: 0 4px 0 #042142, 0 8px 20px rgba(0, 20, 50, 0.6); letter-spacing: 0.03em; }
-@media (max-height: 600px) { .ag-titel { display: none; } }
+.ag-kopf-leiste { width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 5; flex: 0 0 auto; }
+.ag-titel { text-align: center; padding: 4px 0 2px; font: 700 clamp(22px, 6.5vmin, 48px)/1 Fredoka, "Lilita One", sans-serif; color: #ffe14a; -webkit-text-stroke: 3px #042142; paint-order: stroke fill; text-shadow: 0 4px 0 #042142, 0 8px 20px rgba(0, 20, 50, 0.6); letter-spacing: 0.03em; }
+@media (max-height: 620px) { .ag-titel { display: none; } }
 
 /* The 12-Slot Progressive Multiplier Trail above reels in Free Spins */
-.ag-meter { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 4px 12px; margin: 4px auto; background: rgba(2, 16, 36, 0.88); border: 2px solid #ffcc00; border-radius: 30px; box-shadow: 0 4px 16px rgba(0,0,0,0.6), inset 0 0 8px rgba(255, 200, 0, 0.3); }
+.ag-meter { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 4px 12px; margin: 2px auto 4px; background: rgba(2, 16, 36, 0.88); border: 2px solid #ffcc00; border-radius: 30px; box-shadow: 0 4px 16px rgba(0,0,0,0.6), inset 0 0 8px rgba(255, 200, 0, 0.3); }
 .ag-meter-teil { display: flex; align-items: center; gap: 4px; }
 .ag-meter-teil:not(:last-child)::after { content: ''; width: 2px; height: 18px; background: rgba(255, 255, 255, 0.25); margin: 0 4px; }
 .ag-slots { display: inline-flex; gap: 4px; align-items: center; }
@@ -2857,10 +2858,10 @@ input, textarea, select {
 .ag-info:empty { padding: 0; }
 .ag-info b { color: #ffe14a; }
 
-.ag .sl-haupt { justify-content: center; align-items: center; position: relative; width: 100%; gap: 12px; }
+.ag .sl-haupt { justify-content: center; align-items: center; position: relative; width: 100%; gap: 14px; flex: 1 1 auto; min-height: 0; }
 
 /* Side Buy Button */
-.ag-seite { flex: 0 0 auto; display: flex; flex-direction: column; gap: 8px; justify-content: center; z-index: 5; }
+.ag-seite { flex: 0 0 140px; display: flex; flex-direction: column; gap: 8px; justify-content: center; z-index: 5; }
 .ag-kauf { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 10px 12px; border: 3px solid #ffcc00; border-radius: 18px; font: 700 13px/1.1 Fredoka, "Lilita One", sans-serif; color: #fff; text-align: center; background: radial-gradient(circle at 50% 20%, #2080d8, #053a6a); box-shadow: 0 4px 0 #021a30, 0 8px 20px rgba(0, 30, 60, 0.5); cursor: pointer; transition: transform 0.15s, filter 0.15s; }
 .ag-kauf:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.1); }
 .ag-kauf:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 2px 0 #021a30; }
@@ -2868,20 +2869,39 @@ input, textarea, select {
 .ag-kauf b { font-size: 16px; color: #ffea55; text-shadow: 0 1px 3px rgba(0,0,0,0.6); }
 .ag-kauf:disabled { opacity: 0.45; cursor: not-allowed; }
 
-.ag-buehne { flex: 0 1 auto; aspect-ratio: 1.72; height: calc(100% - 20px); max-width: calc(100% - 20px); border-radius: 20px;
-  background: linear-gradient(180deg, rgba(8, 48, 86, 0.65) 0%, rgba(3, 24, 48, 0.8) 100%);
-  border: 7px solid #d4a350; box-shadow: 0 0 0 3px #543206, inset 0 0 16px rgba(0, 0, 0, 0.6), 0 16px 40px rgba(0, 20, 40, 0.7); position: relative; }
+.ag-buehne {
+  flex: 0 1 auto;
+  aspect-ratio: 1.72;
+  height: 100%;
+  max-height: calc(100% - 10px);
+  max-width: calc(100% - 160px);
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(8, 48, 86, 0.75) 0%, rgba(3, 24, 48, 0.9) 100%);
+  border: 7px solid #d4a350;
+  box-shadow: 0 0 0 3px #543206, inset 0 0 16px rgba(0, 0, 0, 0.6), 0 16px 40px rgba(0, 20, 40, 0.7);
+  position: relative;
+  overflow: hidden;
+}
 .ag.frei .ag-buehne { border-color: #ffd700; box-shadow: 0 0 0 3px #603a00, 0 0 50px rgba(255, 215, 0, 0.55), inset 0 0 24px rgba(255, 200, 0, 0.2); }
 .ag-fx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 4; }
 
-@media (max-width: 600px) {
-  .ag .sl-haupt { flex-direction: column-reverse; }
-  .ag-seite { flex-direction: row; width: 100%; justify-content: center; padding: 4px 0; }
-  .ag-kauf { padding: 6px 14px; flex-direction: row; gap: 8px; }
-  .ag-buehne { height: auto; width: calc(100% - 16px); }
+@media (orientation: portrait), (max-width: 680px) {
+  .ag .sl-haupt { flex-direction: column-reverse; padding: 4px; gap: 8px; justify-content: center; }
+  .ag-seite { flex: 0 0 auto; flex-direction: row; width: 100%; justify-content: center; padding: 2px 0; }
+  .ag-kauf { padding: 6px 16px; flex-direction: row; gap: 8px; }
+  .ag-buehne { height: auto; width: min(100%, calc(100vw - 16px)); max-height: calc(100% - 50px); max-width: 100%; }
   .ag-meter { padding: 3px 8px; gap: 4px; }
   .ag-slots i { width: 12px; height: 12px; }
   .ag-badge { font-size: 11px; padding: 2px 5px; }
+}
+@media (max-height: 600px) {
+  .ag-titel { display: none; }
+}
+@media (max-height: 520px) {
+  .ag-kopf-leiste { padding: 0; }
+  .ag-buehne { border-width: 4px; }
+  .ag-kauf { padding: 4px 8px; }
+  .ag-kauf b { font-size: 13px; }
 }
 
 /* Wackeln on Dynamite Explosion */
@@ -18834,6 +18854,10 @@ const Online = (function () {
   function laden() {
     let k = null;
     try {
+      if (typeof window !== 'undefined' && window.location && window.location.search && (window.location.search.indexOf('gast=1') >= 0 || window.location.search.indexOf('offline=1') >= 0)) {
+        konf = null;
+        return;
+      }
       const d = window.TURMSPITZE_ONLINE;
       if (d && typeof d.apiKey === 'string' && d.apiKey.trim() && typeof d.databaseURL === 'string' && d.databaseURL.trim()) {
         k = { apiKey: d.apiKey.trim(), databaseURL: d.databaseURL.trim(), authDomain: typeof d.authDomain === 'string' ? d.authDomain.trim() : '', authURL: d.authURL, tokenURL: d.tokenURL, quelle: 'datei' };
@@ -20631,7 +20655,7 @@ function domSzene(def) {
       if (def.hilfeStart && sz_regelnZeigen) {
         let gesehen = true;
         try {
-          gesehen = window.localStorage.getItem('casino.hilfe.' + def.name) === '1';
+          gesehen = (window.location.search && window.location.search.indexOf('nohilfe=1') >= 0) || window.localStorage.getItem('casino.hilfe.' + def.name) === '1';
           window.localStorage.setItem('casino.hilfe.' + def.name, '1');
         } catch (e) {
           gesehen = true;
@@ -20742,7 +20766,7 @@ function turmKonfAnwenden() {
 // Die Seite fragt regelmäßig die Versionsdatei ab. Gibt es eine neue Version (oder hat der Admin
 // „Alle Geräte neu laden“ gedrückt), lädt sie neu – sofort, wenn gerade nichts läuft, sonst nach der
 // laufenden Runde (spätestens nach 3 Minuten; offene Gewinne sind gespeichert und werden gutgeschrieben).
-const BUILD_VERSION = '20261014235522';
+const BUILD_VERSION = '20261015011902';
 const Aktualisierung = (function () {
   const geladen = Date.now();
   let grund = '', seit = 0, uhr = 0, letzte = 0, selbst = 0;
@@ -45004,6 +45028,8 @@ const SzeneAngelglueck = (function () {
     name: SPIEL, titel: 'ANGELGLÜCK', klasse: 'slot', html: html, regeln: regeln, init: init, hilfeStart: true,
     betreten: function () {
       A.buehne.layout();
+      A.buehne.dirty = true;
+      A.buehne.zeichne();
       knoepfe();
     },
     verlassen: function () {
@@ -45016,6 +45042,8 @@ const SzeneAngelglueck = (function () {
     layout: function () {
       if (A.buehne) {
         A.buehne.layout();
+        A.buehne.dirty = true;
+        A.buehne.zeichne();
       }
     },
     update: function (dt) {
@@ -45469,6 +45497,9 @@ function starte() {
     startAdresse = '';
   }
   canvas = document.getElementById('spiel');
+  if (typeof window !== 'undefined' && window.location && window.location.search && (window.location.search.indexOf('gast=1') >= 0 || window.location.search.indexOf('kein-anim=1') >= 0)) {
+    document.documentElement.classList.add('kein-anim');
+  }
   ctx = canvas.getContext('2d', { alpha: false });
   probe = document.getElementById('rand-probe');
   Knopf.touch = (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) || ('ontouchstart' in window);
