@@ -1098,106 +1098,146 @@ input, textarea, select {
   .gr-auto { height: 40px; }
   .gr-zahl { width: 40px; height: 40px; font-size: 18px; }
 }
-/* ---- Schatzstollen */
-.ds.stollen { background: radial-gradient(ellipse at 50% 30%, #3b2616 0%, #1a0f07 70%, #0d0703 100%); color: #ffeccc; }
-.ds.stollen .ds-kopf { background: linear-gradient(180deg, #4a2f18, #2d1b0d); border-bottom: 3px solid #1a0f07; box-shadow: 0 3px 0 rgba(201, 154, 74, 0.35); }
-.ds.stollen .ds-titel { color: #ffd23a; -webkit-text-stroke: 1.5px #2b1606; paint-order: stroke fill; text-shadow: 0 3px 0 #2b1606; font-size: 24px; }
-.ds.stollen .ds-ikon { background: rgba(255, 210, 58, 0.14); color: #ffd23a; }
+/* ---- Schatzstollen (1:1 Pirots Piraten-Design) */
+.ds.stollen { background: radial-gradient(ellipse at 50% 18%, #1e6c93 0%, #0d3652 55%, #071b2c 100%); color: #fff2d6; }
+.ds.stollen.im-bonus { background: radial-gradient(ellipse at 50% 20%, #8f3a12 0%, #3d1414 58%, #160708 100%); }
+.ds.stollen .ds-kopf { background: linear-gradient(180deg, #543318, #2f1a0a); border-bottom: 3px solid #160b03; box-shadow: 0 3px 0 rgba(232, 180, 74, 0.45), inset 0 1px 0 rgba(255, 228, 150, 0.22); }
+.ds.stollen .ds-titel { color: #ffd447; -webkit-text-stroke: 1.5px #241205; paint-order: stroke fill; text-shadow: 0 3px 0 #241205, 0 0 18px rgba(255, 200, 60, 0.35); font-size: 24px; letter-spacing: 0.03em; }
+.ds.stollen .ds-ikon { background: rgba(255, 212, 71, 0.16); color: #ffd447; border: 1px solid rgba(255, 212, 71, 0.32); }
 .ss { display: flex; flex-direction: column; min-height: 100%; }
-.ss-buehne { flex: 1; display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 10px; padding: 8px; min-height: 0; }
-.ss-seite { display: flex; flex-direction: column; gap: 10px; padding: 10px; border-radius: 16px; background: rgba(20, 10, 4, 0.75); border: 2px solid #6b4423; box-shadow: inset 0 0 0 2px rgba(201, 154, 74, 0.2); }
+.ss-buehne { flex: 1; display: grid; grid-template-columns: 262px minmax(0, 1fr); gap: 10px; padding: 8px 10px; min-height: 0; }
+.ss-seite { display: flex; flex-direction: column; gap: 9px; padding: 11px; border-radius: 18px; background: linear-gradient(180deg, rgba(44, 24, 11, 0.92), rgba(22, 12, 5, 0.95)); border: 2px solid #8c5a2b; box-shadow: inset 0 1px 0 rgba(255, 224, 145, 0.22), 0 8px 24px rgba(0, 0, 0, 0.48); transition: border-color 0.35s, box-shadow 0.35s; }
 .ss-tafel { display: flex; flex-direction: column; gap: 6px; }
-.ss-farbe { display: flex; align-items: center; gap: 8px; padding: 5px 8px; border-radius: 10px; background: rgba(255, 255, 255, 0.05); }
-.ss-farbe canvas { width: 34px; height: 34px; flex: none; }
-.ss-farbe.hoch { animation: ssHoch 0.6s ease-out; }
-@keyframes ssHoch { 0% { background: rgba(255, 240, 160, 0.6); } 100% { background: rgba(255, 255, 255, 0.05); } }
-.ss-fn { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
-.ss-fn b { font: 400 15px/1 "Lilita One", "Arial Black", sans-serif; letter-spacing: 0.02em; }
-.ss-farbe.f0 .ss-fn b { color: #ff8f9b; }
-.ss-farbe.f1 .ss-fn b { color: #dcb2ff; }
-.ss-farbe.f2 .ss-fn b { color: #9dffc4; }
-.ss-farbe.f3 .ss-fn b { color: #9fd4ff; }
-.ss-pips { display: flex; gap: 3px; }
-.ss-pip { width: 9px; height: 9px; border-radius: 50%; background: rgba(255, 255, 255, 0.14); }
-.ss-pip.an { background: #ffd23a; box-shadow: 0 0 6px rgba(255, 210, 58, 0.8); }
-.ss-wert { font: 900 14px/1 Nunito, sans-serif; color: #fff; white-space: nowrap; }
-.ss-lorenzeile { display: flex; align-items: center; justify-content: space-between; padding: 6px 8px; border-radius: 10px; background: rgba(255, 255, 255, 0.05); }
-.ss-lorenzeile > span { font: 400 15px/1 "Lilita One", "Arial Black", sans-serif; color: #ffd23a; }
+.ss-farbe { display: flex; align-items: center; gap: 8px; padding: 6px 9px; border-radius: 12px; background: linear-gradient(180deg, rgba(255, 255, 255, 0.075), rgba(0, 0, 0, 0.24)); border: 1px solid rgba(255, 220, 150, 0.14); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06); transition: transform 0.2s, border-color 0.25s, background 0.25s; }
+.ss-farbe canvas { width: 36px; height: 36px; flex: none; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.45)); }
+.ss-farbe.hoch { animation: ssHoch 0.7s cubic-bezier(.25, 1.5, .5, 1); }
+@keyframes ssHoch {
+  0% { background: rgba(255, 234, 130, 0.58); border-color: #ffd447; transform: scale(1.045); }
+  100% { background: linear-gradient(180deg, rgba(255, 255, 255, 0.075), rgba(0, 0, 0, 0.24)); transform: scale(1); }
+}
+.ss-fn { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.ss-fn b { font: 400 15px/1 "Lilita One", "Arial Black", sans-serif; letter-spacing: 0.03em; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6); }
+.ss-farbe.f0 .ss-fn b { color: #ff8a98; }
+.ss-farbe.f1 .ss-fn b { color: #e5b8ff; }
+.ss-farbe.f2 .ss-fn b { color: #96ffc6; }
+.ss-farbe.f3 .ss-fn b { color: #99dcff; }
+.ss-pips { display: flex; gap: 4px; }
+.ss-pip { width: 9px; height: 9px; border-radius: 50%; background: rgba(255, 255, 255, 0.14); border: 1px solid rgba(0, 0, 0, 0.35); transition: background 0.25s, transform 0.25s, box-shadow 0.25s; }
+.ss-pip.an { background: radial-gradient(circle at 35% 30%, #fff7b8, #ffc824 65%, #c97a00); border-color: #6b3c00; box-shadow: 0 0 7px rgba(255, 212, 71, 0.85); transform: scale(1.1); }
+.ss-wert { font: 900 14px/1 Nunito, sans-serif; color: #fff6dc; white-space: nowrap; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.65); }
+.ss-status { display: flex; flex-direction: column; gap: 8px; }
+.ss-lorenzeile { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 7px 9px; border-radius: 12px; background: rgba(0, 0, 0, 0.34); border: 1px solid rgba(255, 212, 71, 0.18); transition: border-color 0.3s, box-shadow 0.3s; }
+.ss-lorenzeile.nah { border-color: #ffd447; box-shadow: 0 0 14px rgba(255, 212, 71, 0.42); animation: ssPuls 1.1s ease-in-out infinite; }
+@keyframes ssPuls { 0%, 100% { box-shadow: 0 0 10px rgba(255, 212, 71, 0.28); } 50% { box-shadow: 0 0 20px rgba(255, 212, 71, 0.68); } }
+.ss-lorenzeile > span { font: 400 15px/1 "Lilita One", "Arial Black", sans-serif; color: #ffd447; letter-spacing: 0.03em; }
 .ss-loren { display: flex; gap: 6px; }
-.ss-lore { width: 30px; height: 24px; border-radius: 4px 4px 8px 8px; border: 2px solid #8f7a63; background: rgba(0, 0, 0, 0.35); position: relative; }
-.ss-lore.an { background: linear-gradient(180deg, #ffd23a 0 45%, #6b5640 45%); border-color: #ffd23a; box-shadow: 0 0 12px rgba(255, 210, 58, 0.8); animation: ssLore 0.5s cubic-bezier(.3, 1.6, .5, 1); }
-@keyframes ssLore { from { transform: scale(0.4); } }
-.ss-leiste { position: relative; height: 26px; border-radius: 13px; background: rgba(0, 0, 0, 0.45); border: 2px solid #6b4423; overflow: hidden; }
-.ss-leiste i { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: linear-gradient(90deg, #ff9f1a, #ffd23a); transition: width 0.25s; }
-.ss-leiste span { position: absolute; inset: 0; display: grid; place-items: center; font: 900 12px/1 Nunito, sans-serif; color: #fff; text-shadow: 0 1px 2px #000; }
-.ss-bonus { padding: 10px; border-radius: 12px; background: linear-gradient(180deg, #ffd23a, #e08a00); color: #2b1606; text-align: center; display: flex; flex-direction: column; gap: 3px; }
+.ss-lore { width: 26px; height: 26px; border-radius: 50%; border: 2px solid #7d6750; background: rgba(0, 0, 0, 0.45); display: grid; place-items: center; font: 900 13px/1 Nunito, sans-serif; color: rgba(255, 220, 140, 0.28); transition: transform 0.25s, border-color 0.25s; }
+.ss-lore::before { content: '⚓'; }
+.ss-lore.an { background: radial-gradient(circle at 35% 30%, #fff3a6, #ffc824 65%, #b56800); border-color: #fff0a6; color: #2b1404; box-shadow: 0 0 12px rgba(255, 212, 71, 0.88); animation: ssLore 0.55s cubic-bezier(.3, 1.65, .5, 1); }
+@keyframes ssLore { from { transform: scale(0.35) rotate(-18deg); } }
+.ss-leiste { position: relative; height: 28px; border-radius: 14px; background: rgba(0, 0, 0, 0.52); border: 2px solid #8c5a2b; overflow: hidden; box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.6); }
+.ss-leiste.nah { border-color: #ffd447; box-shadow: 0 0 14px rgba(255, 212, 71, 0.48), inset 0 2px 5px rgba(0, 0, 0, 0.5); }
+.ss-leiste i { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: linear-gradient(90deg, #ff8800, #ffc824 65%, #fff08a); transition: width 0.22s ease-out; box-shadow: 0 0 10px rgba(255, 200, 40, 0.65); }
+.ss-leiste span { position: absolute; inset: 0; display: grid; place-items: center; font: 900 12px/1 Nunito, sans-serif; color: #fff; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9); letter-spacing: 0.02em; }
+.ss-meta { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; border-radius: 10px; background: rgba(0, 0, 0, 0.28); border: 1px solid rgba(255, 220, 150, 0.14); font: 800 12px/1 Nunito, sans-serif; color: #dec196; }
+.ss-meta b { font: 400 15px/1 "Lilita One", "Arial Black", sans-serif; color: #ffd447; letter-spacing: 0.04em; }
+.ss-meta.waechst { animation: ssWaechst 0.7s ease-out; }
+@keyframes ssWaechst { 0% { border-color: #ffd447; background: rgba(255, 200, 40, 0.35); transform: scale(1.04); } 100% { transform: scale(1); } }
+.ss-bonus { padding: 10px; border-radius: 14px; background: linear-gradient(180deg, #ffe36e, #e68a00); color: #241205; text-align: center; display: flex; flex-direction: column; gap: 3px; border: 2px solid #fff0a6; box-shadow: 0 4px 18px rgba(255, 180, 30, 0.45); }
 .ss-bonus[hidden] { display: none; }
-.ss-bonus > b { font: 400 20px/1 "Lilita One", "Arial Black", sans-serif; }
-.ss-feld { position: relative; min-height: 300px; }
-.ss-cv { position: absolute; inset: 0; width: 100%; height: 100%; cursor: pointer; }
-.ss-overlay { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(10, 5, 2, 0.55); z-index: 2; cursor: pointer; }
+.ss-bonus > b { font: 400 20px/1 "Lilita One", "Arial Black", sans-serif; letter-spacing: 0.04em; }
+.ss-bonus > span { font: 900 13px/1.2 Nunito, sans-serif; }
+.ss-feld { position: relative; min-height: 300px; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45); }
+.ss-cv { position: absolute; inset: 0; width: 100%; height: 100%; cursor: pointer; display: block; }
+.ss-overlay { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(6, 14, 24, 0.62); backdrop-filter: blur(3px); z-index: 2; cursor: pointer; }
 .ss-overlay.an { display: flex; }
-.ss-ov-box { text-align: center; padding: 24px 30px; border-radius: 24px; border: 4px solid #2b1606; background: linear-gradient(180deg, #fff6d8, #ffd77a); color: #2b1606; box-shadow: 0 10px 0 rgba(0, 0, 0, 0.4); animation: ssBox 0.45s cubic-bezier(.3, 1.6, .5, 1); max-width: 86%; }
-.ss-ov-box.gross { background: linear-gradient(180deg, #fff3a6, #ffb300); }
-@keyframes ssBox { from { transform: scale(0.5); opacity: 0; } }
-.ss-ov-t { font: 400 clamp(26px, 5vw, 44px)/1 "Lilita One", "Arial Black", sans-serif; color: #ff9a00; -webkit-text-stroke: 2px #2b1606; paint-order: stroke fill; text-shadow: 0 4px 0 #2b1606; }
-.ss-ov-z { font: 900 clamp(26px, 5vw, 42px)/1.2 Nunito, sans-serif; margin: 10px 0 6px; }
-.ss-ov-u { font-size: 14px; color: #7a4a1a; max-width: 360px; margin: 0 auto; }
-.ss-ov-k { margin-top: 14px; border: 3px solid #2b1606; border-radius: 14px; padding: 10px 26px; background: linear-gradient(180deg, #7ff08a, #26b04a); color: #fff; font: 400 22px/1 "Lilita One", "Arial Black", sans-serif; -webkit-text-stroke: 1px #2b1606; paint-order: stroke fill; box-shadow: 0 4px 0 #13652a; }
-.ss-steuer { flex: none; display: flex; align-items: center; gap: 10px; padding: 8px 12px calc(8px + env(safe-area-inset-bottom, 0px)); background: linear-gradient(180deg, #3a2513, #24150a); border-top: 3px solid #6b4423; position: relative; flex-wrap: wrap; justify-content: center; }
-.ss-kaufen { border: 3px solid #2b1606; border-radius: 14px; padding: 0 14px; height: 52px; background: linear-gradient(180deg, #ffd84a, #ff9c00); color: #2b1606; font: 400 18px/1 "Lilita One", "Arial Black", sans-serif; box-shadow: 0 4px 0 #7a4300; }
-.ss-kaufen:disabled { filter: grayscale(0.7); opacity: 0.6; }
-.ss-einsatz { display: flex; align-items: center; gap: 6px; padding: 4px; border-radius: 14px; background: rgba(0, 0, 0, 0.4); border: 2px solid #6b4423; }
-.ss-einsatz button { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #2b1606; background: #fff1c2; color: #2b1606; font: 900 22px/1 Nunito, sans-serif; }
-.ss-einsatz button:disabled { opacity: 0.4; }
-.ss-einsatz div, .ss-gewinn { display: flex; flex-direction: column; align-items: center; min-width: 96px; }
-.ss-einsatz small, .ss-gewinn small { font-size: 10px; letter-spacing: 0.1em; color: #c9a67a; }
-.ss-einsatz b { font: 900 18px/1.1 Nunito, sans-serif; color: #ffd23a; }
-.ss-gewinn { padding: 6px 12px; border-radius: 14px; background: rgba(0, 0, 0, 0.4); border: 2px solid #6b4423; }
-.ss-gewinn b { font: 900 20px/1.1 Nunito, sans-serif; color: #7dff8a; }
-.ss-schalter { display: flex; flex-direction: column; gap: 4px; }
-.ss-schalter button { border: 2px solid #2b1606; border-radius: 10px; padding: 4px 10px; background: #f3e6cf; color: #2b1606; font: 900 12px/1 Nunito, sans-serif; }
-.ss-schalter button.an { background: #3fa0ff; color: #fff; }
-.ss-dreh { width: 78px; height: 78px; border-radius: 50%; border: 4px solid #2b1606; background: radial-gradient(circle at 35% 30%, #9dff9a, #27b33f 60%, #146b25); color: #fff; box-shadow: 0 5px 0 #0c4a18, 0 0 26px rgba(80, 255, 120, 0.35); display: grid; place-items: center; }
-.ss-dreh svg { width: 44px; height: 44px; filter: drop-shadow(0 2px 0 #2b1606); }
-.ss-dreh.laeuft svg { animation: ssDreh 0.8s linear infinite; }
+.ss-ov-box { text-align: center; padding: 26px 32px; border-radius: 26px; border: 4px solid #241205; background: linear-gradient(180deg, #fff8de, #ffd269); color: #241205; box-shadow: 0 12px 0 rgba(0, 0, 0, 0.45), 0 0 45px rgba(255, 200, 50, 0.45); animation: ssBox 0.48s cubic-bezier(.25, 1.55, .45, 1); max-width: 88%; }
+.ss-ov-box.gross { background: linear-gradient(180deg, #fff6b0, #ffaa00); box-shadow: 0 12px 0 rgba(0, 0, 0, 0.45), 0 0 60px rgba(255, 190, 30, 0.7); }
+@keyframes ssBox { from { transform: scale(0.45) translateY(14px); opacity: 0; } }
+.ss-ov-t { font: 400 clamp(26px, 5vw, 46px)/1 "Lilita One", "Arial Black", sans-serif; color: #ff9500; -webkit-text-stroke: 2px #241205; paint-order: stroke fill; text-shadow: 0 4px 0 #241205; letter-spacing: 0.03em; }
+.ss-ov-z { font: 900 clamp(28px, 5.2vw, 44px)/1.18 Nunito, sans-serif; margin: 10px 0 6px; color: #241205; }
+.ss-ov-u { font: 700 14px/1.4 Nunito, sans-serif; color: #6e3f12; max-width: 380px; margin: 0 auto; }
+.ss-ov-k { margin-top: 16px; border: 3px solid #241205; border-radius: 15px; padding: 11px 28px; background: linear-gradient(180deg, #82f58e, #22ad46); color: #fff; font: 400 22px/1 "Lilita One", "Arial Black", sans-serif; -webkit-text-stroke: 1px #241205; paint-order: stroke fill; box-shadow: 0 4px 0 #106024; cursor: pointer; transition: transform 0.12s; }
+.ss-ov-k:hover { transform: translateY(-1px); filter: brightness(1.06); }
+.ss-ov-k:active { transform: translateY(2px); }
+.ss-steuer { flex: none; display: flex; align-items: center; gap: 11px; padding: 9px 14px calc(9px + env(safe-area-inset-bottom, 0px)); background: linear-gradient(180deg, #4b2d16, #241307); border-top: 3px solid #8c5a2b; box-shadow: inset 0 1px 0 rgba(255, 224, 145, 0.22); position: relative; flex-wrap: wrap; justify-content: center; }
+.ss-kaufen { border: 3px solid #241205; border-radius: 15px; padding: 0 16px; height: 52px; background: linear-gradient(180deg, #ffe05c, #f59400); color: #241205; font: 400 18px/1 "Lilita One", "Arial Black", sans-serif; letter-spacing: 0.03em; box-shadow: 0 4px 0 #7a4100, inset 0 1px 0 rgba(255, 255, 255, 0.55); cursor: pointer; transition: transform 0.12s, filter 0.15s; }
+.ss-kaufen:hover:not(:disabled) { filter: brightness(1.07); transform: translateY(-1px); }
+.ss-kaufen:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 2px 0 #7a4100; }
+.ss-kaufen:disabled { filter: grayscale(0.7); opacity: 0.55; cursor: default; }
+.ss-einsatz { display: flex; align-items: center; gap: 6px; padding: 4px 5px; border-radius: 15px; background: rgba(0, 0, 0, 0.45); border: 2px solid #8c5a2b; box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.45); }
+.ss-einsatz button { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #241205; background: linear-gradient(180deg, #fff5d1, #e8cc8c); color: #241205; font: 900 22px/1 Nunito, sans-serif; cursor: pointer; box-shadow: 0 2px 0 #241205; transition: transform 0.1s; }
+.ss-einsatz button:hover:not(:disabled) { filter: brightness(1.06); }
+.ss-einsatz button:active:not(:disabled) { transform: translateY(1px); }
+.ss-einsatz button:disabled { opacity: 0.35; cursor: default; }
+.ss-einsatz div, .ss-gewinn { display: flex; flex-direction: column; align-items: center; min-width: 98px; }
+.ss-einsatz small, .ss-gewinn small { font: 800 10px/1 Nunito, sans-serif; letter-spacing: 0.11em; color: #d6b485; }
+.ss-einsatz b { font: 900 18px/1.15 Nunito, sans-serif; color: #ffd447; }
+.ss-gewinn { padding: 6px 14px; border-radius: 15px; background: rgba(0, 0, 0, 0.45); border: 2px solid #8c5a2b; box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.45); transition: border-color 0.25s, box-shadow 0.25s; }
+.ss-gewinn.aktiv { border-color: #5ee678; box-shadow: 0 0 14px rgba(94, 230, 120, 0.3), inset 0 2px 5px rgba(0, 0, 0, 0.4); }
+.ss-gewinn b { font: 900 20px/1.15 Nunito, sans-serif; color: #7dff8a; text-shadow: 0 0 10px rgba(125, 255, 138, 0.28); }
+.ss-schalter { display: flex; flex-direction: column; gap: 5px; }
+.ss-schalter button { border: 2px solid #241205; border-radius: 10px; padding: 5px 11px; background: linear-gradient(180deg, #f8ecd6, #d9c49e); color: #241205; font: 900 12px/1 Nunito, sans-serif; letter-spacing: 0.04em; cursor: pointer; box-shadow: 0 2px 0 #241205; transition: background 0.15s, transform 0.1s; }
+.ss-schalter button:active { transform: translateY(1px); }
+.ss-schalter button.an { background: linear-gradient(180deg, #4db0ff, #1f7ce0); color: #fff; box-shadow: 0 2px 0 #0e4078, 0 0 10px rgba(61, 165, 255, 0.45); }
+.ss-dreh { width: 78px; height: 78px; border-radius: 50%; border: 4px solid #241205; background: radial-gradient(circle at 35% 28%, #a8ffa5, #25b840 58%, #116622); color: #fff; box-shadow: 0 5px 0 #0b4416, 0 0 28px rgba(80, 255, 120, 0.38), inset 0 2px 4px rgba(255, 255, 255, 0.45); display: grid; place-items: center; cursor: pointer; transition: transform 0.12s, box-shadow 0.2s, filter 0.15s; }
+.ss-dreh:hover { filter: brightness(1.07); transform: scale(1.03); }
+.ss-dreh svg { width: 44px; height: 44px; filter: drop-shadow(0 2px 0 #241205); }
+.ss-dreh.laeuft { background: radial-gradient(circle at 35% 28%, #ffe780, #f59c00 60%, #995500); box-shadow: 0 5px 0 #593000, 0 0 24px rgba(255, 190, 40, 0.45); }
+.ss-dreh.laeuft svg { animation: ssDreh 0.72s linear infinite; }
 @keyframes ssDreh { to { transform: rotate(360deg); } }
-.ss-dreh:active { transform: translateY(3px); }
-.ss-jagd-hinweis { position: absolute; top: -22px; left: 50%; transform: translateX(-50%); padding: 3px 10px; border-radius: 10px; background: #ff9c00; color: #2b1606; font: 900 11px/1.2 Nunito, sans-serif; }
+.ss-dreh:active { transform: translateY(3px) scale(0.98); }
+.ss-jagd-hinweis { position: absolute; top: -23px; left: 50%; transform: translateX(-50%); padding: 3px 12px; border-radius: 10px; background: linear-gradient(180deg, #ffc436, #f08a00); color: #241205; font: 900 11px/1.25 Nunito, sans-serif; border: 2px solid #241205; box-shadow: 0 2px 8px rgba(255, 160, 0, 0.4); white-space: nowrap; }
 .ss-jagd-hinweis[hidden] { display: none; }
-.ds.stollen.im-bonus .ss-seite { border-color: #ffd23a; box-shadow: 0 0 24px rgba(255, 210, 58, 0.35); }
-.fenster.ss-fenster { background: #2a190c; color: #ffeccc; border: 3px solid #6b4423; }
-.ss-k-info { margin: 0 0 10px; }
+.ds.stollen.im-bonus .ss-seite { border-color: #ffd447; box-shadow: 0 0 28px rgba(255, 208, 60, 0.42), inset 0 1px 0 rgba(255, 240, 180, 0.35); }
+.fenster.ss-fenster { background: linear-gradient(180deg, #331e0e, #1d1007); color: #ffeccc; border: 3px solid #8c5a2b; box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65); }
+.ss-k-info { margin: 0 0 12px; font-size: 14px; color: #e2c79d; }
+.ss-k-info b { color: #ffd447; }
 .ss-kauf { display: grid; gap: 10px; }
-.ss-kauf button { text-align: left; border: 2px solid #6b4423; border-radius: 14px; padding: 12px 14px; background: rgba(255, 255, 255, 0.05); color: #ffeccc; display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; font: 700 13px/1.35 Nunito, sans-serif; }
-.ss-kauf button b { font: 400 19px/1.1 "Lilita One", "Arial Black", sans-serif; color: #ffd23a; grid-column: 1; }
+.ss-kauf button { text-align: left; border: 2px solid #754b25; border-radius: 14px; padding: 12px 14px; background: linear-gradient(180deg, rgba(255, 255, 255, 0.065), rgba(0, 0, 0, 0.25)); color: #ffeccc; display: grid; grid-template-columns: 1fr auto; gap: 3px 12px; font: 700 13px/1.35 Nunito, sans-serif; cursor: pointer; transition: border-color 0.18s, transform 0.12s, background 0.18s; }
+.ss-kauf button b { font: 400 19px/1.1 "Lilita One", "Arial Black", sans-serif; color: #ffd447; grid-column: 1; letter-spacing: 0.02em; }
 .ss-kauf button span { grid-column: 1; color: #d9bf98; }
-.ss-kauf button i { grid-column: 2; grid-row: 1 / span 2; align-self: center; font-style: normal; font: 900 16px/1 Nunito, sans-serif; padding: 10px 12px; border-radius: 10px; background: #26b04a; color: #fff; }
-.ss-kauf button.an i { background: #c41d12; }
-.ss-kauf button:hover { border-color: #ffd23a; }
+.ss-kauf button i { grid-column: 2; grid-row: 1 / span 2; align-self: center; font-style: normal; font: 900 15px/1 Nunito, sans-serif; padding: 10px 13px; border-radius: 11px; background: linear-gradient(180deg, #35cc5c, #1d963d); color: #fff; box-shadow: 0 3px 0 #0f5722; white-space: nowrap; }
+.ss-kauf button[data-m="superbonus"] { border-color: #b57b24; background: linear-gradient(180deg, rgba(255, 200, 60, 0.14), rgba(0, 0, 0, 0.28)); }
+.ss-kauf button[data-m="superbonus"] i { background: linear-gradient(180deg, #ffb824, #d97200); color: #241205; box-shadow: 0 3px 0 #7a3e00; }
+.ss-kauf button.an i { background: linear-gradient(180deg, #e03124, #a8150b); box-shadow: 0 3px 0 #5c0904; }
+.ss-kauf button:hover { border-color: #ffd447; transform: translateY(-1px); background: rgba(255, 220, 120, 0.1); }
 @media (max-width: 760px) {
-  .ss-buehne { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto; align-content: start; padding: 6px; gap: 6px; }
-  .ss-seite { padding: 6px; gap: 6px; }
+  .ss-buehne { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); align-content: start; padding: 6px; gap: 6px; }
+  .ss-seite { padding: 6px 7px; gap: 6px; border-radius: 14px; }
   .ss-tafel { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
-  .ss-farbe { flex-direction: column; gap: 2px; padding: 4px 2px; text-align: center; }
+  .ss-farbe { flex-direction: column; gap: 2px; padding: 4px 2px; text-align: center; border-radius: 10px; }
   .ss-farbe canvas { width: 26px; height: 26px; }
-  .ss-fn { align-items: center; }
+  .ss-fn { align-items: center; gap: 2px; }
   .ss-fn b { font-size: 11px; }
   .ss-pip { width: 6px; height: 6px; }
   .ss-wert { font-size: 11px; }
-  .ss-lorenzeile, .ss-leiste { display: none; }
-  .ss-seite { display: grid; grid-template-columns: 1fr; }
-  .ss-feld { min-height: 0; height: min(100vw - 12px, calc(100dvh - 290px)); min-height: 270px; }
-  .ss-steuer { gap: 8px; padding: 8px 6px calc(8px + env(safe-area-inset-bottom, 0px)); }
-  .ss-kaufen { height: 44px; padding: 0 10px; font-size: 15px; }
-  .ss-einsatz button { width: 34px; height: 34px; }
-  .ss-einsatz div, .ss-gewinn { min-width: 76px; }
+  .ss-status { flex-direction: row; align-items: center; gap: 6px; }
+  .ss-lorenzeile { padding: 4px 6px; gap: 5px; border-radius: 10px; flex: none; }
+  .ss-lorenzeile > span { display: none; }
+  .ss-loren { gap: 4px; }
+  .ss-lore { width: 20px; height: 20px; font-size: 10px; }
+  .ss-leiste { flex: 1; height: 22px; border-radius: 11px; }
+  .ss-leiste span { font-size: 10px; }
+  .ss-meta { padding: 4px 7px; border-radius: 9px; flex: none; gap: 4px; }
+  .ss-meta span { display: none; }
+  .ss-meta b { font-size: 13px; }
+  .ss-bonus { padding: 5px 8px; flex-direction: row; align-items: center; justify-content: center; gap: 10px; border-radius: 10px; }
+  .ss-bonus > b { font-size: 15px; }
+  .ss-bonus > span { font-size: 12px; }
+  .ss-feld { min-height: 260px; height: min(100vw - 12px, calc(100dvh - 315px)); }
+  .ss-steuer { gap: 7px; padding: 7px 6px calc(7px + env(safe-area-inset-bottom, 0px)); }
+  .ss-kaufen { height: 44px; padding: 0 11px; font-size: 15px; }
+  .ss-einsatz button { width: 34px; height: 34px; font-size: 19px; }
+  .ss-einsatz div, .ss-gewinn { min-width: 74px; }
   .ss-einsatz b { font-size: 15px; }
+  .ss-gewinn { padding: 4px 10px; }
   .ss-gewinn b { font-size: 16px; }
   .ss-dreh { width: 66px; height: 66px; }
+  .ss-dreh svg { width: 38px; height: 38px; }
 }
 @media (max-height: 520px) and (min-width: 600px) {
-  .ss-buehne { grid-template-columns: 200px minmax(0, 1fr); padding: 4px; gap: 6px; }
+  .ss-buehne { grid-template-columns: 206px minmax(0, 1fr); padding: 4px; gap: 6px; min-height: 0; }
   .ss-seite { padding: 6px; gap: 5px; overflow: auto; }
   .ss-farbe { padding: 3px 6px; }
   .ss-farbe canvas { width: 26px; height: 26px; }
@@ -1209,7 +1249,6 @@ input, textarea, select {
   .ss-gewinn { padding: 3px 10px; }
   .ss { height: 100%; min-height: 0; }
   .ss-feld { min-height: 0; }
-  .ss-buehne { min-height: 0; }
 }
 /* ---- Konto und Anmeldung */
 .fenster.konto { width: min(680px, 100%); }
@@ -18566,7 +18605,7 @@ HallenEinst.d = HallenEinst.standard();
 // Goldchips kann nur der Admin vergeben. Ihre Auszahlungsquote stellt der Admin je Spiel ein; sie wird den
 // Spielern offen angezeigt (Spielauswahl, Kopfzeile, Hinweis bei jeder Auszahlung). Tipps und Handbuecher sind dort aus.
 const BASIS_QUOTE = {
-  turmspitze: 0.960, roulette: 0.973, blackjack: 0.993, sonnenbuch: 0.950, goldroulette: 0.974, schatzstollen: 0.955,
+  turmspitze: 0.960, roulette: 0.973, blackjack: 0.993, sonnenbuch: 0.950, goldroulette: 0.974, schatzstollen: 0.889,
   mines: 0.99, plinko: 0.99, chicken: 0.98, hoehenflug: 0.99, poker: 1, zaubermoench: 0.962, niljuwelen: 0.94,
   sonnenernte: 0.96, bonbonregen: 0.965, angelglueck: 0.967, sportwetten: 0.95
 };
@@ -20497,6 +20536,21 @@ const Offen = {
       R(b, rate, 0, 1.25, 1.0, 2400, 50, 0.55, 0.002, 3.4, 51);
       S(b, rate, 0, 1.1, 58, 0.8, [[1, 1, 1], [1.5, 0.6, 1.2]], 0.003, 3.8, { glide: 30 });
       return b;
+    },
+    TAUSCH: function (rate) {
+      const b = Klang.puffer(0.32, rate);
+      R(b, rate, 0, 0.2, 0.28, 1200, 2800, 1.8, 0.01, 16, 63);
+      S(b, rate, 0.02, 0.22, midi(67), 0.22, MARIMBA, 0.003, 18, { glide: midi(79) });
+      S(b, rate, 0.1, 0.2, midi(79), 0.16, GLOCKE, 0.003, 14);
+      return b;
+    },
+    TRUHE: function (rate) {
+      const b = Klang.puffer(0.75, rate);
+      R(b, rate, 0, 0.12, 0.35, 900, 320, 1.2, 0.004, 24, 71);
+      S(b, rate, 0.08, 0.5, midi(76), 0.22, GLOCKE, 0.003, 7);
+      S(b, rate, 0.16, 0.5, midi(83), 0.22, GLOCKE, 0.003, 7);
+      S(b, rate, 0.24, 0.5, midi(88), 0.26, GLOCKE, 0.003, 6);
+      return b;
     }
   };
   const alt = Klang.erzeuge;
@@ -20513,6 +20567,8 @@ const Offen = {
   POOL.TICK = 4;
   POOL.SAMMELN = 6;
   POOL.GRABEN = 6;
+  POOL.TAUSCH = 3;
+  POOL.TRUHE = 2;
   HALL.PEG = 0.02;
   HALL.TICK = 0;
   HALL.MOTOR = 0;
@@ -24962,24 +25018,25 @@ const StollenLogik = (function () {
     [0.05, 0.1, 0.2, 0.6, 3]   // blau
   ];
   const START = 5, MAX = 8, MAX_GEWINN = 10000;
-  // Gewichte fuer neue Felder (Promille-genau)
+  // Gewichte fuer neue Felder (1:1 Pirots-Mechanik, auf 88,9 % DE-Online-Casino-RTP kalibriert)
   const KONF = {
     edel: [12, 20, 30, 38],      // rot, lila, gruen, blau
-    joker: 0.5, schleif: 0.45, topf: 0.4, nugget: 0.38, dynamit: 0.35, lore: 1.53,
-    bonusFaktor: { schleif: 10.6, dynamit: 5, nugget: 2, joker: 2, lore: 0.34 },
+    joker: 0.45, schleif: 0.36, topf: 0.44, nugget: 0.34, dynamit: 0.32, lore: 0.56,
+    bonusFaktor: { schleif: 3.4, dynamit: 2.5, nugget: 1.4, joker: 1.4, topf: 1.4, lore: 0.32 },
     muenzen: [[1, 400], [2, 300], [3, 150], [5, 80], [10, 40], [20, 15], [50, 6], [100, 2.5], [250, 0.6], [500, 0.2], [1000, 0.08]],
-    truhe: [['w', 30], ['u', 26], ['x', 16], ['c', 16], ['b', 8], ['a', 4]],
-    regenbogen: 0.2,
-    leiste: 60,
-    skalBasis: 1.372, // Gewinnfaktor im Grundspiel (Kalibrierung auf die Zielquote)
-    sammler: [[1, 25], [2, 35], [3, 25], [4, 15]]
+    truhe: [['w', 28], ['u', 24], ['x', 20], ['c', 16], ['b', 8], ['a', 4]],
+    regenbogen: 0.18,
+    leiste: 24,
+    skalBasis: 0.135,
+    skalBonus: 1.045
   };
-  // Kauf-/Spielmodi: Einsatz-Faktor und Aenderungen
+  // Kauf-/Spielmodi (X-iter Stil, alle auf ~88,9 % RTP kalibriert)
   const MODI = {
     normal: { preis: 1, name: 'Normal' },
-    jagd: { preis: 3, name: 'Lore-Jagd', loreFaktor: 2.29 },
-    bonus: { preis: 100, name: 'Bonus kaufen', bonus: true, skal: 1.0175 },
-    superbonus: { preis: 500, name: 'Super-Bonus', bonus: true, startGroesse: 8, startStufe: 3, startRest: 7, skal: 1.025 }
+    jagd: { preis: 3, name: 'Bonus-Jagd', loreFaktor: 2.05 },
+    fieber: { preis: 10, name: 'Truhen-Fieber', startTruhen: 3, skal: 1.08 },
+    bonus: { preis: 100, name: 'Bonus kaufen', bonus: true, skal: 1.045 },
+    superbonus: { preis: 500, name: 'Super-Bonus', bonus: true, startGroesse: 8, startStufe: 3, startRest: 7, skal: 1.65 }
   };
 
   function waehle(rng, liste) {
@@ -25018,7 +25075,7 @@ const StollenLogik = (function () {
     }
     r -= w('schleif');
     if (r < 0) {
-      return { t: 'u', f: rng() < k.regenbogen ? 4 : Math.floor(rng() * 4) };
+      return { t: 'u', f: rng() < k.regenbogen ? 4 : 0 };
     }
     r -= w('topf');
     if (r < 0) {
@@ -25037,7 +25094,7 @@ const StollenLogik = (function () {
   function truhenSymbol(rng) {
     const t = waehle(rng, KONF.truhe);
     if (t === 'u') {
-      return { t: 'u', f: rng() < KONF.regenbogen ? 4 : Math.floor(rng() * 4) };
+      return { t: 'u', f: rng() < KONF.regenbogen ? 4 : 0 };
     }
     if (t === 'c') {
       return { t: 'c', v: waehle(rng, KONF.muenzen) };
@@ -25051,7 +25108,6 @@ const StollenLogik = (function () {
       });
     });
   }
-  // Raster: [zeile][spalte], 0 = oben. Aktive Groesse n (n×n), Zellen ausserhalb sind null.
   function sammelbar(sym, f) {
     if (!sym) {
       return false;
@@ -25064,21 +25120,31 @@ const StollenLogik = (function () {
   const PRIO = { u: 0, x: 1, g: 2, w: 2, c: 3, a: 4, b: 5 };
   const NACHBARN = [[-1, 0], [0, 1], [1, 0], [0, -1]];
 
+  function hatSammelbar(G, n, p, f) {
+    for (let k = 0; k < 4; k++) {
+      const rr = p[0] + NACHBARN[k][0], cc = p[1] + NACHBARN[k][1];
+      if (rr >= 0 && cc >= 0 && rr < n && cc < n && sammelbar(G[rr][cc], f)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   /**
-   * Eine Fahrt (Dreh). zustand: { groesse, stufen[4], leiste, bonus (bool), modus } wird veraendert.
+   * Eine Fahrt (Drop). zustand: { groesse, stufen[4], leiste, bonus (bool), modus } wird veraendert.
    * Liefert { ereignisse, gewinn (× Einsatz), loren, gedeckelt }.
    */
   function fahrt(rng, z) {
     const mod = MODI[z.modus] || MODI.normal;
     const ev = [];
     let n = z.groesse;
-    let gewinn = 0, loren = 0, gedeckelt = false;
+    let gewinn = 0, loren = 0, gedeckelt = false, tausche = 0;
     const st = z.stufen;
     const G = [];
     for (let r = 0; r < MAX; r++) {
       G.push(new Array(MAX).fill(null));
     }
-    // Maulwuerfe platzieren
+    // Original Pirots: immer alle 4 Piraten-Papageien landen auf dem Deck
     const pos = [];
     const frei = [];
     for (let r = 0; r < n; r++) {
@@ -25086,21 +25152,7 @@ const StollenLogik = (function () {
         frei.push([r, c]);
       }
     }
-    // Basisspiel: 1 bis 4 Maulwuerfe graben sich ein, im Bonus immer alle vier
-    const anzahl = z.bonus || mod.alleSammler ? 4 : waehle(rng, KONF.sammler);
-    const farben = [0, 1, 2, 3];
-    for (let i = 3; i > 0; i--) {
-      const j = Math.floor(rng() * (i + 1));
-      const t = farben[i];
-      farben[i] = farben[j];
-      farben[j] = t;
-    }
-    const dabei = farben.slice(0, anzahl).sort();
     for (let f = 0; f < 4; f++) {
-      if (dabei.indexOf(f) < 0) {
-        pos.push(null);
-        continue;
-      }
       const i = Math.floor(rng() * frei.length);
       const p = frei.splice(i, 1)[0];
       pos.push(p);
@@ -25113,7 +25165,6 @@ const StollenLogik = (function () {
         }
       }
     }
-    // Truhen-Fieber: drei Truhen sofort
     if (mod.startTruhen && !z.bonus) {
       ev.push({ e: 'start', g: kopie(G), n: n, stufen: st.slice() });
       truhen(rng, G, n, ev, mod.startTruhen);
@@ -25124,9 +25175,6 @@ const StollenLogik = (function () {
     while (runden++ < 60) {
       let bewegt = false;
       for (let f = 0; f < 4 && !gedeckelt; f++) {
-        if (!pos[f]) {
-          continue;
-        }
         let schritte = 0;
         while (schritte++ < 80) {
           const p = pos[f];
@@ -25170,17 +25218,22 @@ const StollenLogik = (function () {
             break;
           }
           if (sym.t === 'u') {
+            // Original Pirots: +1 bis +3 Stufen (Weiss = Farbe des sammelnden Papageis, Bunt = alle)
             const vorher = st.slice();
-            if (sym.f === 4) {
+            const plus = rng() < 0.65 ? 1 : (rng() < 0.72 ? 2 : 3);
+            const zielF = sym.f === 4 ? 4 : f;
+            if (zielF === 4) {
               for (let q = 0; q < 4; q++) {
-                st[q] = Math.min(5, st[q] + 1);
+                st[q] = Math.min(5, st[q] + plus);
               }
             } else {
-              st[sym.f] = Math.min(5, st[sym.f] + 1);
+              st[f] = Math.min(5, st[f] + plus);
             }
-            ev.push({ e: 'stufe', vorher: vorher, stufen: st.slice(), f: sym.f });
+            ev.push({ e: 'stufe', vorher: vorher, stufen: st.slice(), f: zielF, plus: plus, bei: best.slice() });
           } else if (sym.t === 'x') {
+            // Original Pirots Rum-Trank / Rumfass: faerbt Nachbarsteine in Papageienfarbe + Chance auf Feature-Symbol
             const zellen = [];
+            const extra = [];
             for (let dr = -1; dr <= 1; dr++) {
               for (let dc = -1; dc <= 1; dc++) {
                 const rr = best[0] + dr, cc = best[1] + dc;
@@ -25189,12 +25242,18 @@ const StollenLogik = (function () {
                 }
                 const s = G[rr][cc];
                 if (s && s.t === 'g' && s.f !== f) {
-                  s.f = f;
-                  zellen.push([rr, cc]);
+                  if (extra.length === 0 && rng() < 0.14) {
+                    const ns = truhenSymbol(rng);
+                    G[rr][cc] = ns;
+                    extra.push({ bei: [rr, cc], sym: Object.assign({}, ns) });
+                  } else {
+                    s.f = f;
+                    zellen.push([rr, cc]);
+                  }
                 }
               }
             }
-            ev.push({ e: 'topf', f: f, bei: best.slice(), zellen: zellen });
+            ev.push({ e: 'topf', f: f, bei: best.slice(), zellen: zellen, extra: extra });
           } else if (sym.t === 'a') {
             loren++;
             ev.push({ e: 'lore', zahl: loren });
@@ -25214,20 +25273,45 @@ const StollenLogik = (function () {
             }
             ev.push({ e: 'dynamit', bei: best.slice(), weg: weg, n: n, alt: alt });
           }
-          // Sammelleiste voll: drei Truhen
+          // Sammelleiste voll: 3 Schatztruhen
           if (z.leiste >= KONF.leiste) {
             z.leiste -= KONF.leiste;
             truhen(rng, G, n, ev, 3);
           }
         }
       }
-      if (gedeckelt || !bewegt) {
+      if (gedeckelt) {
         break;
       }
-      // Nachrutschen und Auffuellen
+      if (!bewegt) {
+        // Platzwechsel (Switcheroo): benachbarte Papageien tauschen, wenn einer weitersammeln kann
+        let getauscht = false;
+        if (tausche < 10) {
+          for (let f1 = 0; f1 < 4 && !getauscht; f1++) {
+            for (let f2 = f1 + 1; f2 < 4 && !getauscht; f2++) {
+              const p1 = pos[f1], p2 = pos[f2];
+              if (Math.abs(p1[0] - p2[0]) + Math.abs(p1[1] - p2[1]) === 1) {
+                if (hatSammelbar(G, n, p2, f1) || hatSammelbar(G, n, p1, f2)) {
+                  G[p1[0]][p1[1]] = { t: 's', f: f2 };
+                  G[p2[0]][p2[1]] = { t: 's', f: f1 };
+                  pos[f1] = p2;
+                  pos[f2] = p1;
+                  tausche++;
+                  getauscht = true;
+                  ev.push({ e: 'tausch', f1: f1, f2: f2, p1: p1.slice(), p2: p2.slice() });
+                }
+              }
+            }
+          }
+        }
+        if (getauscht) {
+          continue;
+        }
+        break;
+      }
+      // Nachrutschen und Auffuellen (Avalanche)
       const bewegungen = [];
       for (let c = 0; c < n; c++) {
-        // freie Plaetze von unten nach oben fuellen, Maulwuerfe bleiben stehen
         const spalte = [];
         for (let r = n - 1; r >= 0; r--) {
           const s = G[r][c];
@@ -25260,7 +25344,7 @@ const StollenLogik = (function () {
         for (let r = 0; r < n; r++) {
           if (G[r][c] === null) {
             G[r][c] = neuesSymbol(rng, z.bonus ? null : mod, z.bonus);
-            bewegungen.push({ von: [r - neu - 0, c], nach: [r, c], neu: true, sym: Object.assign({}, G[r][c]), tief: neu - k });
+            bewegungen.push({ von: [r - neu, c], nach: [r, c], neu: true, sym: Object.assign({}, G[r][c]), tief: neu - k });
             k++;
           }
         }
@@ -25291,31 +25375,29 @@ const StollenLogik = (function () {
     ev.push({ e: 'truhen', zellen: zellen });
   }
 
-  /** Neuer Spielzustand (Basisspiel). */
   function neuerZustand() {
     return { groesse: START, stufen: [1, 1, 1, 1], leiste: 0, bonus: false, modus: 'normal' };
   }
-  /** Komplette Runde fuer die Simulation: Basisfahrt (+ Bonus). Liefert Gewinn × Einsatz. */
   function runde(rng, z, modus) {
     const mod = MODI[modus] || MODI.normal;
     let summe = 0;
     if (mod.bonus) {
       const b = bonusStart(z, mod);
       summe += bonusSpielen(rng, b);
-      return { gewinn: Math.min(MAX_GEWINN * mod.preis, summe), bonus: true };
+      return { gewinn: Math.min(MAX_GEWINN, summe), bonus: true };
     }
     z.groesse = mod.startGroesse || START;
     z.stufen = [1, 1, 1, 1];
     z.bonus = false;
     z.modus = modus;
-    z.skal = KONF.skalBasis;
-    z.leiste = 0; // Sammelleiste gilt nur innerhalb einer Runde (kein Vorteil durch Einsatzwechsel)
+    z.skal = mod.skal || KONF.skalBasis;
+    z.leiste = 0;
     const f = fahrt(rng, z);
     summe += f.gewinn;
     let bonus = false;
     if (f.loren >= 3 && !f.gedeckelt) {
       bonus = true;
-      const b = { groesse: z.groesse, stufen: z.stufen.slice(), leiste: z.leiste, bonus: true, modus: 'normal', rest: 5, loren: 0, summe: summe, skal: 1 };
+      const b = { groesse: z.groesse, stufen: z.stufen.slice(), leiste: z.leiste, bonus: true, modus: 'normal', rest: 5, loren: 0, summe: summe, skal: KONF.skalBonus };
       summe = bonusSpielen(rng, b);
       z.leiste = 0;
     }
@@ -25324,7 +25406,7 @@ const StollenLogik = (function () {
   function bonusStart(z, mod) {
     return {
       groesse: mod.startGroesse || START, stufen: [mod.startStufe || 1, mod.startStufe || 1, mod.startStufe || 1, mod.startStufe || 1],
-      leiste: 0, bonus: true, modus: 'normal', rest: mod.startRest || 5, loren: 0, summe: 0, skal: mod.skal || 1
+      leiste: 0, bonus: true, modus: 'normal', rest: mod.startRest || 5, loren: 0, summe: 0, skal: mod.skal || KONF.skalBonus
     };
   }
   function bonusSpielen(rng, b) {
@@ -25359,12 +25441,12 @@ if (typeof module !== 'undefined' && module.exports) {
 
 const StollenGrafik = (function () {
   const FARBE = [
-    { hell: '#ff8f9b', mitte: '#ff3b4e', dunkel: '#a3001d', glanz: '#ffe1e5' },
-    { hell: '#dcb2ff', mitte: '#b05cff', dunkel: '#5b1aa8', glanz: '#f3e6ff' },
-    { hell: '#9dffc4', mitte: '#2fe07a', dunkel: '#0a8a3c', glanz: '#e3ffee' },
-    { hell: '#9fd4ff', mitte: '#3da5ff', dunkel: '#0a4fa8', glanz: '#e6f4ff' }
+    { hell: '#ff8a98', mitte: '#ff243d', dunkel: '#8c0015', glanz: '#fff0f2', strahl: 'rgba(255, 60, 85, 0.55)' },
+    { hell: '#e5b8ff', mitte: '#b048ff', dunkel: '#4c1099', glanz: '#f8ecff', strahl: 'rgba(182, 82, 255, 0.55)' },
+    { hell: '#96ffc6', mitte: '#18db6a', dunkel: '#05702e', glanz: '#ebfff3', strahl: 'rgba(38, 230, 120, 0.55)' },
+    { hell: '#99dcff', mitte: '#1e96ff', dunkel: '#064096', glanz: '#edf8ff', strahl: 'rgba(50, 165, 255, 0.55)' }
   ];
-  const KONTUR_F = '#2b1606';
+  const KONTUR_F = '#1b1109';
   const cache = new Map();
 
   function sprite(schluessel, px, zeichner) {
@@ -25378,7 +25460,7 @@ const StollenGrafik = (function () {
       g.translate(groesse / 2, groesse / 2);
       zeichner(g, groesse);
       cache.set(k, c);
-      if (cache.size > 400) {
+      if (cache.size > 520) {
         cache.delete(cache.keys().next().value);
       }
     }
@@ -25388,8 +25470,16 @@ const StollenGrafik = (function () {
     g.lineJoin = 'round';
     g.lineCap = 'round';
     g.strokeStyle = KONTUR_F;
-    g.lineWidth = s * (w || 0.035);
+    g.lineWidth = s * (w || 0.032);
     g.stroke();
+  }
+  function schatten(g, x, y, rx, ry, a) {
+    g.save();
+    g.fillStyle = 'rgba(6, 12, 20, ' + (a === undefined ? 0.36 : a) + ')';
+    g.beginPath();
+    g.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2);
+    g.fill();
+    g.restore();
   }
   function poly(g, punkte) {
     g.beginPath();
@@ -25422,144 +25512,6 @@ const StollenGrafik = (function () {
     g.fill();
     g.restore();
   }
-
-  // ---------------------------------------------------------------- Edelsteine (Farbe f, Stufe 1..5)
-  function edelstein(g, s, f, st) {
-    const F = FARBE[f];
-    const r = s * 0.36;
-    g.save();
-    if (st >= 5) {
-      const gl = g.createRadialGradient(0, 0, r * 0.3, 0, 0, r * 1.35);
-      gl.addColorStop(0, F.hell + 'aa');
-      gl.addColorStop(1, F.mitte + '00');
-      g.fillStyle = gl;
-      g.beginPath();
-      g.arc(0, 0, r * 1.35, 0, Math.PI * 2);
-      g.fill();
-    }
-    if (st === 1) {
-      // Rohstein
-      const p = [];
-      const zit = [0.92, 1.05, 0.88, 1.0, 0.95, 1.08, 0.9, 1.02, 0.97];
-      for (let i = 0; i < 9; i++) {
-        const a = i / 9 * Math.PI * 2 + 0.2;
-        p.push([Math.cos(a) * r * zit[i], Math.sin(a) * r * zit[i] * 0.9 + r * 0.05]);
-      }
-      poly(g, p);
-      g.fillStyle = lg(g, -r, -r, r, r, [[0, F.hell], [0.55, F.mitte], [1, F.dunkel]]);
-      g.fill();
-      kontur(g, s);
-      g.fillStyle = 'rgba(255,255,255,0.45)';
-      g.beginPath();
-      g.ellipse(-r * 0.35, -r * 0.35, r * 0.25, r * 0.13, -0.6, 0, Math.PI * 2);
-      g.fill();
-    } else if (st === 2) {
-      // Cabochon (oval, glatt)
-      g.beginPath();
-      g.ellipse(0, 0, r * 0.95, r * 0.8, 0, 0, Math.PI * 2);
-      const v = g.createRadialGradient(-r * 0.3, -r * 0.35, r * 0.1, 0, 0, r);
-      v.addColorStop(0, F.glanz);
-      v.addColorStop(0.35, F.hell);
-      v.addColorStop(0.75, F.mitte);
-      v.addColorStop(1, F.dunkel);
-      g.fillStyle = v;
-      g.fill();
-      kontur(g, s);
-      g.fillStyle = 'rgba(255,255,255,0.75)';
-      g.beginPath();
-      g.ellipse(-r * 0.35, -r * 0.38, r * 0.28, r * 0.14, -0.5, 0, Math.PI * 2);
-      g.fill();
-    } else if (st === 3) {
-      // Smaragdschliff (Achteck mit Stufen)
-      const a = r * 0.95, b = r * 0.78, k = r * 0.28;
-      const aussen = [[-a + k, -b], [a - k, -b], [a, -b + k], [a, b - k], [a - k, b], [-a + k, b], [-a, b - k], [-a, -b + k]];
-      const i2 = 0.55;
-      const innen = aussen.map(function (p) {
-        return [p[0] * i2, p[1] * i2];
-      });
-      poly(g, aussen);
-      g.fillStyle = F.dunkel;
-      g.fill();
-      // Facetten
-      for (let i = 0; i < 8; i++) {
-        const j = (i + 1) % 8;
-        poly(g, [aussen[i], aussen[j], innen[j], innen[i]]);
-        const hell = [0.85, 0.65, 0.45, 0.3, 0.2, 0.35, 0.55, 0.75][i];
-        g.fillStyle = mische(F.dunkel, F.hell, hell);
-        g.fill();
-      }
-      poly(g, innen);
-      g.fillStyle = lg(g, -a, -b, a, b, [[0, F.glanz], [0.5, F.mitte], [1, F.dunkel]]);
-      g.fill();
-      poly(g, aussen);
-      kontur(g, s);
-    } else if (st === 4) {
-      // Brillant von oben
-      const n = 8;
-      const aussen = [], innen = [];
-      for (let i = 0; i < n; i++) {
-        const w = i / n * Math.PI * 2 - Math.PI / 2;
-        aussen.push([Math.cos(w) * r, Math.sin(w) * r]);
-        const w2 = w + Math.PI / n;
-        innen.push([Math.cos(w2) * r * 0.55, Math.sin(w2) * r * 0.55]);
-      }
-      g.beginPath();
-      g.arc(0, 0, r, 0, Math.PI * 2);
-      g.fillStyle = F.dunkel;
-      g.fill();
-      for (let i = 0; i < n; i++) {
-        const j = (i + 1) % n;
-        poly(g, [aussen[i], aussen[j], innen[i]]);
-        g.fillStyle = mische(F.dunkel, F.hell, 0.25 + 0.6 * Math.abs(Math.sin(i * 0.9 + 0.4)));
-        g.fill();
-        poly(g, [[0, 0], innen[i], aussen[j], innen[j]]);
-        g.fillStyle = mische(F.mitte, F.glanz, 0.15 + 0.5 * Math.abs(Math.cos(i * 1.3)));
-        g.fill();
-      }
-      g.beginPath();
-      g.arc(0, 0, r, 0, Math.PI * 2);
-      kontur(g, s);
-      funkeln(g, -r * 0.35, -r * 0.4, r * 0.28, 0.9);
-    } else {
-      // Stufe 5: grosser Diamant (Seitenansicht) mit Funkeln
-      const w = r * 1.05, hk = r * 0.42, hp = r * 0.78, t = r * 0.55;
-      const krone = [[-t, -hk], [t, -hk], [w, -hk * 0.15], [-w, -hk * 0.15]];
-      const pav = [[-w, -hk * 0.15], [w, -hk * 0.15], [0, hp]];
-      poly(g, pav);
-      g.fillStyle = lg(g, 0, 0, 0, hp, [[0, F.mitte], [1, F.dunkel]]);
-      g.fill();
-      // Pavillon-Facetten
-      g.fillStyle = 'rgba(255,255,255,0.25)';
-      poly(g, [[-w * 0.35, -hk * 0.15], [w * 0.05, -hk * 0.15], [0, hp]]);
-      g.fill();
-      g.fillStyle = 'rgba(0,0,0,0.18)';
-      poly(g, [[w * 0.45, -hk * 0.15], [w, -hk * 0.15], [0, hp]]);
-      g.fill();
-      poly(g, krone);
-      g.fillStyle = lg(g, 0, -hk, 0, 0, [[0, F.glanz], [1, F.hell]]);
-      g.fill();
-      g.fillStyle = 'rgba(255,255,255,0.5)';
-      poly(g, [[-t, -hk], [-t * 0.2, -hk], [-w * 0.45, -hk * 0.15]]);
-      g.fill();
-      g.beginPath();
-      g.moveTo(-t, -hk);
-      g.lineTo(t, -hk);
-      g.lineTo(w, -hk * 0.15);
-      g.lineTo(0, hp);
-      g.lineTo(-w, -hk * 0.15);
-      g.closePath();
-      kontur(g, s);
-      g.strokeStyle = 'rgba(43,22,6,0.5)';
-      g.lineWidth = s * 0.015;
-      g.beginPath();
-      g.moveTo(-w, -hk * 0.15);
-      g.lineTo(w, -hk * 0.15);
-      g.stroke();
-      funkeln(g, r * 0.55, -r * 0.55, r * 0.32, 1);
-      funkeln(g, -r * 0.6, r * 0.25, r * 0.18, 0.8);
-    }
-    g.restore();
-  }
   function mische(a, b, t) {
     const pa = parseInt(a.slice(1), 16), pb = parseInt(b.slice(1), 16);
     const r = Math.round(((pa >> 16) & 255) * (1 - t) + ((pb >> 16) & 255) * t);
@@ -25568,324 +25520,697 @@ const StollenGrafik = (function () {
     return 'rgb(' + r + ',' + gg + ',' + bl + ')';
   }
 
-  // ---------------------------------------------------------------- Maulwurf mit Grubenhelm
-  function maulwurf(g, s, f) {
+  // ---------------------------------------------------------------- Edelsteine (Farbe f, Stufe 1..5)
+  function edelstein(g, s, f, st) {
     const F = FARBE[f];
-    const r = s * 0.3;
-    // Erdhuegel
-    g.fillStyle = '#5b3a1e';
-    g.beginPath();
-    g.ellipse(0, r * 1.05, r * 1.45, r * 0.42, 0, 0, Math.PI * 2);
-    g.fill();
-    g.fillStyle = '#7a5130';
-    g.beginPath();
-    g.ellipse(0, r * 0.95, r * 1.25, r * 0.3, 0, 0, Math.PI * 2);
-    g.fill();
-    // Koerper
-    g.beginPath();
-    g.ellipse(0, r * 0.25, r * 1.0, r * 0.98, 0, 0, Math.PI * 2);
-    g.fillStyle = lg(g, 0, -r, 0, r * 1.2, [[0, '#6e5747'], [1, '#3e2f25']]);
-    g.fill();
-    kontur(g, s);
-    // Schnauze
-    g.beginPath();
-    g.ellipse(0, r * 0.45, r * 0.55, r * 0.42, 0, 0, Math.PI * 2);
-    g.fillStyle = '#d8b494';
-    g.fill();
-    kontur(g, s, 0.025);
-    // Nase
-    g.beginPath();
-    g.ellipse(0, r * 0.27, r * 0.2, r * 0.15, 0, 0, Math.PI * 2);
-    g.fillStyle = '#ff8fa3';
-    g.fill();
-    kontur(g, s, 0.02);
-    g.fillStyle = 'rgba(255,255,255,0.7)';
-    g.beginPath();
-    g.arc(-r * 0.06, r * 0.22, r * 0.05, 0, Math.PI * 2);
-    g.fill();
-    // Mund
-    g.strokeStyle = KONTUR_F;
-    g.lineWidth = s * 0.018;
-    g.beginPath();
-    g.moveTo(-r * 0.15, r * 0.55);
-    g.quadraticCurveTo(0, r * 0.66, r * 0.15, r * 0.55);
-    g.stroke();
-    // Schnurrhaare
-    g.strokeStyle = 'rgba(43,22,6,0.6)';
-    g.lineWidth = s * 0.012;
-    for (const sx of [-1, 1]) {
+    const r = s * 0.365;
+    g.save();
+    schatten(g, 0, r * 0.8, r * 0.78, r * 0.24, st >= 4 ? 0.44 : 0.34);
+    if (st >= 4) {
+      const gl = g.createRadialGradient(0, 0, r * 0.2, 0, 0, r * (st >= 5 ? 1.38 : 1.18));
+      gl.addColorStop(0, st >= 5 ? 'rgba(255, 224, 110, 0.58)' : F.strahl);
+      gl.addColorStop(0.55, F.strahl);
+      gl.addColorStop(1, 'rgba(0,0,0,0)');
+      g.fillStyle = gl;
       g.beginPath();
-      g.moveTo(sx * r * 0.4, r * 0.42);
-      g.lineTo(sx * r * 0.85, r * 0.32);
-      g.moveTo(sx * r * 0.4, r * 0.5);
-      g.lineTo(sx * r * 0.85, r * 0.52);
+      g.arc(0, 0, r * (st >= 5 ? 1.38 : 1.18), 0, Math.PI * 2);
+      g.fill();
+    }
+    if (st === 1) {
+      const p = [
+        [-r * 0.32, -r * 0.88], [r * 0.38, -r * 0.78], [r * 0.88, -r * 0.12],
+        [r * 0.68, r * 0.66], [-r * 0.12, r * 0.86], [-r * 0.82, r * 0.46], [-r * 0.86, -r * 0.34]
+      ];
+      const m = [-r * 0.08, -r * 0.06];
+      poly(g, p);
+      g.fillStyle = lg(g, -r, -r, r, r, [[0, F.hell], [0.55, F.mitte], [1, F.dunkel]]);
+      g.fill();
+      for (let i = 0; i < p.length; i++) {
+        const j = (i + 1) % p.length;
+        poly(g, [m, p[i], p[j]]);
+        const h = [0.85, 0.55, 0.28, 0.14, 0.22, 0.48, 0.72][i];
+        g.fillStyle = mische(F.dunkel, F.hell, h);
+        g.fill();
+      }
+      poly(g, p);
+      kontur(g, s);
+      g.fillStyle = 'rgba(255,255,255,0.58)';
+      poly(g, [m, p[0], p[1]]);
+      g.fill();
+    } else if (st === 2) {
+      g.beginPath();
+      g.ellipse(0, 0, r * 0.96, r * 0.82, 0, 0, Math.PI * 2);
+      const v = g.createRadialGradient(-r * 0.28, -r * 0.34, r * 0.08, 0, 0, r * 1.02);
+      v.addColorStop(0, F.glanz);
+      v.addColorStop(0.28, F.hell);
+      v.addColorStop(0.7, F.mitte);
+      v.addColorStop(1, F.dunkel);
+      g.fillStyle = v;
+      g.fill();
+      kontur(g, s);
+      g.strokeStyle = 'rgba(255,255,255,0.45)';
+      g.lineWidth = s * 0.025;
+      g.beginPath();
+      g.arc(0, r * 0.06, r * 0.62, 0.35, Math.PI - 0.35);
+      g.stroke();
+      g.fillStyle = 'rgba(255,255,255,0.85)';
+      g.beginPath();
+      g.ellipse(-r * 0.34, -r * 0.36, r * 0.27, r * 0.13, -0.52, 0, Math.PI * 2);
+      g.fill();
+    } else if (st === 3) {
+      const a = r * 0.96, b = r * 0.8, k = r * 0.28;
+      const aussen = [[-a + k, -b], [a - k, -b], [a, -b + k], [a, b - k], [a - k, b], [-a + k, b], [-a, b - k], [-a, -b + k]];
+      const innen = aussen.map(function (p) {
+        return [p[0] * 0.56, p[1] * 0.56];
+      });
+      poly(g, aussen);
+      g.fillStyle = F.dunkel;
+      g.fill();
+      for (let i = 0; i < 8; i++) {
+        const j = (i + 1) % 8;
+        poly(g, [aussen[i], aussen[j], innen[j], innen[i]]);
+        g.fillStyle = mische(F.dunkel, F.hell, [0.92, 0.68, 0.42, 0.24, 0.16, 0.34, 0.58, 0.82][i]);
+        g.fill();
+      }
+      poly(g, innen);
+      g.fillStyle = lg(g, -a * 0.6, -b * 0.6, a * 0.6, b * 0.6, [[0, F.glanz], [0.45, F.mitte], [1, F.dunkel]]);
+      g.fill();
+      poly(g, aussen);
+      kontur(g, s);
+      funkeln(g, -a * 0.58, -b * 0.58, r * 0.22, 0.85);
+    } else if (st === 4) {
+      const n = 8;
+      const aussen = [], innen = [];
+      for (let i = 0; i < n; i++) {
+        const w = i / n * Math.PI * 2 - Math.PI / 2;
+        aussen.push([Math.cos(w) * r, Math.sin(w) * r]);
+        innen.push([Math.cos(w + Math.PI / n) * r * 0.54, Math.sin(w + Math.PI / n) * r * 0.54]);
+      }
+      g.beginPath();
+      g.arc(0, 0, r * 1.04, 0, Math.PI * 2);
+      g.fillStyle = lg(g, -r, -r, r, r, [[0, '#fff2a6'], [0.5, '#f0a500'], [1, '#8c5200']]);
+      g.fill();
+      kontur(g, s, 0.03);
+      g.beginPath();
+      g.arc(0, 0, r * 0.94, 0, Math.PI * 2);
+      g.fillStyle = F.dunkel;
+      g.fill();
+      for (let i = 0; i < n; i++) {
+        const j = (i + 1) % n;
+        poly(g, [aussen[i], aussen[j], innen[i]]);
+        g.fillStyle = mische(F.dunkel, F.hell, 0.22 + 0.68 * Math.abs(Math.sin(i * 0.95 + 0.35)));
+        g.fill();
+        poly(g, [[0, 0], innen[i], aussen[j], innen[j]]);
+        g.fillStyle = mische(F.mitte, F.glanz, 0.18 + 0.62 * Math.abs(Math.cos(i * 1.25)));
+        g.fill();
+      }
+      g.beginPath();
+      g.arc(0, 0, r * 0.96, 0, Math.PI * 2);
+      kontur(g, s, 0.028);
+      funkeln(g, -r * 0.38, -r * 0.42, r * 0.3, 0.95);
+    } else {
+      const w = r * 1.06, hk = r * 0.44, hp = r * 0.82, t = r * 0.58;
+      g.beginPath();
+      g.moveTo(-t * 1.12, -hk * 1.12);
+      g.lineTo(t * 1.12, -hk * 1.12);
+      g.lineTo(w * 1.09, -hk * 0.15);
+      g.lineTo(0, hp * 1.09);
+      g.lineTo(-w * 1.09, -hk * 0.15);
+      g.closePath();
+      g.fillStyle = lg(g, -w, -hk, w, hp, [[0, '#fff7ba'], [0.45, '#ffbe1a'], [1, '#9e5d00']]);
+      g.fill();
+      kontur(g, s, 0.032);
+      const krone = [[-t, -hk], [t, -hk], [w, -hk * 0.15], [-w, -hk * 0.15]];
+      const pav = [[-w, -hk * 0.15], [w, -hk * 0.15], [0, hp]];
+      poly(g, pav);
+      g.fillStyle = lg(g, 0, 0, 0, hp, [[0, F.mitte], [1, F.dunkel]]);
+      g.fill();
+      g.fillStyle = 'rgba(255,255,255,0.34)';
+      poly(g, [[-w * 0.42, -hk * 0.15], [w * 0.04, -hk * 0.15], [0, hp]]);
+      g.fill();
+      g.fillStyle = 'rgba(0,0,0,0.22)';
+      poly(g, [[w * 0.42, -hk * 0.15], [w, -hk * 0.15], [0, hp]]);
+      g.fill();
+      poly(g, krone);
+      g.fillStyle = lg(g, 0, -hk, 0, 0, [[0, F.glanz], [1, F.hell]]);
+      g.fill();
+      g.fillStyle = 'rgba(255,255,255,0.62)';
+      poly(g, [[-t, -hk], [-t * 0.15, -hk], [-w * 0.45, -hk * 0.15]]);
+      g.fill();
+      g.beginPath();
+      g.moveTo(-t, -hk);
+      g.lineTo(t, -hk);
+      g.lineTo(w, -hk * 0.15);
+      g.lineTo(0, hp);
+      g.lineTo(-w, -hk * 0.15);
+      g.closePath();
+      kontur(g, s, 0.026);
+      funkeln(g, r * 0.56, -r * 0.58, r * 0.34, 1);
+      funkeln(g, -r * 0.62, r * 0.24, r * 0.2, 0.85);
+    }
+    g.restore();
+  }
+
+  // ---------------------------------------------------------------- Piraten-Papagei (Original Pirots!)
+  function papagei(g, s, f) {
+    const F = FARBE[f];
+    const r = s * 0.31;
+    schatten(g, 0, r * 1.12, r * 1.25, r * 0.34, 0.46);
+    // Farbige Deck-Aura
+    const aura = g.createRadialGradient(0, r * 0.5, r * 0.15, 0, r * 0.5, r * 1.48);
+    aura.addColorStop(0, F.strahl);
+    aura.addColorStop(1, 'rgba(0,0,0,0)');
+    g.fillStyle = aura;
+    g.beginPath();
+    g.arc(0, r * 0.5, r * 1.48, 0, Math.PI * 2);
+    g.fill();
+    // Schwanzfedern hinten links
+    g.save();
+    g.fillStyle = F.dunkel;
+    poly(g, [[-r * 0.72, r * 0.35], [-r * 1.38, r * 0.72], [-r * 1.15, r * 0.96], [-r * 0.55, r * 0.78]]);
+    g.fill();
+    kontur(g, s, 0.026);
+    g.restore();
+    // Krallen / Fuesse
+    g.strokeStyle = '#d98a18';
+    g.lineWidth = s * 0.032;
+    g.lineCap = 'round';
+    for (const sx of [-0.32, 0.28]) {
+      g.beginPath();
+      g.moveTo(sx * r, r * 0.85);
+      g.lineTo(sx * r - r * 0.14, r * 1.1);
+      g.moveTo(sx * r, r * 0.85);
+      g.lineTo(sx * r + r * 0.14, r * 1.1);
       g.stroke();
     }
-    // Augen
-    for (const sx of [-1, 1]) {
-      g.fillStyle = '#1b120c';
+    // Runder Papageien-Koerper
+    g.beginPath();
+    g.ellipse(0, r * 0.12, r * 0.96, r * 0.96, 0, 0, Math.PI * 2);
+    g.fillStyle = lg(g, -r * 0.6, -r, r * 0.6, r * 1.1, [[0, F.glanz], [0.22, F.hell], [0.65, F.mitte], [1, F.dunkel]]);
+    g.fill();
+    kontur(g, s);
+    // Helle Brustfedern
+    g.fillStyle = 'rgba(255, 252, 235, 0.38)';
+    g.beginPath();
+    g.ellipse(r * 0.16, r * 0.44, r * 0.52, r * 0.48, 0.15, 0, Math.PI * 2);
+    g.fill();
+    // Fluegel links (mit Feder-Akzent)
+    g.beginPath();
+    g.ellipse(-r * 0.72, r * 0.28, r * 0.42, r * 0.62, 0.32, 0, Math.PI * 2);
+    g.fillStyle = lg(g, -r * 1.1, -r * 0.2, -r * 0.3, r * 0.85, [[0, F.hell], [0.6, F.mitte], [1, F.dunkel]]);
+    g.fill();
+    kontur(g, s, 0.028);
+    // Weisse Augenmaske (typisch Papagei)
+    g.fillStyle = '#fff9eb';
+    g.beginPath();
+    g.ellipse(r * 0.04, -r * 0.16, r * 0.64, r * 0.34, -0.06, 0, Math.PI * 2);
+    g.fill();
+    kontur(g, s, 0.018);
+    // Augen (frecher Piratenblick)
+    for (const ex of [-0.22, 0.28]) {
+      g.fillStyle = '#ffffff';
       g.beginPath();
-      g.ellipse(sx * r * 0.33, -r * 0.05, r * 0.11, r * 0.14, 0, 0, Math.PI * 2);
+      g.arc(ex * r, -r * 0.18, r * 0.21, 0, Math.PI * 2);
       g.fill();
-      g.fillStyle = '#fff';
+      kontur(g, s, 0.02);
+      g.fillStyle = '#140c06';
       g.beginPath();
-      g.arc(sx * r * 0.33 - r * 0.03, -r * 0.1, r * 0.04, 0, Math.PI * 2);
+      g.arc(ex * r + r * 0.05, -r * 0.17, r * 0.11, 0, Math.PI * 2);
+      g.fill();
+      g.fillStyle = '#ffffff';
+      g.beginPath();
+      g.arc(ex * r + r * 0.02, -r * 0.22, r * 0.045, 0, Math.PI * 2);
       g.fill();
     }
-    // Pfoten
-    for (const sx of [-1, 1]) {
+    // Augenklappe bei Lila-Pirat (f === 1)
+    if (f === 1) {
+      g.strokeStyle = '#1b1109';
+      g.lineWidth = s * 0.024;
       g.beginPath();
-      g.ellipse(sx * r * 0.62, r * 0.95, r * 0.26, r * 0.16, sx * 0.3, 0, Math.PI * 2);
-      g.fillStyle = '#f2b6a0';
+      g.moveTo(-r * 0.82, -r * 0.48);
+      g.lineTo(r * 0.62, -r * 0.04);
+      g.stroke();
+      g.fillStyle = '#1c171c';
+      g.beginPath();
+      g.arc(-r * 0.22, -r * 0.18, r * 0.24, 0, Math.PI * 2);
       g.fill();
       kontur(g, s, 0.02);
     }
-    // Helm
+    // Freche Augenbrauen
+    g.strokeStyle = KONTUR_F;
+    g.lineWidth = s * 0.028;
     g.beginPath();
-    g.moveTo(-r * 0.95, -r * 0.32);
-    g.quadraticCurveTo(-r * 0.95, -r * 1.25, 0, -r * 1.28);
-    g.quadraticCurveTo(r * 0.95, -r * 1.25, r * 0.95, -r * 0.32);
+    g.moveTo(-r * 0.44, -r * 0.42);
+    g.lineTo(-r * 0.05, -r * 0.32);
+    g.moveTo(r * 0.5, -r * 0.42);
+    g.lineTo(r * 0.12, -r * 0.32);
+    g.stroke();
+    // Grosser gebogener Papageienschnabel
+    g.beginPath();
+    g.moveTo(-r * 0.08, -r * 0.02);
+    g.quadraticCurveTo(r * 0.58, -r * 0.14, r * 0.64, r * 0.36);
+    g.quadraticCurveTo(r * 0.26, r * 0.28, -r * 0.06, r * 0.24);
     g.closePath();
-    g.fillStyle = lg(g, 0, -r * 1.3, 0, -r * 0.3, [[0, F.hell], [1, F.dunkel]]);
+    g.fillStyle = lg(g, 0, -r * 0.1, r * 0.6, r * 0.4, [[0, '#ffe87a'], [0.5, '#ffb71c'], [1, '#c96f00']]);
     g.fill();
-    kontur(g, s);
+    kontur(g, s, 0.028);
+    // Unterschnabel
     g.beginPath();
-    g.ellipse(0, -r * 0.32, r * 1.12, r * 0.15, 0, 0, Math.PI * 2);
-    g.fillStyle = F.mitte;
+    g.ellipse(r * 0.14, r * 0.3, r * 0.2, r * 0.13, 0.15, 0, Math.PI * 2);
+    g.fillStyle = '#c46a00';
     g.fill();
-    kontur(g, s, 0.025);
-    // Lampe
-    const lgl = g.createRadialGradient(0, -r * 0.88, 0, 0, -r * 0.88, r * 0.6);
-    lgl.addColorStop(0, 'rgba(255,250,200,0.9)');
-    lgl.addColorStop(1, 'rgba(255,230,120,0)');
-    g.fillStyle = lgl;
-    g.beginPath();
-    g.arc(0, -r * 0.88, r * 0.6, 0, Math.PI * 2);
-    g.fill();
-    g.beginPath();
-    g.arc(0, -r * 0.88, r * 0.22, 0, Math.PI * 2);
-    g.fillStyle = '#fff6b0';
-    g.fill();
-    kontur(g, s, 0.025);
+    kontur(g, s, 0.022);
+    // Goldener Ohrring bei Kapitaen Rot
+    if (f === 0) {
+      g.strokeStyle = '#ffd447';
+      g.lineWidth = s * 0.024;
+      g.beginPath();
+      g.arc(-r * 0.62, r * 0.05, r * 0.16, 0, Math.PI * 2);
+      g.stroke();
+    }
+    // Individuelle Piraten-Kopfbedeckung je Papagei!
+    if (f === 0) {
+      // Kapitaen Rot: schwarzer Dreispitz mit Goldrand & Totenkopf
+      g.beginPath();
+      g.moveTo(-r * 1.18, -r * 0.52);
+      g.quadraticCurveTo(-r * 0.6, -r * 1.45, 0, -r * 1.32);
+      g.quadraticCurveTo(r * 0.6, -r * 1.45, r * 1.18, -r * 0.52);
+      g.quadraticCurveTo(0, -r * 0.34, -r * 1.18, -r * 0.52);
+      g.closePath();
+      g.fillStyle = lg(g, 0, -r * 1.4, 0, -r * 0.4, [[0, '#3a343b'], [1, '#141115']]);
+      g.fill();
+      g.strokeStyle = '#ffd447';
+      g.lineWidth = s * 0.022;
+      g.stroke();
+      kontur(g, s, 0.028);
+      // Mini-Totenkopf auf dem Hut
+      g.fillStyle = '#fff9eb';
+      g.beginPath();
+      g.arc(0, -r * 0.88, r * 0.2, 0, Math.PI * 2);
+      g.fill();
+      g.fillStyle = '#141115';
+      g.beginPath();
+      g.arc(-r * 0.07, -r * 0.9, r * 0.045, 0, Math.PI * 2);
+      g.arc(r * 0.07, -r * 0.9, r * 0.045, 0, Math.PI * 2);
+      g.fill();
+    } else if (f === 1) {
+      // Lila: Piraten-Bandana mit Knoten & Feder
+      g.beginPath();
+      g.moveTo(-r * 0.92, -r * 0.44);
+      g.quadraticCurveTo(0, -r * 1.18, r * 0.92, -r * 0.44);
+      g.quadraticCurveTo(0, -r * 0.62, -r * 0.92, -r * 0.44);
+      g.closePath();
+      g.fillStyle = lg(g, -r, -r, r, -r * 0.4, [[0, '#ff4d6d'], [1, '#8f0a2b']]);
+      g.fill();
+      kontur(g, s, 0.026);
+      // Goldene Feder
+      g.fillStyle = '#ffd447';
+      g.beginPath();
+      g.ellipse(-r * 0.55, -r * 1.05, r * 0.16, r * 0.36, -0.45, 0, Math.PI * 2);
+      g.fill();
+      kontur(g, s, 0.02);
+    } else if (f === 2) {
+      // Gruen: gestreiftes Piraten-Kopftuch + Gold-Band
+      g.beginPath();
+      g.moveTo(-r * 0.9, -r * 0.44);
+      g.quadraticCurveTo(0, -r * 1.15, r * 0.9, -r * 0.44);
+      g.quadraticCurveTo(0, -r * 0.58, -r * 0.9, -r * 0.44);
+      g.closePath();
+      g.fillStyle = lg(g, -r, -r, r, -r * 0.4, [[0, '#ffd447'], [0.5, '#ff8800'], [1, '#a84400']]);
+      g.fill();
+      kontur(g, s, 0.026);
+      // Tuch-Zipfel rechts
+      g.fillStyle = '#ff8800';
+      poly(g, [[r * 0.78, -r * 0.56], [r * 1.24, -r * 0.75], [r * 1.15, -r * 0.4]]);
+      g.fill();
+      kontur(g, s, 0.02);
+    } else {
+      // Blau: Marine-Piratenhut mit Gold-Emblem
+      g.beginPath();
+      g.moveTo(-r * 1.1, -r * 0.48);
+      g.quadraticCurveTo(0, -r * 1.42, r * 1.1, -r * 0.48);
+      g.quadraticCurveTo(0, -r * 0.35, -r * 1.1, -r * 0.48);
+      g.closePath();
+      g.fillStyle = lg(g, 0, -r * 1.4, 0, -r * 0.4, [[0, '#1e4e8c'], [1, '#0c2142']]);
+      g.fill();
+      kontur(g, s, 0.028);
+      g.fillStyle = '#ffd447';
+      g.beginPath();
+      g.arc(0, -r * 0.86, r * 0.16, 0, Math.PI * 2);
+      g.fill();
+    }
   }
 
-  // ---------------------------------------------------------------- Sonderfelder
+  // ---------------------------------------------------------------- Original Pirots Sonderfelder
+  // 1) Goldenes Wild "W"
   function joker(g, s) {
-    const r = s * 0.38;
-    const p = [];
-    for (let i = 0; i < 10; i++) {
-      const a = i * Math.PI / 5 - Math.PI / 2;
-      const rr = i % 2 ? r * 0.48 : r;
-      p.push([Math.cos(a) * rr, Math.sin(a) * rr]);
-    }
-    const farben = ['#ff3b4e', '#ffb800', '#2fe07a', '#3da5ff', '#b05cff'];
-    for (let i = 0; i < 5; i++) {
-      poly(g, [[0, 0], p[i * 2], p[i * 2 + 1], p[(i * 2 + 2) % 10]]);
+    const r = s * 0.39;
+    schatten(g, 0, r * 0.78, r * 0.82, r * 0.24, 0.42);
+    const gl = g.createRadialGradient(0, 0, r * 0.15, 0, 0, r * 1.3);
+    gl.addColorStop(0, 'rgba(255, 240, 140, 0.8)');
+    gl.addColorStop(0.55, 'rgba(255, 185, 30, 0.32)');
+    gl.addColorStop(1, 'rgba(255, 160, 0, 0)');
+    g.fillStyle = gl;
+    g.beginPath();
+    g.arc(0, 0, r * 1.3, 0, Math.PI * 2);
+    g.fill();
+    // 4-farbiger Edelstein-Schild
+    const farben = ['#ff243d', '#b048ff', '#18db6a', '#1e96ff'];
+    for (let i = 0; i < 4; i++) {
+      g.beginPath();
+      g.moveTo(0, 0);
+      g.arc(0, 0, r * 0.94, i * Math.PI / 2 - Math.PI / 4, (i + 1) * Math.PI / 2 - Math.PI / 4);
+      g.closePath();
       g.fillStyle = farben[i];
       g.fill();
     }
-    poly(g, p);
-    kontur(g, s, 0.04);
-    g.fillStyle = 'rgba(255,255,255,0.6)';
     g.beginPath();
-    g.arc(0, 0, r * 0.22, 0, Math.PI * 2);
-    g.fill();
-    funkeln(g, r * 0.55, -r * 0.6, r * 0.25);
-  }
-  function schleifstein(g, s, f) {
-    const r = s * 0.33;
-    // Rad
-    g.beginPath();
-    for (let i = 0; i < 24; i++) {
-      const a = i / 24 * Math.PI * 2;
-      const rr = i % 2 ? r : r * 0.9;
-      g.lineTo(Math.cos(a) * rr, Math.sin(a) * rr);
-    }
-    g.closePath();
-    g.fillStyle = lg(g, 0, -r, 0, r, [[0, '#d9d4c8'], [1, '#8a8274']]);
-    g.fill();
-    kontur(g, s);
-    g.beginPath();
-    g.arc(0, 0, r * 0.25, 0, Math.PI * 2);
-    g.fillStyle = '#5e574a';
-    g.fill();
-    // Pfeil nach oben
-    const regen = f === 4;
-    const F = regen ? null : FARBE[f];
-    const pf = [[0, -r * 1.05], [r * 0.62, -r * 0.3], [r * 0.25, -r * 0.3], [r * 0.25, r * 0.75], [-r * 0.25, r * 0.75], [-r * 0.25, -r * 0.3], [-r * 0.62, -r * 0.3]];
-    poly(g, pf);
-    g.fillStyle = regen ? lg(g, -r, 0, r, 0, [[0, '#ff3b4e'], [0.33, '#b05cff'], [0.66, '#2fe07a'], [1, '#3da5ff']]) : lg(g, 0, -r, 0, r, [[0, F.hell], [1, F.dunkel]]);
-    g.fill();
-    kontur(g, s, 0.035);
-  }
-  function farbtopf(g, s) {
-    const r = s * 0.34;
-    // Eimer
-    g.beginPath();
-    g.moveTo(-r * 0.8, -r * 0.35);
-    g.lineTo(r * 0.8, -r * 0.35);
-    g.lineTo(r * 0.62, r * 0.95);
-    g.lineTo(-r * 0.62, r * 0.95);
-    g.closePath();
-    g.fillStyle = lg(g, -r, 0, r, 0, [[0, '#9aa4ad'], [0.5, '#e6ecf0'], [1, '#7b858e']]);
-    g.fill();
-    kontur(g, s);
-    // Farbe oben, laeuft ueber
-    g.beginPath();
-    g.ellipse(0, -r * 0.35, r * 0.8, r * 0.24, 0, 0, Math.PI * 2);
-    g.fillStyle = '#ff3b4e';
-    g.fill();
-    const tropfen = [['#ffb800', -0.5], ['#2fe07a', -0.05], ['#3da5ff', 0.42]];
-    tropfen.forEach(function (t, i) {
-      g.fillStyle = t[0];
-      g.beginPath();
-      g.moveTo(r * (t[1] - 0.14), -r * 0.3);
-      g.lineTo(r * (t[1] + 0.14), -r * 0.3);
-      g.lineTo(r * (t[1] + 0.12), r * (0.15 + i * 0.12));
-      g.arc(r * t[1], r * (0.15 + i * 0.12), r * 0.12, 0, Math.PI);
-      g.closePath();
-      g.fill();
-    });
-    g.beginPath();
-    g.ellipse(0, -r * 0.35, r * 0.8, r * 0.24, 0, 0, Math.PI * 2);
-    kontur(g, s, 0.03);
-    // Henkel
-    g.strokeStyle = KONTUR_F;
-    g.lineWidth = s * 0.03;
-    g.beginPath();
-    g.arc(0, -r * 0.35, r * 0.95, Math.PI * 1.1, Math.PI * 1.9);
+    g.arc(0, 0, r * 0.94, 0, Math.PI * 2);
+    g.strokeStyle = '#ffd447';
+    g.lineWidth = s * 0.065;
     g.stroke();
+    kontur(g, s, 0.032);
+    // Kräftiges goldenes "W"
+    g.font = '400 ' + (s * 0.48) + 'px "Lilita One", "Arial Black", sans-serif';
+    g.textAlign = 'center';
+    g.textBaseline = 'middle';
+    g.lineWidth = s * 0.075;
+    g.strokeStyle = '#241205';
+    g.strokeText('W', 0, s * 0.02);
+    g.fillStyle = lg(g, 0, -r * 0.55, 0, r * 0.55, [[0, '#fff9c4'], [0.45, '#ffd447'], [1, '#e68a00']]);
+    g.fillText('W', 0, s * 0.02);
+    funkeln(g, r * 0.58, -r * 0.58, r * 0.28);
   }
-  function nugget(g, s, v) {
-    const r = s * 0.36;
-    const p = [[-r, 0.1 * r], [-0.7 * r, -0.55 * r], [-0.1 * r, -0.75 * r], [0.55 * r, -0.6 * r], [r, -0.05 * r], [0.75 * r, 0.6 * r], [0.05 * r, 0.75 * r], [-0.6 * r, 0.6 * r]];
+
+  // 2) Upgrade-Pfeil (Weiss = Farbe des Sammlers, Bunt = Alle Farben, +1 bis +3 Stufen!)
+  function schleifstein(g, s, f) {
+    const r = s * 0.37;
+    const regen = f === 4;
+    schatten(g, 0, r * 0.85, r * 0.8, r * 0.22, 0.4);
+    const gl = g.createRadialGradient(0, 0, r * 0.15, 0, 0, r * 1.28);
+    gl.addColorStop(0, regen ? 'rgba(255, 225, 110, 0.65)' : 'rgba(220, 245, 255, 0.62)');
+    gl.addColorStop(1, 'rgba(255, 255, 255, 0)');
+    g.fillStyle = gl;
     g.beginPath();
-    for (let i = 0; i < p.length; i++) {
-      const a = p[i], b = p[(i + 1) % p.length];
-      const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2;
-      if (i === 0) {
-        g.moveTo(mx, my);
-      }
-      g.quadraticCurveTo(b[0], b[1], (b[0] + p[(i + 2) % p.length][0]) / 2, (b[1] + p[(i + 2) % p.length][1]) / 2);
-    }
-    g.closePath();
-    g.fillStyle = lg(g, -r, -r, r, r, [[0, '#fff3a6'], [0.4, '#ffcc1f'], [1, '#b47800']]);
+    g.arc(0, 0, r * 1.28, 0, Math.PI * 2);
     g.fill();
-    kontur(g, s);
-    g.fillStyle = 'rgba(255,255,255,0.55)';
+    // Goldener Medaillon-Rahmen
     g.beginPath();
-    g.ellipse(-r * 0.35, -r * 0.35, r * 0.22, r * 0.12, -0.5, 0, Math.PI * 2);
+    g.arc(0, 0, r * 0.88, 0, Math.PI * 2);
+    g.fillStyle = regen ? '#2a183b' : '#182b44';
+    g.fill();
+    g.strokeStyle = '#ffd447';
+    g.lineWidth = s * 0.045;
+    g.stroke();
+    kontur(g, s, 0.026);
+    // Doppelter Upgrade-Pfeil nach oben (Original Pirots Look)
+    const pf = [[0, -r * 1.04], [r * 0.72, -r * 0.18], [r * 0.32, -r * 0.18], [r * 0.32, r * 0.76], [-r * 0.32, r * 0.76], [-r * 0.32, -r * 0.18], [-r * 0.72, -r * 0.18]];
+    poly(g, pf);
+    g.fillStyle = regen
+      ? lg(g, -r * 0.6, -r, r * 0.6, r, [[0, '#ff243d'], [0.33, '#b048ff'], [0.66, '#18db6a'], [1, '#1e96ff']])
+      : lg(g, 0, -r, 0, r, [[0, '#ffffff'], [0.55, '#dceeff'], [1, '#8fb8db']]);
+    g.fill();
+    kontur(g, s, 0.036);
+    // Innerer Glanzpfeil
+    g.fillStyle = 'rgba(255,255,255,0.5)';
+    poly(g, [[0, -r * 0.82], [r * 0.34, -r * 0.32], [0, -r * 0.32]]);
+    g.fill();
+    funkeln(g, 0, -r * 0.94, r * 0.26, 0.95);
+  }
+
+  // 3) Rum-Fass & Rum-Trank (Original Pirots Transform Symbol!)
+  function farbtopf(g, s) {
+    const r = s * 0.36;
+    schatten(g, 0, r * 0.9, r * 0.94, r * 0.24, 0.44);
+    // Leuchtender Rum-Schimmer dahinter
+    const gl = g.createRadialGradient(0, 0, r * 0.15, 0, 0, r * 1.25);
+    gl.addColorStop(0, 'rgba(255, 195, 65, 0.55)');
+    gl.addColorStop(1, 'rgba(255, 140, 0, 0)');
+    g.fillStyle = gl;
+    g.beginPath();
+    g.arc(0, 0, r * 1.25, 0, Math.PI * 2);
+    g.fill();
+    // Eichen-Rumfass (links-mittig)
+    g.beginPath();
+    g.moveTo(-r * 0.76, -r * 0.68);
+    g.quadraticCurveTo(-r * 1.05, 0, -r * 0.76, r * 0.76);
+    g.lineTo(r * 0.42, r * 0.76);
+    g.quadraticCurveTo(r * 0.72, 0, r * 0.42, -r * 0.68);
+    g.closePath();
+    g.fillStyle = lg(g, -r, 0, r * 0.6, 0, [[0, '#b56e32'], [0.45, '#8c4b1a'], [1, '#4a2409']]);
+    g.fill();
+    kontur(g, s, 0.032);
+    // Fass-Daubenlinien
+    g.strokeStyle = 'rgba(30,14,4,0.45)';
+    g.lineWidth = s * 0.015;
+    g.beginPath();
+    g.moveTo(-r * 0.4, -r * 0.66);
+    g.quadraticCurveTo(-r * 0.52, 0, -r * 0.4, r * 0.74);
+    g.moveTo(r * 0.06, -r * 0.66);
+    g.quadraticCurveTo(r * 0.16, 0, r * 0.06, r * 0.74);
+    g.stroke();
+    // Eisenreifen am Fass
+    g.fillStyle = '#363230';
+    g.fillRect(-r * 0.88, -r * 0.42, r * 1.42, r * 0.14);
+    g.fillRect(-r * 0.88, r * 0.34, r * 1.42, r * 0.14);
+    // "RUM"-Schild
+    g.fillStyle = '#fff0c4';
+    g.fillRect(-r * 0.66, -r * 0.2, r * 0.98, r * 0.44);
+    g.strokeStyle = KONTUR_F;
+    g.lineWidth = s * 0.018;
+    g.strokeRect(-r * 0.66, -r * 0.2, r * 0.98, r * 0.44);
+    g.font = '900 ' + (s * 0.15) + 'px Nunito, sans-serif';
+    g.textAlign = 'center';
+    g.textBaseline = 'middle';
+    g.fillStyle = '#7a1f0a';
+    g.fillText('RUM', -r * 0.17, r * 0.03);
+    // Rum-Trank-Flasche rechts daneben (gruen-gold leuchtender Piratentrank!)
+    g.save();
+    g.translate(r * 0.56, r * 0.12);
+    g.rotate(0.16);
+    // Flaschenbauch
+    g.beginPath();
+    g.ellipse(0, r * 0.24, r * 0.4, r * 0.46, 0, 0, Math.PI * 2);
+    g.fillStyle = lg(g, -r * 0.35, -r * 0.1, r * 0.35, r * 0.6, [[0, '#ffe478'], [0.45, '#ff9c1a'], [1, '#b83c00']]);
+    g.fill();
+    kontur(g, s, 0.026);
+    // Flaschenhals + Korken
+    g.fillStyle = '#c8e8d8';
+    g.fillRect(-r * 0.13, -r * 0.48, r * 0.26, r * 0.32);
+    kontur(g, s, 0.022);
+    g.fillStyle = '#a86b32';
+    g.fillRect(-r * 0.14, -r * 0.62, r * 0.28, r * 0.16);
+    kontur(g, s, 0.02);
+    // Glanzpunkt auf der Flasche
+    g.fillStyle = 'rgba(255,255,255,0.75)';
+    g.beginPath();
+    g.ellipse(-r * 0.14, r * 0.14, r * 0.09, r * 0.2, -0.25, 0, Math.PI * 2);
+    g.fill();
+    g.restore();
+    funkeln(g, r * 0.56, -r * 0.56, r * 0.22);
+  }
+
+  // 4) Piraten-Goldmuenze (Coin Symbol)
+  function nugget(g, s, v) {
+    const r = s * 0.38;
+    const gross = v >= 50;
+    schatten(g, 0, r * 0.8, r * 0.84, r * 0.24, 0.42);
+    if (gross) {
+      const gl = g.createRadialGradient(0, 0, r * 0.2, 0, 0, r * 1.32);
+      gl.addColorStop(0, 'rgba(255, 225, 90, 0.78)');
+      gl.addColorStop(1, 'rgba(255, 140, 0, 0)');
+      g.fillStyle = gl;
+      g.beginPath();
+      g.arc(0, 0, r * 1.32, 0, Math.PI * 2);
+      g.fill();
+    }
+    // Muenzrand
+    g.beginPath();
+    g.arc(0, 0, r, 0, Math.PI * 2);
+    g.fillStyle = gross
+      ? lg(g, -r, -r, r, r, [[0, '#fff9c4'], [0.35, '#ffd726'], [0.7, '#ff9000'], [1, '#993d00']])
+      : lg(g, -r, -r, r, r, [[0, '#fff6b0'], [0.4, '#ffc818'], [1, '#9e6200']]);
+    g.fill();
+    kontur(g, s, 0.034);
+    // Innerer Praegering
+    g.beginPath();
+    g.arc(0, 0, r * 0.78, 0, Math.PI * 2);
+    g.strokeStyle = 'rgba(110, 56, 0, 0.55)';
+    g.lineWidth = s * 0.022;
+    g.stroke();
+    g.fillStyle = 'rgba(255,255,255,0.45)';
+    g.beginPath();
+    g.ellipse(-r * 0.32, -r * 0.36, r * 0.26, r * 0.12, -0.55, 0, Math.PI * 2);
     g.fill();
     const t = v + '×';
-    let fs = s * (t.length > 4 ? 0.22 : 0.28);
+    const fs = s * (t.length > 4 ? 0.21 : (t.length > 3 ? 0.24 : 0.29));
     g.font = '900 ' + fs + 'px Nunito, sans-serif';
     g.textAlign = 'center';
     g.textBaseline = 'middle';
-    g.lineWidth = s * 0.05;
-    g.strokeStyle = '#4a2a00';
-    g.strokeText(t, 0, r * 0.08);
-    g.fillStyle = '#fff';
-    g.fillText(t, 0, r * 0.08);
-  }
-  function dynamit(g, s) {
-    const r = s * 0.33;
-    for (let i = -1; i <= 1; i++) {
-      g.save();
-      g.rotate(i * 0.18);
-      g.beginPath();
-      g.rect(i * r * 0.42 - r * 0.22, -r * 0.55, r * 0.44, r * 1.45);
-      g.fillStyle = lg(g, -r * 0.22, 0, r * 0.22, 0, [[0, '#ff6b5b'], [0.5, '#e8231a'], [1, '#9e0e08']]);
-      g.fill();
-      kontur(g, s, 0.03);
-      g.restore();
+    g.lineWidth = s * 0.055;
+    g.strokeStyle = '#3d2000';
+    g.strokeText(t, 0, r * 0.06);
+    g.fillStyle = '#fffdf2';
+    g.fillText(t, 0, r * 0.06);
+    if (gross) {
+      funkeln(g, r * 0.55, -r * 0.55, r * 0.28);
     }
-    // Band
-    g.fillStyle = '#2b1606';
-    g.fillRect(-r * 0.85, r * 0.15, r * 1.7, r * 0.14);
-    // Zuendschnur
-    g.strokeStyle = '#3a2a1a';
-    g.lineWidth = s * 0.03;
+  }
+
+  // 5) Piraten-Bombe / Kanonenkugel mit Totenkopf (Original Pirots Bomb!)
+  function dynamit(g, s) {
+    const r = s * 0.36;
+    schatten(g, 0, r * 0.88, r * 0.86, r * 0.24, 0.45);
+    // Zuendschnur + Funken
+    g.strokeStyle = '#c49a62';
+    g.lineWidth = s * 0.036;
     g.beginPath();
-    g.moveTo(0, -r * 0.6);
-    g.quadraticCurveTo(r * 0.3, -r * 1.0, r * 0.55, -r * 0.95);
+    g.moveTo(r * 0.15, -r * 0.78);
+    g.quadraticCurveTo(r * 0.42, -r * 1.18, r * 0.72, -r * 1.0);
     g.stroke();
-    const fu = g.createRadialGradient(r * 0.6, -r * 0.98, 0, r * 0.6, -r * 0.98, r * 0.35);
-    fu.addColorStop(0, '#fff');
-    fu.addColorStop(0.4, '#ffd23a');
-    fu.addColorStop(1, 'rgba(255,120,0,0)');
+    const fu = g.createRadialGradient(r * 0.76, -r * 1.0, 0, r * 0.76, -r * 1.0, r * 0.42);
+    fu.addColorStop(0, '#ffffff');
+    fu.addColorStop(0.35, '#ffe047');
+    fu.addColorStop(0.7, 'rgba(255,100,0,0.65)');
+    fu.addColorStop(1, 'rgba(255,50,0,0)');
     g.fillStyle = fu;
     g.beginPath();
-    g.arc(r * 0.6, -r * 0.98, r * 0.35, 0, Math.PI * 2);
+    g.arc(r * 0.76, -r * 1.0, r * 0.42, 0, Math.PI * 2);
+    g.fill();
+    funkeln(g, r * 0.76, -r * 1.0, r * 0.26);
+    // Messing-Kappe oben
+    g.fillStyle = '#c9932c';
+    g.fillRect(-r * 0.22, -r * 0.88, r * 0.44, r * 0.22);
+    kontur(g, s, 0.024);
+    // Schwarze gusseiserne Bombenkugel
+    g.beginPath();
+    g.arc(0, r * 0.1, r * 0.86, 0, Math.PI * 2);
+    const kg = g.createRadialGradient(-r * 0.3, -r * 0.22, r * 0.08, 0, r * 0.1, r * 0.92);
+    kg.addColorStop(0, '#69727d');
+    kg.addColorStop(0.35, '#2c3138');
+    kg.addColorStop(1, '#0e1014');
+    g.fillStyle = kg;
+    g.fill();
+    kontur(g, s, 0.034);
+    // Weisser Totenkopf auf der Bombe
+    g.fillStyle = '#f2ede4';
+    g.beginPath();
+    g.arc(0, r * 0.04, r * 0.32, 0, Math.PI * 2);
+    g.fill();
+    g.fillRect(-r * 0.16, r * 0.26, r * 0.32, r * 0.18);
+    g.fillStyle = '#15181c';
+    g.beginPath();
+    g.arc(-r * 0.12, r * 0.04, r * 0.085, 0, Math.PI * 2);
+    g.arc(r * 0.12, r * 0.04, r * 0.085, 0, Math.PI * 2);
     g.fill();
   }
+
+  // 6) Goldener Piraten-Anker (Original Pirots Bonus Scatter!)
   function lore(g, s) {
-    const r = s * 0.36;
-    // Gold
-    g.fillStyle = '#ffcc1f';
-    for (let i = 0; i < 5; i++) {
-      g.beginPath();
-      g.arc(-r * 0.55 + i * r * 0.28, -r * 0.3 - (i % 2) * r * 0.12, r * 0.24, 0, Math.PI * 2);
-      g.fill();
-      kontur(g, s, 0.02);
-    }
-    // Wagen
+    const r = s * 0.38;
+    schatten(g, 0, r * 0.86, r * 0.84, r * 0.22, 0.44);
+    const gl = g.createRadialGradient(0, 0, r * 0.15, 0, 0, r * 1.3);
+    gl.addColorStop(0, 'rgba(255, 224, 90, 0.65)');
+    gl.addColorStop(1, 'rgba(255, 160, 0, 0)');
+    g.fillStyle = gl;
     g.beginPath();
-    g.moveTo(-r, -r * 0.25);
-    g.lineTo(r, -r * 0.25);
-    g.lineTo(r * 0.75, r * 0.5);
-    g.lineTo(-r * 0.75, r * 0.5);
-    g.closePath();
-    g.fillStyle = lg(g, 0, -r * 0.3, 0, r * 0.5, [[0, '#8f7a63'], [1, '#4f3f30']]);
+    g.arc(0, 0, r * 1.3, 0, Math.PI * 2);
     g.fill();
-    kontur(g, s);
-    g.strokeStyle = 'rgba(255,255,255,0.25)';
-    g.lineWidth = s * 0.02;
-    g.beginPath();
-    g.moveTo(-r * 0.85, -r * 0.05);
-    g.lineTo(r * 0.85, -r * 0.05);
+    // Goldener Anker-Schaft & Querbalken
+    const gold = lg(g, -r, -r, r, r, [[0, '#fff7ba'], [0.4, '#ffd026'], [1, '#a66000']]);
+    g.strokeStyle = gold;
+    g.lineCap = 'round';
+    g.lineJoin = 'round';
+    // Umriss erst dunkel, dann Gold innen
+    const ankerPfad = function () {
+      g.beginPath();
+      g.moveTo(0, -r * 0.66);
+      g.lineTo(0, r * 0.72);
+      g.moveTo(-r * 0.48, -r * 0.34);
+      g.lineTo(r * 0.48, -r * 0.34);
+      g.moveTo(-r * 0.76, r * 0.22);
+      g.quadraticCurveTo(-r * 0.62, r * 0.84, 0, r * 0.76);
+      g.quadraticCurveTo(r * 0.62, r * 0.84, r * 0.76, r * 0.22);
+    };
+    ankerPfad();
+    g.strokeStyle = KONTUR_F;
+    g.lineWidth = s * 0.145;
     g.stroke();
-    // Raeder
+    ankerPfad();
+    g.strokeStyle = gold;
+    g.lineWidth = s * 0.088;
+    g.stroke();
+    // Anker-Ring oben
+    g.beginPath();
+    g.arc(0, -r * 0.78, r * 0.2, 0, Math.PI * 2);
+    g.strokeStyle = KONTUR_F;
+    g.lineWidth = s * 0.095;
+    g.stroke();
+    g.strokeStyle = gold;
+    g.lineWidth = s * 0.05;
+    g.stroke();
+    // Pfeilspitzen an den Anker-Armen
     for (const sx of [-1, 1]) {
-      g.beginPath();
-      g.arc(sx * r * 0.45, r * 0.62, r * 0.2, 0, Math.PI * 2);
-      g.fillStyle = '#2f2f2f';
+      poly(g, [[sx * r * 0.86, r * 0.06], [sx * r * 0.56, r * 0.26], [sx * r * 0.86, r * 0.42]]);
+      g.fillStyle = gold;
       g.fill();
-      kontur(g, s, 0.025);
+      kontur(g, s, 0.024);
+    }
+    // BONUS-Banner quer ueber den Anker
+    g.fillStyle = '#c41818';
+    g.fillRect(-r * 0.78, r * 0.06, r * 1.56, r * 0.34);
+    g.strokeStyle = '#ffd447';
+    g.lineWidth = s * 0.02;
+    g.strokeRect(-r * 0.78, r * 0.06, r * 1.56, r * 0.34);
+    g.font = '900 ' + (s * 0.125) + 'px Nunito, sans-serif';
+    g.textAlign = 'center';
+    g.textBaseline = 'middle';
+    g.fillStyle = '#fff9d6';
+    g.fillText('BONUS', 0, r * 0.24);
+    funkeln(g, r * 0.52, -r * 0.62, r * 0.26);
+  }
+
+  // 7) Piraten-Schatztruhe
+  function truhe(g, s, offen) {
+    const r = s * 0.37;
+    schatten(g, 0, r * 0.88, r * 0.96, r * 0.24, 0.45);
+    if (offen) {
+      const gl = g.createRadialGradient(0, -r * 0.15, r * 0.1, 0, -r * 0.15, r * 1.38);
+      gl.addColorStop(0, 'rgba(255, 248, 170, 0.98)');
+      gl.addColorStop(0.5, 'rgba(255, 195, 45, 0.48)');
+      gl.addColorStop(1, 'rgba(255, 160, 0, 0)');
+      g.fillStyle = gl;
       g.beginPath();
-      g.arc(sx * r * 0.45, r * 0.62, r * 0.07, 0, Math.PI * 2);
-      g.fillStyle = '#bbb';
+      g.arc(0, -r * 0.15, r * 1.38, 0, Math.PI * 2);
       g.fill();
     }
-    funkeln(g, r * 0.5, -r * 0.65, r * 0.2);
-  }
-  function truhe(g, s, offen) {
-    const r = s * 0.36;
     g.beginPath();
     g.rect(-r, -r * 0.1, r * 2, r * 0.95);
-    g.fillStyle = lg(g, 0, -r * 0.1, 0, r, [[0, '#a8662c'], [1, '#5c3412']]);
+    g.fillStyle = lg(g, 0, -r * 0.1, 0, r, [[0, '#b56c2a'], [0.6, '#7a4416'], [1, '#4a260a']]);
     g.fill();
     kontur(g, s);
     g.save();
     if (offen) {
       g.translate(0, -r * 0.1);
-      g.scale(1, -0.6);
+      g.scale(1, -0.62);
       g.translate(0, r * 0.1);
     }
     g.beginPath();
     g.moveTo(-r, -r * 0.1);
-    g.lineTo(-r, -r * 0.45);
-    g.quadraticCurveTo(0, -r * 0.95, r, -r * 0.45);
+    g.lineTo(-r, -r * 0.46);
+    g.quadraticCurveTo(0, -r * 0.98, r, -r * 0.46);
     g.lineTo(r, -r * 0.1);
     g.closePath();
-    g.fillStyle = lg(g, 0, -r, 0, 0, [[0, '#c27a35'], [1, '#7a4618']]);
+    g.fillStyle = lg(g, 0, -r, 0, 0, [[0, '#d6893e'], [1, '#7a4416']]);
     g.fill();
     kontur(g, s);
     g.restore();
-    g.fillStyle = '#ffcc1f';
-    g.fillRect(-r * 0.12, -r * 0.2, r * 0.24, r * 0.32);
-    g.strokeStyle = '#ffcc1f';
-    g.lineWidth = s * 0.03;
-    g.strokeRect(-r * 0.92, -r * 0.05, r * 1.84, r * 0.82);
+    g.strokeStyle = '#ffd447';
+    g.lineWidth = s * 0.032;
+    g.strokeRect(-r * 0.9, -r * 0.04, r * 1.8, r * 0.8);
+    g.fillStyle = lg(g, -r * 0.15, -r * 0.24, r * 0.15, r * 0.14, [[0, '#fff3a6'], [1, '#d98a00']]);
+    g.fillRect(-r * 0.16, -r * 0.22, r * 0.32, r * 0.36);
+    kontur(g, s, 0.02);
   }
 
   /** Symbol als Bild (fuer drawImage). stufen: Array der Farbstufen. */
@@ -25898,13 +26223,13 @@ const StollenGrafik = (function () {
         });
       }
       case 's':
-        return sprite('s' + sym.f, px, function (g, s) {
-          maulwurf(g, s, sym.f);
+        return sprite('p' + sym.f, px, function (g, s) {
+          papagei(g, s, sym.f);
         });
       case 'w':
         return sprite('w', px, joker);
       case 'u':
-        return sprite('u' + sym.f, px, function (g, s) {
+        return sprite('u' + (sym.f === 4 ? 4 : 0), px, function (g, s) {
           schleifstein(g, s, sym.f);
         });
       case 'x':
@@ -25925,9 +26250,12 @@ const StollenGrafik = (function () {
         return null;
     }
   }
-  return { bild: bild, FARBE: FARBE, edelstein: edelstein, maulwurf: maulwurf, lore: lore, leeren: function () {
-    cache.clear();
-  } };
+  return {
+    bild: bild, FARBE: FARBE, edelstein: edelstein, maulwurf: papagei, papagei: papagei, lore: lore, funkeln: funkeln,
+    leeren: function () {
+      cache.clear();
+    }
+  };
 })();
 // ---- stollen.js
 // ====================================================================================
@@ -25945,10 +26273,16 @@ const SzeneStollen = (function () {
   const S2 = {
     el: null, cv: null, g: null, eIdx: 4, turbo: false, auto: false, jagd: false, schnell: false,
     zustand: L_.neuerZustand(), laeuft: false, plan: [], planIdx: 0, ev: [], evIdx: 0, anim: null,
-    L: null, n: 5, nAnz: 5, stufen: [1, 1, 1, 1], gewinnAnz: 0, rundeGesamt: 0, floats: [], funken: [], wackeln: 0,
-    bonus: null, loren: 0, zeit: 0, hinter: null, hinterSig: '', geo: null, offen: 0, warteKlick: null, dirty: true, einsatzRunde: 100
+    L: null, n: 5, nAnz: 5, stufen: [1, 1, 1, 1], gewinnAnz: 0, gewinnVis: 0, rundeGesamt: 0,
+    floats: [], funken: [], ringe: [], spuren: [], strahlen: [], orbs: [], staub: [],
+    blick: [1, 1, 1, 1], rumWackel: [0, 0, 0, 0], banner: null, wackeln: 0,
+    bonus: null, loren: 0, zeit: 0, hinter: null, hinterSig: '', geo: null, offen: 0, warteKlick: null,
+    dirty: true, einsatzRunde: 100, kette: 0, letzteGroesse: 5
   };
 
+  function spar() {
+    return typeof Stil !== 'undefined' && Stil.sparmodus;
+  }
   function leeresRaster() {
     const g = [];
     for (let r = 0; r < L_.MAX; r++) {
@@ -25964,7 +26298,69 @@ const SzeneStollen = (function () {
     return EINSAETZE[S2.eIdx];
   }
   function tempo() {
-    return S2.schnell ? 3.2 : (S2.turbo ? 2.2 : 1);
+    return S2.schnell ? 3.2 : (S2.turbo ? 2.15 : 1);
+  }
+  function zellMitte(r, c) {
+    const G = S2.geo;
+    if (!G) {
+      return { x: 0, y: 0, cs: 40 };
+    }
+    const cs = G.A / S2.nAnz;
+    return { x: G.x0 + (c + 0.5) * cs, y: G.y0 + (r + 0.5) * cs, cs: cs };
+  }
+
+  // ---------------------------------------------------------------- Partikel, Strahlen, Orbs & Banner
+  function partikel(x, y, farbe, n, kraft, art) {
+    if (spar()) {
+      n = Math.max(2, Math.round(n * 0.35));
+    }
+    if (S2.funken.length > 280) {
+      S2.funken.splice(0, n);
+    }
+    for (let i = 0; i < n; i++) {
+      const a = Math.random() * Math.PI * 2;
+      const v = (0.35 + Math.random() * 0.9) * kraft;
+      S2.funken.push({
+        x: x + (Math.random() - 0.5) * 6,
+        y: y + (Math.random() - 0.5) * 6,
+        vx: Math.cos(a) * v,
+        vy: Math.sin(a) * v - (art === 'muenze' ? kraft * 0.65 : (art === 'blase' ? kraft * 0.5 : kraft * 0.25)),
+        r: art === 'staub' ? 4 + Math.random() * 7 : (art === 'blase' ? 3 + Math.random() * 4.5 : 2.4 + Math.random() * 3.8),
+        f: farbe,
+        t: 0,
+        T: art === 'staub' ? 0.45 + Math.random() * 0.35 : (art === 'feder' ? 0.65 + Math.random() * 0.35 : 0.42 + Math.random() * 0.36),
+        g: art === 'staub' || art === 'blase' ? -45 : (art === 'feder' ? 70 : (art === 'muenze' ? 420 : 250)),
+        art: art || 'splitter',
+        rot: Math.random() * Math.PI * 2,
+        vr: (Math.random() - 0.5) * 10
+      });
+    }
+  }
+  function ring(x, y, farbe, maxR, T, breite) {
+    S2.ringe.push({ x: x, y: y, f: farbe, r: maxR, t: 0, T: T || 0.48, w: breite || 4 });
+  }
+  function spur(r, c, f) {
+    S2.spuren.push({ r: r, c: c, f: f, t: 0, T: 0.45 });
+  }
+  function orb(x, y, farbe) {
+    if (spar() || !S2.geo) {
+      return;
+    }
+    S2.orbs.push({ x0: x, y0: y, x1: 24, y1: 20, f: farbe, t: 0, T: 0.48 });
+  }
+  function zeigeBanner(text, farbe, dauer) {
+    S2.banner = { text: text, f: farbe || '#ffd447', t: 0, T: dauer || 1.1 };
+  }
+  function initStaub() {
+    S2.staub = [];
+    for (let i = 0; i < 24; i++) {
+      S2.staub.push({
+        x: Math.random(), y: Math.random(),
+        r: 1.2 + Math.random() * 2.2,
+        v: 0.015 + Math.random() * 0.032,
+        p: Math.random() * Math.PI * 2
+      });
+    }
   }
 
   // ---------------------------------------------------------------- Runde starten
@@ -25989,14 +26385,12 @@ const SzeneStollen = (function () {
     Kasse.speichern();
     S2.einsatzRunde = e;
     S2.gcF = Waehrung.faktor(SPIEL);
-    S2.zustand.leiste = 0; // Sammelleiste nur innerhalb einer Runde
-    const vorherLeiste = 0;
-    // komplette Runde vorab auslosen
+    S2.zustand.leiste = 0;
     const plan = [];
     let summe = 0;
     if (mod.bonus) {
       const b = L_.bonusStart(L_.neuerZustand(), mod);
-      plan.push({ art: 'bonusStart', rest: b.rest, kauf: true });
+      plan.push({ art: 'bonusStart', rest: b.rest, kauf: true, superB: modus === 'superbonus' });
       summe = bonusPlanen(b, plan, 0);
     } else {
       const z = S2.zustand;
@@ -26004,12 +26398,12 @@ const SzeneStollen = (function () {
       z.stufen = [1, 1, 1, 1];
       z.bonus = false;
       z.modus = modus;
-      z.skal = L_.KONF.skalBasis;
+      z.skal = mod.skal || L_.KONF.skalBasis;
       const f = L_.fahrt(zufall, z);
       plan.push({ art: 'fahrt', f: f });
       summe = f.gewinn;
       if (f.loren >= 3 && !f.gedeckelt) {
-        const b = { groesse: z.groesse, stufen: z.stufen.slice(), leiste: z.leiste, bonus: true, modus: 'normal', rest: 5, loren: 0, skal: 1 };
+        const b = { groesse: z.groesse, stufen: z.stufen.slice(), leiste: z.leiste, bonus: true, modus: 'normal', rest: 5, loren: 0, skal: L_.KONF.skalBonus };
         plan.push({ art: 'bonusStart', rest: 5, kauf: false });
         summe = bonusPlanen(b, plan, summe);
         z.leiste = 0;
@@ -26025,8 +26419,13 @@ const SzeneStollen = (function () {
     S2.laeuft = true;
     S2.schnell = false;
     S2.gewinnAnz = 0;
+    S2.gewinnVis = 0;
+    S2.kette = 0;
     S2.bonus = null;
-    S2.zustandLeiste = vorherLeiste;
+    S2.zustandLeiste = 0;
+    S2.banner = null;
+    S2.blick = [1, -1, 1, -1];
+    S2.rumWackel = [0, 0, 0, 0];
     gewinnZeigen(0);
     klang.spiele('DREH', { gain: 0.6 });
     uiAktualisieren();
@@ -26065,7 +26464,7 @@ const SzeneStollen = (function () {
       if (S2.bonus) {
         S2.bonus.nr = p.bonusNr;
         S2.bonus.rest = p.rest;
-        S2.bonus.loren = 0;
+        S2.bonus.loren = Math.max(0, (p.loren || 0) - p.f.loren);
         seiteAktualisieren();
       } else {
         S2.loren = 0;
@@ -26080,7 +26479,6 @@ const SzeneStollen = (function () {
   }
   function rundeEnde() {
     S2.laeuft = false;
-    // Gewinn gutschreiben (genau der vorab berechnete Betrag)
     if (S2.offen > 0) {
       Kasse.gutschrift(SPIEL, S2.offen);
     }
@@ -26089,6 +26487,7 @@ const SzeneStollen = (function () {
     Kasse.speichern();
     speichern();
     const faktor = S2.rundeGesamt / Math.max(1, S2.einsatzRunde);
+    S2.gewinnAnz = S2.gewinnVis = S2.rundeGesamt;
     gewinnZeigen(S2.rundeGesamt);
     S2.bonus = null;
     S2.zustandLeiste = undefined;
@@ -26104,20 +26503,28 @@ const SzeneStollen = (function () {
         if (S2.auto && !S2.laeuft && szene === sz && !qs(S2.el, '.ss-overlay').classList.contains('an')) {
           drehen();
         }
-      }, faktor >= 20 ? 3200 : 500);
+      }, faktor >= 20 ? 3200 : 480);
     }
   }
 
   // ---------------------------------------------------------------- Ereignisse abspielen
   function naechstesEreignis() {
     if (S2.evIdx >= S2.ev.length) {
+      if (S2.aktFahrt && S2.aktFahrt.extra > 0 && S2.bonus) {
+        zeigeBanner('+' + S2.aktFahrt.extra + ' FREE DROPS!', '#ffe14a', 1.4);
+        klang.spiele('FREISPIELE', { gain: 0.65 });
+      }
       S2.anim = null;
       naechsterPlanschritt();
       return;
     }
     const e = S2.ev[S2.evIdx++];
-    const T = { start: 0.5, zug: 0.2, stufe: 0.75, topf: 0.6, lore: 0.65, dynamit: 1.15, truhen: 1.2, fall: 0.34, ende: 0.05 }[e.e] || 0.2;
-    S2.anim = { e: e, t: 0, T: T };
+    const zugT = Math.max(0.125, 0.195 - Math.min(0.06, S2.kette * 0.004));
+    const T = {
+      start: 0.48, zug: zugT, tausch: 0.46, stufe: 0.72, topf: 0.64,
+      lore: 0.62, dynamit: 1.22, truhen: 1.15, fall: 0.36, ende: 0.05
+    }[e.e] || 0.2;
+    S2.anim = { e: e, t: 0, T: T, boom: false, offen: false };
     beginne(e);
   }
   function beginne(e) {
@@ -26127,65 +26534,150 @@ const SzeneStollen = (function () {
         S2.L = L_.kopie(e.g);
         S2.n = S2.nAnz = e.n;
         S2.stufen = e.stufen.slice();
+        S2.kette = 0;
         S2.fallOffset = {};
         for (let r = 0; r < e.n; r++) {
           for (let c = 0; c < e.n; c++) {
-            S2.fallOffset[r * 8 + c] = { von: -(e.n + 1) - (e.n - r) * 0.15 - c * 0.12, neu: true };
+            S2.fallOffset[r * 8 + c] = { von: -(e.n + 1.2) - (e.n - r) * 0.14 - c * 0.1, neu: true };
           }
         }
         klang.spiele('WALZE_LAUF', { gain: 0.4 });
         seiteAktualisieren();
         break;
       case 'zug': {
+        S2.kette = (S2.kette || 0) + 1;
+        if (e.nach[1] !== e.von[1]) {
+          S2.blick[e.f] = e.nach[1] > e.von[1] ? 1 : -1;
+        }
+        spur(e.von[0], e.von[1], e.f);
+        const mVon = zellMitte(e.von[0], e.von[1]);
+        const mNach = zellMitte(e.nach[0], e.nach[1]);
+        const F = StollenGrafik.FARBE[e.f];
+        partikel(mVon.x, mVon.y, F.hell, 2, mVon.cs * 1.1, 'feder');
+        if (e.sym.t === 'g') {
+          partikel(mNach.x, mNach.y, F.hell, 9, mNach.cs * 2.1, 'splitter');
+          partikel(mNach.x, mNach.y, '#ffffff', 3, mNach.cs * 1.6, 'stern');
+          orb(mNach.x, mNach.y, F.hell);
+        } else if (e.sym.t === 'w') {
+          partikel(mNach.x, mNach.y, '#ffd447', 12, mNach.cs * 2.4, 'stern');
+          orb(mNach.x, mNach.y, '#ffd447');
+        } else if (e.sym.t === 'c') {
+          partikel(mNach.x, mNach.y, '#ffd447', e.sym.v >= 20 ? 18 : 10, mNach.cs * 2.7, 'muenze');
+          ring(mNach.x, mNach.y, '#ffd447', mNach.cs * 1.35, 0.45, 4);
+        }
         if (e.wert > 0) {
           const cent = e.wert * einsatzC * (S2.gcF || 1);
           S2.gewinnAnz += cent;
-          S2.floats.push({ r: e.nach[0], c: e.nach[1], text: '+' + euroKurzOhne(cent), t: 0, gross: e.wert * einsatzC >= einsatzC * 2 });
-          gewinnZeigen(S2.gewinnAnz);
+          S2.floats.push({
+            r: e.nach[0], c: e.nach[1],
+            text: '+' + euroKurzOhne(cent),
+            t: 0,
+            gross: e.wert >= 2,
+            mega: e.wert >= 15
+          });
         }
         const ton = e.sym.t === 'c' ? 'MUENZE' : (e.sym.t === 'g' || e.sym.t === 'w' ? 'SAMMELN' : 'GRABEN');
-        klang.spiele(ton, { gain: 0.5, rate: 0.9 + Math.min(0.7, (S2.kette = (S2.kette || 0) + 1) * 0.025) });
+        klang.spiele(ton, { gain: 0.5, rate: 0.9 + Math.min(0.75, S2.kette * 0.028) });
         if (e.leiste !== undefined) {
           S2.zustandLeiste = e.leiste;
         }
         break;
       }
-      case 'stufe':
+      case 'tausch': {
+        const m1 = zellMitte(e.p1[0], e.p1[1]);
+        const m2 = zellMitte(e.p2[0], e.p2[1]);
+        const mx = (m1.x + m2.x) / 2, my = (m1.y + m2.y) / 2;
+        partikel(mx, my, StollenGrafik.FARBE[e.f1].hell, 7, m1.cs * 2.0, 'feder');
+        partikel(mx, my, StollenGrafik.FARBE[e.f2].hell, 7, m1.cs * 2.0, 'feder');
+        partikel(mx, my, '#fff4cc', 8, m1.cs * 1.8, 'staub');
+        ring(mx, my, '#ffd447', m1.cs * 1.35, 0.44, 4);
+        zeigeBanner('PLATZWECHSEL!', '#ffe066', 0.95);
+        klang.spiele('TAUSCH', { gain: 0.72 });
+        break;
+      }
+      case 'stufe': {
         S2.stufen = e.stufen.slice();
         S2.stufeBlitz = { f: e.f, t: 0 };
+        const src = e.bei ? zellMitte(e.bei[0], e.bei[1]) : (S2.geo ? { x: S2.geo.x0 + S2.geo.A / 2, y: S2.geo.y0 + S2.geo.A / 2, cs: 40 } : null);
+        const farbe = e.f === 4 ? '#ffd447' : StollenGrafik.FARBE[e.f].hell;
+        if (src) {
+          ring(src.x, src.y, farbe, src.cs * 3.5, 0.6, 6);
+          for (let r = 0; r < S2.n; r++) {
+            for (let c = 0; c < S2.n; c++) {
+              const s = S2.L && S2.L[r][c];
+              if (s && s.t === 'g' && (e.f === 4 || s.f === e.f)) {
+                const m = zellMitte(r, c);
+                partikel(m.x, m.y, StollenGrafik.FARBE[s.f].glanz, 4, m.cs * 1.5, 'stern');
+                if (!spar()) {
+                  S2.strahlen.push({ x0: src.x, y0: src.y, x1: m.x, y1: m.y, f: StollenGrafik.FARBE[s.f].hell, t: 0, T: 0.45 });
+                }
+              }
+            }
+          }
+        }
+        const plus = e.plus || 1;
+        zeigeBanner(e.f === 4 ? ('ALLE +' + plus + ' STUFE' + (plus > 1 ? 'N!' : '!')) : ('+' + plus + ' STUFE' + (plus > 1 ? 'N!' : '!')), farbe, 1.05);
         klang.spiele('STUFE' + Math.min(10, 2 + Math.max.apply(null, e.stufen) * 2), { gain: 0.8 });
         seiteAktualisieren();
         break;
-      case 'topf':
+      }
+      case 'topf': {
+        // Rum-Trank / Rum-Fass Animation!
+        S2.rumWackel[e.f] = 1.0;
+        const m = zellMitte(e.bei[0], e.bei[1]);
+        const F = StollenGrafik.FARBE[e.f];
+        ring(m.x, m.y, '#ffb824', m.cs * 2.2, 0.56, 7);
+        ring(m.x, m.y, F.mitte, m.cs * 1.8, 0.48, 5);
+        partikel(m.x, m.y, '#ffd466', 14, m.cs * 2.1, 'blase');
+        partikel(m.x, m.y, F.hell, 12, m.cs * 2.4, 'splitter');
         e.zellen.forEach(function (p) {
           const s = S2.L[p[0]][p[1]];
           if (s && s.t === 'g') {
             s.f = e.f;
           }
+          const zm = zellMitte(p[0], p[1]);
+          partikel(zm.x, zm.y, F.mitte, 5, m.cs * 1.4, 'blase');
         });
-        klang.spiele('EXPANDIEREN', { gain: 0.5, rate: 1.3 });
+        if (e.extra && e.extra.length) {
+          e.extra.forEach(function (ex) {
+            S2.L[ex.bei[0]][ex.bei[1]] = Object.assign({}, ex.sym);
+            const zm = zellMitte(ex.bei[0], ex.bei[1]);
+            partikel(zm.x, zm.y, '#ffd447', 10, m.cs * 2.0, 'stern');
+          });
+        }
+        zeigeBanner('RUM! PROST!', '#ffb824', 0.95);
+        klang.spiele('EXPANDIEREN', { gain: 0.58, rate: 1.2 });
         break;
-      case 'lore':
+      }
+      case 'lore': {
         if (S2.bonus) {
           S2.bonus.loren = (S2.bonus.loren || 0) + 1;
         } else {
           S2.loren = e.zahl;
         }
+        const tr = S2.ev[S2.evIdx - 2];
+        if (tr && tr.e === 'zug') {
+          const m = zellMitte(tr.nach[0], tr.nach[1]);
+          partikel(m.x, m.y, '#ffd447', 14, m.cs * 2.2, 'stern');
+          ring(m.x, m.y, '#ffd447', m.cs * 1.4, 0.45, 4);
+        }
         klang.spiele('BUCH', { gain: 0.8 });
         break;
+      }
       case 'dynamit':
         klang.spiele('BOMBE');
-        S2.wackeln = 0.6;
+        S2.wackeln = 0.92;
         try {
           if (navigator.vibrate) {
-            navigator.vibrate(80);
+            navigator.vibrate([40, 30, 80]);
           }
         } catch (er) {
           // egal
         }
         break;
       case 'truhen':
-        klang.spiele('FREISPIELE', { gain: 0.5, rate: 1.2 });
+        klang.spiele('TRUHE', { gain: 0.72 });
+        zeigeBanner('3 SCHATZTRUHEN!', '#ffd447', 1.15);
         break;
       case 'fall':
         S2.L = L_.kopie(e.g);
@@ -26209,11 +26701,18 @@ const SzeneStollen = (function () {
         S2.L[e.von[0]][e.von[1]] = null;
         S2.L[e.nach[0]][e.nach[1]] = { t: 's', f: e.f };
         break;
+      case 'tausch':
+        S2.L[e.p1[0]][e.p1[1]] = { t: 's', f: e.f2 };
+        S2.L[e.p2[0]][e.p2[1]] = { t: 's', f: e.f1 };
+        break;
       case 'dynamit':
         e.weg.forEach(function (p) {
           S2.L[p[0]][p[1]] = null;
         });
         S2.n = S2.nAnz = e.n;
+        if (e.n > e.alt) {
+          zeigeBanner('DECK ' + e.n + ' × ' + e.n + '!', '#ffae33', 1.15);
+        }
         break;
       case 'truhen':
         e.zellen.forEach(function (z) {
@@ -26254,9 +26753,13 @@ const SzeneStollen = (function () {
   }
   function bonusIntro(p) {
     klang.spiele('FREISPIELE');
-    overlay('<div class="ss-ov-box bonus"><div class="ss-ov-t">SCHATZSUCHE!</div><div class="ss-ov-z">' + p.rest + ' Freifahrten</div>'
-      + '<div class="ss-ov-u">Alle vier Maulwürfe graben mit. Stollengröße, Edelstein-Stufen und Sammelleiste bleiben die ganze Schatzsuche erhalten.</div>'
-      + '<button class="ss-ov-k">LOS GEHT’S</button></div>', S2.auto || S2.schnell ? 2600 : 0, function () {
+    const titel = p.superB ? 'SUPER-BONUS!' : 'FREE DROPS!';
+    const info = p.superB
+      ? 'Maximales Schiffsdeck (8 × 8) und alle Edelsteine starten auf Stufe 3! Deckgröße, Stufen und Truhen-Leiste bleiben erhalten.'
+      : 'Die Sonne geht unter – Deckgröße, Edelstein-Stufen und Truhen-Leiste bleiben während aller Free Drops erhalten!';
+    overlay('<div class="ss-ov-box bonus"><div class="ss-ov-t">' + titel + '</div><div class="ss-ov-z">' + p.rest + ' Free Drops</div>'
+      + '<div class="ss-ov-u">' + info + '</div>'
+      + '<button class="ss-ov-k">AHOI!</button></div>', S2.auto || S2.schnell ? 2500 : 0, function () {
       S2.warteKlick = null;
       seiteAktualisieren();
       naechsterPlanschritt();
@@ -26266,8 +26769,8 @@ const SzeneStollen = (function () {
     const b = S2.bonus;
     const gewinn = S2.gewinnAnz - (b ? b.startGewinn : 0);
     klang.spiele('JACKPOT', { gain: 0.6 });
-    overlay('<div class="ss-ov-box bonus"><div class="ss-ov-t">SCHATZ GEBORGEN</div><div class="ss-ov-z">' + euro(Math.round(gewinn)) + '</div>'
-      + '<div class="ss-ov-u">' + (b ? b.nr : 0) + ' Freifahrten</div><button class="ss-ov-k">WEITER</button></div>', S2.auto || S2.schnell ? 2600 : 0, function () {
+    overlay('<div class="ss-ov-box bonus"><div class="ss-ov-t">BEUTE AN BORD!</div><div class="ss-ov-z">' + euro(Math.round(gewinn)) + '</div>'
+      + '<div class="ss-ov-u">' + (b ? b.nr : 0) + ' Free Drops abgeschlossen</div><button class="ss-ov-k">WEITER</button></div>', S2.auto || S2.schnell ? 2500 : 0, function () {
       S2.warteKlick = null;
       S2.bonus = null;
       S2.stufen = [1, 1, 1, 1];
@@ -26276,9 +26779,12 @@ const SzeneStollen = (function () {
     });
   }
   function grosserGewinn(cent, faktor) {
-    const titel = faktor >= 500 ? 'EPISCHER GEWINN' : (faktor >= 100 ? 'MEGA GEWINN' : 'GROSSER GEWINN');
+    const titel = faktor >= 1000 ? 'MAXIMALER SCHATZ' : (faktor >= 500 ? 'EPISCHER GEWINN' : (faktor >= 100 ? 'MEGA GEWINN' : 'GROSSER GEWINN'));
     klang.spiele('GEWINN_GROSS');
-    overlay('<div class="ss-ov-box gross"><div class="ss-ov-t">' + titel + '</div><div class="ss-ov-z ss-zaehler">0,00 €</div><div class="ss-ov-u">' + komma(faktor, 1) + ' × Einsatz</div></div>', 3000, function () {
+    if (S2.geo) {
+      partikel(S2.geo.w / 2, S2.geo.h * 0.45, '#ffd447', 44, S2.geo.A * 0.78, 'muenze');
+    }
+    overlay('<div class="ss-ov-box gross"><div class="ss-ov-t">' + titel + '</div><div class="ss-ov-z ss-zaehler">0,00 €</div><div class="ss-ov-u">' + komma(faktor, 1) + ' × Einsatz</div></div>', 3200, function () {
       S2.warteKlick = null;
     });
     const z = qs(S2.el, '.ss-zaehler');
@@ -26295,16 +26801,16 @@ const SzeneStollen = (function () {
     requestAnimationFrame(lauf);
   }
 
-  // ---------------------------------------------------------------- Zeichnen
+  // ---------------------------------------------------------------- Karibik-Piraten-Hintergrund & Zeichnen
   function euroKurzOhne(cent) {
     return euro(Math.round(cent)).replace(' €', '');
   }
   function geometrie(w, h) {
-    const A = Math.min(w, h) - 16;
-    return { w: w, h: h, A: A, x0: (w - A) / 2, y0: (h - A) / 2 };
+    const A = Math.min(w, h) - 20;
+    return { w: w, h: h, A: Math.max(120, A), x0: (w - Math.max(120, A)) / 2, y0: (h - Math.max(120, A)) / 2 };
   }
-  function hintergrund(w, h, d) {
-    const sig = w + 'x' + h + '@' + d;
+  function hintergrund(w, h, d, imBonus) {
+    const sig = w + 'x' + h + '@' + d + (imBonus ? 'B' : '');
     if (S2.hinterSig === sig && S2.hinter) {
       return S2.hinter;
     }
@@ -26313,36 +26819,128 @@ const SzeneStollen = (function () {
     c.height = Math.round(h * d);
     const g = c.getContext('2d');
     g.scale(d, d);
-    const gr = g.createRadialGradient(w / 2, h * 0.4, 10, w / 2, h / 2, Math.max(w, h) * 0.8);
-    gr.addColorStop(0, '#4a3322');
-    gr.addColorStop(1, '#120b06');
-    g.fillStyle = gr;
-    g.fillRect(0, 0, w, h);
-    // Gestein
-    let seed = 7;
-    const rnd = function () {
-      seed = (seed * 16807) % 2147483647;
-      return seed / 2147483647;
-    };
-    for (let i = 0; i < 70; i++) {
-      const x = rnd() * w, y = rnd() * h, r = 8 + rnd() * 34;
-      g.fillStyle = 'rgba(' + (60 + rnd() * 30 | 0) + ',' + (42 + rnd() * 20 | 0) + ',' + (28 + rnd() * 14 | 0) + ',0.55)';
-      g.beginPath();
-      g.ellipse(x, y, r, r * (0.5 + rnd() * 0.4), rnd() * 3, 0, Math.PI * 2);
-      g.fill();
+    const hor = h * 0.52;
+    // Himmel (Karibik-Tag vs. Piraten-Sonnenuntergang im Bonus)
+    const hg = g.createLinearGradient(0, 0, 0, hor);
+    if (imBonus) {
+      hg.addColorStop(0, '#2a1238');
+      hg.addColorStop(0.5, '#9e3322');
+      hg.addColorStop(1, '#ff9c2a');
+    } else {
+      hg.addColorStop(0, '#1477b8');
+      hg.addColorStop(0.55, '#48b7e6');
+      hg.addColorStop(1, '#b5ecfa');
     }
-    // Stuetzbalken
+    g.fillStyle = hg;
+    g.fillRect(0, 0, w, hor);
+    // Sonne am Horizont
+    const sunY = imBonus ? hor * 0.86 : hor * 0.32;
+    const sunX = imBonus ? w * 0.5 : w * 0.18;
+    const sg = g.createRadialGradient(sunX, sunY, 6, sunX, sunY, h * 0.28);
+    sg.addColorStop(0, imBonus ? 'rgba(255, 240, 150, 0.95)' : 'rgba(255, 255, 225, 0.85)');
+    sg.addColorStop(0.35, imBonus ? 'rgba(255, 145, 30, 0.45)' : 'rgba(255, 245, 180, 0.25)');
+    sg.addColorStop(1, 'rgba(255, 180, 60, 0)');
+    g.fillStyle = sg;
+    g.beginPath();
+    g.arc(sunX, sunY, h * 0.28, 0, Math.PI * 2);
+    g.fill();
+    // Tropische Wolken
+    g.fillStyle = imBonus ? 'rgba(255, 175, 105, 0.22)' : 'rgba(255, 255, 255, 0.38)';
+    [[0.18, 0.16, 48], [0.82, 0.2, 54], [0.5, 0.11, 38]].forEach(function (cl) {
+      g.beginPath();
+      g.ellipse(w * cl[0], h * cl[1], cl[2], cl[2] * 0.34, 0, 0, Math.PI * 2);
+      g.ellipse(w * cl[0] + cl[2] * 0.45, h * cl[1] + 5, cl[2] * 0.65, cl[2] * 0.25, 0, 0, Math.PI * 2);
+      g.fill();
+    });
+    // Ferne Karibik-Insel mit Palmen-Silhouetten
+    g.fillStyle = imBonus ? '#261117' : '#18635a';
+    g.beginPath();
+    g.moveTo(0, hor);
+    g.quadraticCurveTo(w * 0.12, hor - 28, w * 0.26, hor);
+    g.moveTo(w * 0.72, hor);
+    g.quadraticCurveTo(w * 0.86, hor - 36, w, hor);
+    g.fill();
+    // Meer
+    const mg = g.createLinearGradient(0, hor, 0, h);
+    if (imBonus) {
+      mg.addColorStop(0, '#a84418');
+      mg.addColorStop(0.35, '#2b1929');
+      mg.addColorStop(1, '#0d0c18');
+    } else {
+      mg.addColorStop(0, '#1ab8c4');
+      mg.addColorStop(0.45, '#0c6b8c');
+      mg.addColorStop(1, '#062c44');
+    }
+    g.fillStyle = mg;
+    g.fillRect(0, hor, w, h - hor);
+    // Schiffsmasten, Segel & Takelage links & rechts neben dem Deck
     const G = geometrie(w, h);
-    const bw = Math.max(14, G.A * 0.05);
-    g.fillStyle = '#6b4423';
-    g.fillRect(G.x0 - bw - 6, 0, bw, h);
-    g.fillRect(G.x0 + G.A + 6, 0, bw, h);
-    g.fillStyle = 'rgba(0,0,0,0.25)';
-    g.fillRect(G.x0 - bw - 6 + bw * 0.65, 0, bw * 0.35, h);
-    g.fillRect(G.x0 + G.A + 6 + bw * 0.65, 0, bw * 0.35, h);
+    const mw = Math.max(15, G.A * 0.052);
+    const mastX = [G.x0 - mw - 9, G.x0 + G.A + 9];
+    // Geblaehte Segel im Hintergrund
+    g.fillStyle = imBonus ? 'rgba(210, 155, 110, 0.26)' : 'rgba(255, 248, 232, 0.36)';
+    g.beginPath();
+    g.moveTo(mastX[0] + mw * 0.5, 0);
+    g.quadraticCurveTo(mastX[0] - 42, h * 0.32, mastX[0] + mw * 0.5, h * 0.62);
+    g.fill();
+    g.beginPath();
+    g.moveTo(mastX[1] + mw * 0.5, 0);
+    g.quadraticCurveTo(mastX[1] + mw + 42, h * 0.32, mastX[1] + mw * 0.5, h * 0.62);
+    g.fill();
+    // Takelage-Seile
+    g.strokeStyle = 'rgba(40, 22, 10, 0.55)';
+    g.lineWidth = 2;
+    g.beginPath();
+    g.moveTo(mastX[0] + mw * 0.5, 0);
+    g.lineTo(0, h * 0.85);
+    g.moveTo(mastX[1] + mw * 0.5, 0);
+    g.lineTo(w, h * 0.85);
+    g.stroke();
+    // Holz-Masten
+    mastX.forEach(function (mx) {
+      const bg = g.createLinearGradient(mx, 0, mx + mw, 0);
+      bg.addColorStop(0, '#8f592c');
+      bg.addColorStop(0.55, '#613918');
+      bg.addColorStop(1, '#2d1808');
+      g.fillStyle = bg;
+      g.fillRect(mx, 0, mw, h);
+      g.strokeStyle = '#1d0f05';
+      g.lineWidth = 2;
+      g.strokeRect(mx, -2, mw, h + 4);
+      // Taue um den Mast gewickelt
+      g.fillStyle = '#c49658';
+      g.fillRect(mx - 2, h * 0.16, mw + 4, 8);
+      g.fillRect(mx - 2, h * 0.78, mw + 4, 8);
+    });
     S2.hinter = c;
     S2.hinterSig = sig;
     return c;
+  }
+  function zeichneLaterne(g, x, y, puls) {
+    const gr = g.createRadialGradient(x, y, 2, x, y, 74 + puls * 12);
+    gr.addColorStop(0, 'rgba(255, 232, 130, 0.48)');
+    gr.addColorStop(0.45, 'rgba(255, 165, 40, 0.18)');
+    gr.addColorStop(1, 'rgba(255, 140, 0, 0)');
+    g.fillStyle = gr;
+    g.beginPath();
+    g.arc(x, y, 74 + puls * 12, 0, Math.PI * 2);
+    g.fill();
+    g.fillStyle = '#2e2218';
+    g.fillRect(x - 6, y - 10, 12, 4);
+    g.fillRect(x - 6, y + 6, 12, 4);
+    g.fillStyle = '#fff3b0';
+    g.fillRect(x - 4.5, y - 6, 9, 12);
+  }
+  function bounceEase(u) {
+    if (u >= 1) {
+      return 1;
+    }
+    if (u < 0.78) {
+      const t = u / 0.78;
+      return t * t;
+    }
+    const t = (u - 0.78) / 0.22;
+    return 1 - Math.sin(t * Math.PI) * 0.085;
   }
   function zeichnen(dt) {
     const gr = canvasAnpassen(S2.cv);
@@ -26352,40 +26950,120 @@ const SzeneStollen = (function () {
       S2.geo = geometrie(w, h);
     }
     const G = S2.geo;
+    const imBonus = !!S2.bonus;
     g.setTransform(gr.d, 0, 0, gr.d, 0, 0);
-    g.drawImage(hintergrund(w, h, gr.d), 0, 0, w, h);
-    // Wackeln
+    g.drawImage(hintergrund(w, h, gr.d, imBonus), 0, 0, w, h);
+
+    // Lebendige Karibik-Wellenlinien auf dem Meer
+    if (!spar()) {
+      g.strokeStyle = imBonus ? 'rgba(255, 195, 110, 0.18)' : 'rgba(220, 252, 255, 0.24)';
+      g.lineWidth = 2;
+      for (let i = 0; i < 5; i++) {
+        const wy2 = h * (0.56 + i * 0.09);
+        const shift = Math.sin(S2.zeit * 1.4 + i * 1.7) * 18;
+        g.beginPath();
+        g.moveTo(10 + shift, wy2);
+        g.quadraticCurveTo(w * 0.25 + shift, wy2 - 4, w * 0.45 + shift, wy2);
+        g.moveTo(w * 0.6 - shift, wy2 + 6);
+        g.quadraticCurveTo(w * 0.8 - shift, wy2 + 2, w - 10 - shift, wy2 + 6);
+        g.stroke();
+      }
+    }
+
+    // Schiffslaternen an den Masten
+    const puls = Math.sin(S2.zeit * 5.2) * 0.5 + Math.sin(S2.zeit * 11.7) * 0.25;
+    const mw = Math.max(15, G.A * 0.052);
+    if (G.x0 - mw > 6) {
+      zeichneLaterne(g, G.x0 - mw * 0.5 - 9, G.y0 + G.A * 0.22, puls);
+      zeichneLaterne(g, G.x0 + G.A + mw * 0.5 + 9, G.y0 + G.A * 0.22, -puls);
+    }
+    // Schwebende Goldfunken im Bonus
+    if (!spar() && imBonus) {
+      for (let i = 0; i < S2.staub.length; i++) {
+        const st = S2.staub[i];
+        const sx = (st.x + Math.sin(S2.zeit * 0.8 + st.p) * 0.018) * w;
+        const sy = st.y * h;
+        g.fillStyle = 'rgba(255, 224, 105, 0.55)';
+        g.beginPath();
+        g.arc(sx, sy, st.r * 1.2, 0, Math.PI * 2);
+        g.fill();
+      }
+    }
+
+    // Kamerawackeln
     let wx = 0, wy = 0;
     if (S2.wackeln > 0) {
-      wx = (Math.random() - 0.5) * 14 * S2.wackeln;
-      wy = (Math.random() - 0.5) * 14 * S2.wackeln;
+      const k = S2.wackeln * S2.wackeln;
+      wx = (Math.random() - 0.5) * 18 * k;
+      wy = (Math.random() - 0.5) * 18 * k;
     }
     g.save();
     g.translate(wx, wy);
     const n = S2.nAnz;
     const cs = G.A / n;
-    // Rahmen
-    g.fillStyle = '#3a2513';
-    rrPfad(g, G.x0 - 8, G.y0 - 8, G.A + 16, G.A + 16, 14);
+
+    // Piratenschiff-Deck Rahmen mit Eichenholz & Goldtau
+    g.save();
+    g.shadowColor = imBonus ? 'rgba(255, 195, 40, 0.58)' : 'rgba(0, 12, 24, 0.6)';
+    g.shadowBlur = imBonus ? 28 : 20;
+    g.fillStyle = '#4a2c14';
+    rrPfad(g, G.x0 - 10, G.y0 - 10, G.A + 20, G.A + 20, 16);
     g.fill();
-    g.strokeStyle = '#c99a4a';
-    g.lineWidth = 3;
+    g.restore();
+    const rg = g.createLinearGradient(G.x0, G.y0 - 10, G.x0, G.y0 + G.A + 10);
+    rg.addColorStop(0, imBonus ? '#ffe780' : '#e0b058');
+    rg.addColorStop(0.5, imBonus ? '#f29c11' : '#9c6629');
+    rg.addColorStop(1, imBonus ? '#ffd24d' : '#d6a046');
+    g.strokeStyle = rg;
+    g.lineWidth = 4;
+    rrPfad(g, G.x0 - 8, G.y0 - 8, G.A + 16, G.A + 16, 15);
     g.stroke();
-    // Zellen
+    // Messing-Eckbolzen
+    const ecken = [[G.x0 - 4, G.y0 - 4], [G.x0 + G.A + 4, G.y0 - 4], [G.x0 - 4, G.y0 + G.A + 4], [G.x0 + G.A + 4, G.y0 + G.A + 4]];
+    g.fillStyle = '#ffe599';
+    ecken.forEach(function (ec) {
+      g.beginPath();
+      g.arc(ec[0], ec[1], 2.8, 0, Math.PI * 2);
+      g.fill();
+    });
+
+    // Schiffsdeck-Planken-Felder
     for (let r = 0; r < Math.ceil(n); r++) {
       for (let c = 0; c < Math.ceil(n); c++) {
         const x = G.x0 + c * cs, y = G.y0 + r * cs;
-        if (x + cs > G.x0 + G.A + 1 || y + cs > G.y0 + G.A + 1) {
+        if (x + cs > G.x0 + G.A + 1.5 || y + cs > G.y0 + G.A + 1.5) {
           continue;
         }
-        g.fillStyle = (r + c) % 2 ? '#2a1a0e' : '#251709';
-        rrPfad(g, x + 1.5, y + 1.5, cs - 3, cs - 3, cs * 0.12);
+        g.fillStyle = (r + c) % 2 ? '#342010' : '#2b190c';
+        rrPfad(g, x + 1.8, y + 1.8, cs - 3.6, cs - 3.6, cs * 0.13);
         g.fill();
+        g.strokeStyle = 'rgba(255, 214, 145, 0.06)';
+        g.lineWidth = 1;
+        g.stroke();
       }
     }
+
+    // Leuchtende Deck-Spuren hinter den Papageien
+    for (let i = 0; i < S2.spuren.length; i++) {
+      const sp = S2.spuren[i];
+      const a = Math.max(0, 1 - sp.t / sp.T);
+      const F = StollenGrafik.FARBE[sp.f];
+      const x = G.x0 + sp.c * cs, y = G.y0 + sp.r * cs;
+      g.save();
+      g.globalAlpha = a * 0.36;
+      g.fillStyle = F.mitte;
+      rrPfad(g, x + 3, y + 3, cs - 6, cs - 6, cs * 0.12);
+      g.fill();
+      g.restore();
+    }
+
     const A = S2.anim;
     const u = A ? Math.min(1, A.t / A.T) : 1;
-    // Symbole
+
+    // Symbole auf dem Deck (mit Clip beim Nachfallen)
+    g.save();
+    rrPfad(g, G.x0 - 2, G.y0 - 2, G.A + 4, G.A + 4, 12);
+    g.clip();
     if (S2.L) {
       for (let r = 0; r < S2.n; r++) {
         for (let c = 0; c < S2.n; c++) {
@@ -26393,55 +27071,138 @@ const SzeneStollen = (function () {
           if (!s) {
             continue;
           }
-          let ox = 0, oy = 0, sk = 1, al = 1;
+          let ox = 0, oy = 0, skX = 1, skY = 1, al = 1, rot = 0, flipX = 1;
+          if (s.t === 's') {
+            flipX = S2.blick[s.f] || 1;
+            if (S2.rumWackel[s.f] > 0) {
+              rot += Math.sin(S2.zeit * 24) * 0.28 * S2.rumWackel[s.f];
+            }
+          }
           if (A && A.e.e === 'zug') {
             if (A.e.von[0] === r && A.e.von[1] === c) {
-              continue; // laufender Maulwurf wird extra gezeichnet
+              continue;
             }
             if (A.e.nach[0] === r && A.e.nach[1] === c) {
-              sk = 1 - u * 0.9;
-              al = 1 - u;
+              const p = Math.max(0, 1 - u * 1.15);
+              skX = skY = p * (1 + Math.sin(u * Math.PI) * 0.25);
+              al = p;
+            }
+          }
+          if (A && A.e.e === 'tausch') {
+            if ((A.e.p1[0] === r && A.e.p1[1] === c) || (A.e.p2[0] === r && A.e.p2[1] === c)) {
+              continue;
             }
           }
           if (S2.fallOffset && S2.fallOffset[r * 8 + c] && A && (A.e.e === 'fall' || A.e.e === 'start')) {
             const fo = S2.fallOffset[r * 8 + c];
             let uu = u;
             if (A.e.e === 'start') {
-              uu = clamp01((A.t / A.T) * 1.4 - (c * 0.06 + (S2.n - r) * 0.03));
+              uu = clamp01((A.t / A.T) * 1.42 - (c * 0.055 + (S2.n - r) * 0.028));
             }
-            const e2 = uu * uu;
-            oy = fo.von * (1 - e2) * cs;
+            const eb = bounceEase(uu);
+            oy = fo.von * (1 - eb) * cs;
             if (s.t === 's' && A.e.e === 'start') {
-              oy = 0;
-              sk = 0.3 + 0.7 * clamp01(u * 1.5);
+              oy = -(1 - eb) * cs * 1.8;
+              const sp = clamp01(u * 1.55);
+              skX = skY = 0.35 + 0.65 * bounceEase(sp);
             }
           }
-          if (A && A.e.e === 'dynamit' && u > 0.35 && s.t === 'g') {
-            sk = Math.max(0, 1 - (u - 0.35) * 4);
+          if (A && A.e.e === 'dynamit') {
+            if (A.e.bei[0] === r && A.e.bei[1] === c && u < 0.35) {
+              const z = u / 0.35;
+              skX = 1 + z * 0.3 + Math.sin(z * 42) * 0.09;
+              skY = 1 + z * 0.3 - Math.sin(z * 42) * 0.09;
+            } else if (u > 0.32 && s.t === 'g') {
+              const p = Math.max(0, 1 - (u - 0.32) * 3.8);
+              skX = skY = p;
+              al = p;
+              rot = (1 - p) * ((r + c) % 2 ? 1.6 : -1.6);
+            }
+          }
+          if (A && A.e.e === 'topf') {
+            const hit = A.e.zellen.some(function (z) {
+              return z[0] === r && z[1] === c;
+            });
+            if (hit) {
+              const pop = 1 + Math.sin(Math.min(1, u * 1.6) * Math.PI) * 0.32;
+              skX = skY = pop;
+              rot = Math.sin(u * Math.PI * 2) * 0.2;
+            }
           }
           if (A && A.e.e === 'truhen') {
-            const ist = A.e.zellen.some(function (z) {
-              return z.bei[0] === r && z.bei[1] === c;
+            const z = A.e.zellen.find(function (zz) {
+              return zz.bei[0] === r && zz.bei[1] === c;
             });
-            if (ist) {
-              const bild = StollenGrafik.bild({ t: 'truhe', offen: u > 0.5 }, cs * 0.92 * aufl(), null);
-              const ts = cs * (u < 0.25 ? u / 0.25 : 1) * 0.92;
-              g.drawImage(bild, G.x0 + c * cs + (cs - ts) / 2, G.y0 + r * cs + (cs - ts) / 2 - (u > 0.5 ? cs * 0.08 : 0), ts, ts);
-              if (u > 0.6) {
-                const z = A.e.zellen.filter(function (zz) {
-                  return zz.bei[0] === r && zz.bei[1] === c;
-                })[0];
+            if (z) {
+              const cx = G.x0 + (c + 0.5) * cs, cy = G.y0 + (r + 0.5) * cs;
+              const offen = u > 0.48;
+              if (offen) {
+                const strahlA = Math.sin(clamp01((u - 0.48) / 0.52) * Math.PI) * 0.72;
+                g.save();
+                g.translate(cx, cy);
+                g.rotate(S2.zeit * 2.4);
+                g.fillStyle = 'rgba(255, 232, 110, ' + strahlA + ')';
+                for (let k = 0; k < 8; k++) {
+                  g.rotate(Math.PI / 4);
+                  g.beginPath();
+                  g.moveTo(0, 0);
+                  g.lineTo(-cs * 0.12, -cs * 0.72);
+                  g.lineTo(cs * 0.12, -cs * 0.72);
+                  g.closePath();
+                  g.fill();
+                }
+                g.restore();
+              }
+              const wackel = !offen && u > 0.18 ? Math.sin(u * 62) * 0.16 : 0;
+              const bild = StollenGrafik.bild({ t: 'truhe', offen: offen }, cs * 0.96 * aufl(), null);
+              const ts = cs * (u < 0.22 ? bounceEase(u / 0.22) : 1) * 0.94;
+              g.save();
+              g.translate(cx, cy - (offen ? cs * 0.06 : 0));
+              g.rotate(wackel);
+              g.drawImage(bild, -ts / 2, -ts / 2, ts, ts);
+              g.restore();
+              if (u > 0.54) {
+                const su = clamp01((u - 0.54) / 0.34);
                 const sb = StollenGrafik.bild(z.sym, cs * aufl(), S2.stufen);
-                const ss = cs * 0.9 * clamp01((u - 0.6) / 0.3);
-                g.drawImage(sb, G.x0 + c * cs + (cs - ss) / 2, G.y0 + r * cs + (cs - ss) / 2 - cs * 0.2 * (1 - clamp01((u - 0.6) / 0.3)), ss, ss);
+                const ss = cs * 0.92 * bounceEase(su);
+                g.drawImage(sb, cx - ss / 2, cy - ss / 2 - cs * 0.22 * (1 - su), ss, ss);
               }
               continue;
             }
           }
-          symbolZeichnen(g, s, G.x0 + c * cs + ox, G.y0 + r * cs + oy, cs, sk, al);
-          // Stufen-Blitz auf Edelsteinen
+          // Lebendiges Wippen stehender Papageien
+          if (s.t === 's' && !spar()) {
+            const ph = S2.zeit * 3.8 + s.f * 1.7;
+            const atem = Math.sin(ph) * 0.036;
+            skX *= 1 - atem;
+            skY *= 1 + atem;
+            oy += Math.abs(Math.sin(ph * 0.5)) * -cs * 0.025;
+          }
+          if (S2.stufeBlitz && s.t === 'g' && (S2.stufeBlitz.f === 4 || S2.stufeBlitz.f === s.f) && S2.stufeBlitz.t < 0.65) {
+            const su = S2.stufeBlitz.t / 0.65;
+            const pop = 1 + Math.sin(su * Math.PI) * 0.26;
+            skX *= pop;
+            skY *= pop;
+          }
+
+          symbolZeichnen(g, s, G.x0 + c * cs + ox, G.y0 + r * cs + oy, cs, skX * flipX, skY, al, rot);
+
+          // Live-Glanzfunkeln auf Stufe 4/5 Steinen, Wild, Anker & Bombe
+          if (!spar() && al > 0.7) {
+            const cx = G.x0 + (c + 0.5) * cs, cy = G.y0 + (r + 0.5) * cs;
+            if ((s.t === 'g' && S2.stufen[s.f] >= 4) || s.t === 'w' || s.t === 'a') {
+              const tw = Math.sin(S2.zeit * 4.5 + r * 2.1 + c * 3.7);
+              if (tw > 0.62) {
+                const gl = (tw - 0.62) / 0.38;
+                StollenGrafik.funkeln(g, cx + cs * 0.22, cy - cs * 0.22, cs * 0.14 * gl, gl);
+              }
+            } else if (s.t === 'b') {
+              const fl = 0.75 + Math.sin(S2.zeit * 28 + r + c) * 0.25;
+              StollenGrafik.funkeln(g, cx + cs * 0.24, cy - cs * 0.34, cs * 0.16 * fl, 0.95);
+            }
+          }
           if (S2.stufeBlitz && s.t === 'g' && (S2.stufeBlitz.f === 4 || S2.stufeBlitz.f === s.f) && S2.stufeBlitz.t < 0.7) {
-            g.fillStyle = 'rgba(255,255,255,' + (0.55 * (1 - S2.stufeBlitz.t / 0.7)) + ')';
+            g.fillStyle = 'rgba(255,250,200,' + (0.55 * (1 - S2.stufeBlitz.t / 0.7)) + ')';
             g.beginPath();
             g.arc(G.x0 + c * cs + cs / 2, G.y0 + r * cs + cs / 2, cs * 0.45, 0, Math.PI * 2);
             g.fill();
@@ -26449,87 +27210,292 @@ const SzeneStollen = (function () {
         }
       }
     }
-    // laufender Maulwurf
+    g.restore();
+
+    // Upgrade-Energiestrahlen (vom Papagei zu allen aufgewerteten Edelsteinen)
+    for (let i = 0; i < S2.strahlen.length; i++) {
+      const st2 = S2.strahlen[i];
+      const su = st2.t / st2.T;
+      g.save();
+      g.globalAlpha = Math.sin(su * Math.PI) * 0.85;
+      g.strokeStyle = st2.f;
+      g.lineWidth = 4 * (1 - su * 0.5);
+      g.lineCap = 'round';
+      g.beginPath();
+      g.moveTo(st2.x0, st2.y0);
+      g.lineTo(st2.x1, st2.y1);
+      g.stroke();
+      g.strokeStyle = '#ffffff';
+      g.lineWidth = 1.6;
+      g.stroke();
+      g.restore();
+    }
+
+    // Fliegender/huepfender Piraten-Papagei mit Fluegelschlag & Picken
     if (A && A.e.e === 'zug') {
       const e = A.e;
-      const k = 1 - Math.pow(1 - u, 2);
-      const x = G.x0 + (e.von[1] + (e.nach[1] - e.von[1]) * k) * cs;
-      const y = G.y0 + (e.von[0] + (e.nach[0] - e.von[0]) * k) * cs - Math.sin(Math.PI * u) * cs * 0.12;
-      symbolZeichnen(g, { t: 's', f: e.f }, x, y, cs, 1.05, 1);
+      const k = 1 - Math.pow(1 - u, 2.2);
+      const dx = e.nach[1] - e.von[1], dy = e.nach[0] - e.von[0];
+      const x = G.x0 + (e.von[1] + dx * k) * cs;
+      const y = G.y0 + (e.von[0] + dy * k) * cs - Math.sin(Math.PI * u) * cs * 0.24;
+      const hop = Math.sin(Math.PI * u);
+      const flip = S2.blick[e.f] || 1;
+      const skX = (1.08 - hop * 0.15) * flip;
+      const skY = 1.02 + hop * 0.2;
+      const tilt = (dx !== 0 ? dx * 0.22 : 0.14 * flip) * hop;
+      symbolZeichnen(g, { t: 's', f: e.f }, x, y, cs, skX, skY, 1, tilt);
     }
-    // Farbtopf-Spritzer
-    if (A && A.e.e === 'topf') {
+
+    // Platzwechsel (Switcheroo): zwei Papageien flattern im Bogen aneinander vorbei
+    if (A && A.e.e === 'tausch') {
       const e = A.e;
-      const F = StollenGrafik.FARBE[e.f];
-      g.fillStyle = F.mitte;
-      g.globalAlpha = 0.5 * (1 - u);
-      g.beginPath();
-      g.arc(G.x0 + (e.bei[1] + 0.5) * cs, G.y0 + (e.bei[0] + 0.5) * cs, cs * (0.4 + u * 1.3), 0, Math.PI * 2);
-      g.fill();
-      g.globalAlpha = 1;
+      const k = u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2;
+      const x1 = G.x0 + (e.p1[1] + (e.p2[1] - e.p1[1]) * k) * cs;
+      const y1 = G.y0 + (e.p1[0] + (e.p2[0] - e.p1[0]) * k) * cs;
+      const x2 = G.x0 + (e.p2[1] + (e.p1[1] - e.p2[1]) * k) * cs;
+      const y2 = G.y0 + (e.p2[0] + (e.p1[0] - e.p2[0]) * k) * cs;
+      const bogen = Math.sin(Math.PI * u) * cs * 0.36;
+      const perpX = -(e.p2[0] - e.p1[0]) * bogen;
+      const perpY = (e.p2[1] - e.p1[1]) * bogen;
+      symbolZeichnen(g, { t: 's', f: e.f1 }, x1 + perpX, y1 + perpY - bogen * 0.35, cs, 1.1 * (S2.blick[e.f1] || 1), 1.1, 1, Math.sin(u * Math.PI * 2) * 0.26);
+      symbolZeichnen(g, { t: 's', f: e.f2 }, x2 - perpX, y2 - perpY - bogen * 0.35, cs, 1.1 * (S2.blick[e.f2] || 1), 1.1, 1, -Math.sin(u * Math.PI * 2) * 0.26);
     }
-    // Dynamit-Explosion
+
+    // Piraten-Bombe Explosion (Feuerball + Kanonenrauch + Deck-Erweiterung)
     if (A && A.e.e === 'dynamit') {
       const e = A.e;
       const ex = G.x0 + (e.bei[1] + 0.5) * cs, ey = G.y0 + (e.bei[0] + 0.5) * cs;
-      const rr = cs * (0.5 + u * 6);
-      const eg = g.createRadialGradient(ex, ey, 0, ex, ey, rr);
-      eg.addColorStop(0, 'rgba(255,255,220,' + (1 - u) + ')');
-      eg.addColorStop(0.4, 'rgba(255,170,40,' + (0.8 * (1 - u)) + ')');
-      eg.addColorStop(1, 'rgba(255,60,0,0)');
-      g.fillStyle = eg;
-      g.beginPath();
-      g.arc(ex, ey, rr, 0, Math.PI * 2);
-      g.fill();
+      if (u >= 0.32) {
+        const bu = clamp01((u - 0.32) / 0.68);
+        if (!A.boom) {
+          A.boom = true;
+          partikel(ex, ey, '#ffae2b', 28, cs * 4.2, 'splitter');
+          partikel(ex, ey, '#ff4824', 18, cs * 3.4, 'splitter');
+          partikel(ex, ey, '#3c3734', 20, cs * 2.8, 'staub');
+          ring(ex, ey, '#ffe57a', cs * 4.6, 0.56, 7);
+        }
+        const rr = cs * (0.6 + bu * 6.5);
+        const eg = g.createRadialGradient(ex, ey, 0, ex, ey, rr);
+        eg.addColorStop(0, 'rgba(255,255,235,' + (1 - bu) + ')');
+        eg.addColorStop(0.32, 'rgba(255,195,55,' + (0.85 * (1 - bu)) + ')');
+        eg.addColorStop(0.65, 'rgba(255,75,15,' + (0.45 * (1 - bu)) + ')');
+        eg.addColorStop(1, 'rgba(255,40,0,0)');
+        g.fillStyle = eg;
+        g.beginPath();
+        g.arc(ex, ey, rr, 0, Math.PI * 2);
+        g.fill();
+      }
       if (u > 0.55 && e.n > e.alt) {
-        S2.nAnz = e.alt + (e.n - e.alt) * clamp01((u - 0.55) / 0.4);
+        const eu = clamp01((u - 0.55) / 0.42);
+        S2.nAnz = e.alt + (e.n - e.alt) * (1 - Math.pow(1 - eu, 3));
       }
     }
-    // Lore fliegt zur Anzeige
+
+    // Truhen-Partikel beim Oeffnen
+    if (A && A.e.e === 'truhen' && u > 0.48 && !A.offen) {
+      A.offen = true;
+      A.e.zellen.forEach(function (z) {
+        const m = zellMitte(z.bei[0], z.bei[1]);
+        partikel(m.x, m.y, '#ffd447', 12, m.cs * 2.4, 'stern');
+        ring(m.x, m.y, '#ffe57a', m.cs * 1.4, 0.45, 4);
+      });
+    }
+
+    // Goldener Anker fliegt zur Anzeige
     if (A && A.e.e === 'lore') {
       const tr = S2.ev[S2.evIdx - 2];
       const von = tr && tr.e === 'zug' ? tr.nach : [0, 0];
       const x0 = G.x0 + (von[1] + 0.5) * cs, y0 = G.y0 + (von[0] + 0.5) * cs;
-      const x1 = 10, y1 = 10;
-      const k = u * u;
+      const x1 = 16, y1 = 16;
+      const cx = (x0 + x1) * 0.5 - 60, cy = Math.min(y0, y1) - 55;
+      const k = u * u * (3 - 2 * u);
+      const ik = 1 - k;
+      const lx = ik * ik * x0 + 2 * ik * k * cx + k * k * x1;
+      const ly = ik * ik * y0 + 2 * ik * k * cy + k * k * y1;
+      if (!spar() && Math.random() < 0.65) {
+        partikel(lx, ly, '#ffd447', 1, cs * 0.6, 'stern');
+      }
       const b = StollenGrafik.bild({ t: 'a' }, cs * aufl(), null);
-      const ls = cs * (1 - 0.5 * u);
-      g.drawImage(b, x0 + (x1 - x0) * k - ls / 2, y0 + (y1 - y0) * k - ls / 2, ls, ls);
+      const ls = cs * (1.14 - 0.52 * u);
+      g.save();
+      g.translate(lx, ly);
+      g.rotate(u * Math.PI * 2);
+      g.drawImage(b, -ls / 2, -ls / 2, ls, ls);
+      g.restore();
     }
-    // Gewinnzahlen
+
+    // Fliegende Energie-Kugeln zur Truhen-Leiste
+    for (let i = 0; i < S2.orbs.length; i++) {
+      const o = S2.orbs[i];
+      const ou = o.t / o.T;
+      const k = ou * ou;
+      const cx = (o.x0 + o.x1) * 0.5 - 40, cy = Math.min(o.y0, o.y1) - 35;
+      const ik = 1 - k;
+      const ox = ik * ik * o.x0 + 2 * ik * k * cx + k * k * o.x1;
+      const oy = ik * ik * o.y0 + 2 * ik * k * cy + k * k * o.y1;
+      g.save();
+      g.globalAlpha = 1 - ou * 0.4;
+      g.fillStyle = o.f;
+      g.beginPath();
+      g.arc(ox, oy, 4.5 * (1 - ou * 0.4), 0, Math.PI * 2);
+      g.fill();
+      g.fillStyle = '#ffffff';
+      g.beginPath();
+      g.arc(ox, oy, 2.2, 0, Math.PI * 2);
+      g.fill();
+      g.restore();
+    }
+
+    // Schockwellen-Ringe
+    for (let i = 0; i < S2.ringe.length; i++) {
+      const rg2 = S2.ringe[i];
+      const ru = rg2.t / rg2.T;
+      g.save();
+      g.globalAlpha = Math.max(0, 1 - ru);
+      g.strokeStyle = rg2.f;
+      g.lineWidth = Math.max(1, rg2.w * (1 - ru * 0.65));
+      g.beginPath();
+      g.arc(rg2.x, rg2.y, rg2.r * (0.2 + 0.8 * (1 - Math.pow(1 - ru, 2))), 0, Math.PI * 2);
+      g.stroke();
+      g.restore();
+    }
+
+    // Partikel (Kristallsplitter, Federn, Rum-Blasen, Sterne, Muenzen, Rauch)
+    for (let i = 0; i < S2.funken.length; i++) {
+      const p = S2.funken[i];
+      const a = Math.max(0, 1 - p.t / p.T);
+      g.save();
+      g.globalAlpha = p.art === 'staub' ? a * 0.5 : a;
+      g.translate(p.x, p.y);
+      g.rotate(p.rot);
+      if (p.art === 'stern') {
+        StollenGrafik.funkeln(g, 0, 0, p.r * 2.1 * a, a);
+      } else if (p.art === 'feder') {
+        g.fillStyle = p.f;
+        g.beginPath();
+        g.ellipse(0, 0, p.r * 1.9, p.r * 0.65, 0, 0, Math.PI * 2);
+        g.fill();
+      } else if (p.art === 'blase') {
+        g.fillStyle = p.f;
+        g.beginPath();
+        g.arc(0, 0, p.r, 0, Math.PI * 2);
+        g.fill();
+        g.fillStyle = 'rgba(255,255,255,0.75)';
+        g.beginPath();
+        g.arc(-p.r * 0.3, -p.r * 0.3, p.r * 0.3, 0, Math.PI * 2);
+        g.fill();
+      } else if (p.art === 'muenze') {
+        g.fillStyle = '#ffd447';
+        g.strokeStyle = '#6b3e00';
+        g.lineWidth = 1.2;
+        g.beginPath();
+        g.ellipse(0, 0, p.r * 1.4, p.r * 0.85, 0, 0, Math.PI * 2);
+        g.fill();
+        g.stroke();
+      } else if (p.art === 'staub') {
+        g.fillStyle = p.f;
+        g.beginPath();
+        g.arc(0, 0, p.r * (1 + (1 - a) * 1.1), 0, Math.PI * 2);
+        g.fill();
+      } else {
+        g.fillStyle = p.f;
+        g.beginPath();
+        g.moveTo(0, -p.r * 1.25);
+        g.lineTo(p.r * 0.85, 0);
+        g.lineTo(0, p.r * 1.25);
+        g.lineTo(-p.r * 0.85, 0);
+        g.closePath();
+        g.fill();
+      }
+      g.restore();
+    }
+
+    // Schwebende Gewinnzahlen
     for (let i = 0; i < S2.floats.length; i++) {
       const f = S2.floats[i];
-      const a = 1 - f.t / 1.1;
-      const fs = Math.max(12, cs * (f.gross ? 0.32 : 0.24));
+      const fu = f.t / 1.1;
+      const pop = fu < 0.16 ? (0.5 + 0.65 * (fu / 0.16)) : (fu < 0.28 ? 1.15 - (fu - 0.16) / 0.12 * 0.15 : 1);
+      const a = fu < 0.7 ? 1 : (1 - (fu - 0.7) / 0.3);
+      const fs = Math.max(13, cs * (f.mega ? 0.38 : (f.gross ? 0.31 : 0.24))) * pop;
       g.font = '900 ' + fs + 'px Nunito, sans-serif';
       g.textAlign = 'center';
       g.textBaseline = 'middle';
       g.globalAlpha = Math.max(0, a);
-      g.lineWidth = Math.max(3, fs * 0.2);
-      g.strokeStyle = '#2b1606';
-      const x = G.x0 + (f.c + 0.5) * cs, y = G.y0 + (f.r + 0.2) * cs - f.t * cs * 0.5;
+      g.lineWidth = Math.max(3, fs * 0.22);
+      g.strokeStyle = '#241205';
+      const x = G.x0 + (f.c + 0.5) * cs, y = G.y0 + (f.r + 0.22) * cs - fu * cs * 0.62;
       g.strokeText(f.text, x, y);
-      g.fillStyle = f.gross ? '#ffe14a' : '#ffffff';
+      g.fillStyle = f.mega ? '#ffea61' : (f.gross ? '#ffd447' : '#ffffff');
       g.fillText(f.text, x, y);
       g.globalAlpha = 1;
     }
+
+    // Ketten-Zaehler & Feature-Banner
+    if (S2.kette >= 4 && S2.laeuft && !S2.banner) {
+      const kt = S2.kette >= 12 ? S2.kette + '× MEGA-KETTE!' : S2.kette + '× KETTE!';
+      const bx = G.x0 + G.A / 2, by = G.y0 + Math.max(22, cs * 0.38);
+      const pulsK = 1 + Math.sin(S2.zeit * 14) * 0.04;
+      g.save();
+      g.translate(bx, by);
+      g.scale(pulsK, pulsK);
+      const fs = Math.max(16, Math.min(26, G.A * 0.052));
+      g.font = '400 ' + fs + 'px "Lilita One", "Arial Black", sans-serif';
+      g.textAlign = 'center';
+      g.textBaseline = 'middle';
+      g.lineWidth = 5;
+      g.strokeStyle = '#241205';
+      g.strokeText(kt, 0, 0);
+      g.fillStyle = S2.kette >= 12 ? '#ff9f1a' : '#ffe45e';
+      g.fillText(kt, 0, 0);
+      g.restore();
+    }
+    if (S2.banner) {
+      const b = S2.banner;
+      const bu = b.t / b.T;
+      const sk = bu < 0.18 ? bounceEase(bu / 0.18) : (bu > 0.8 ? 1 - (bu - 0.8) / 0.2 * 0.15 : 1);
+      const al = bu > 0.78 ? Math.max(0, 1 - (bu - 0.78) / 0.22) : 1;
+      g.save();
+      g.globalAlpha = al;
+      g.translate(G.x0 + G.A / 2, G.y0 + G.A * 0.18 - bu * 10);
+      g.scale(sk, sk);
+      const fs = Math.max(20, Math.min(34, G.A * 0.072));
+      g.font = '400 ' + fs + 'px "Lilita One", "Arial Black", sans-serif';
+      g.textAlign = 'center';
+      g.textBaseline = 'middle';
+      g.lineWidth = 6;
+      g.strokeStyle = '#241205';
+      g.strokeText(b.text, 0, 0);
+      g.fillStyle = b.f;
+      g.fillText(b.text, 0, 0);
+      g.restore();
+    }
+
     g.restore();
   }
   function aufl() {
     return Math.min(window.devicePixelRatio || 1, 2);
   }
-  function symbolZeichnen(g, s, x, y, cs, sk, al) {
+  function symbolZeichnen(g, s, x, y, cs, skX, skY, al, rot) {
     const b = StollenGrafik.bild(s, cs * aufl(), S2.stufen);
     if (!b) {
       return;
     }
-    const gr = cs * 0.92 * sk;
-    if (gr <= 0.5) {
+    const gw = cs * 0.93 * Math.abs(skX);
+    const gh = cs * 0.93 * (skY === undefined ? Math.abs(skX) : skY);
+    if (gw <= 0.5 || gh <= 0.5) {
       return;
     }
+    g.save();
     g.globalAlpha = al;
-    g.drawImage(b, x + (cs - gr) / 2, y + (cs - gr) / 2, gr, gr);
-    g.globalAlpha = 1;
+    g.translate(x + cs / 2, y + cs / 2);
+    if (rot) {
+      g.rotate(rot);
+    }
+    if (skX < 0) {
+      g.scale(-1, 1);
+    }
+    g.drawImage(b, -gw / 2, -gh / 2, gw, gh);
+    g.restore();
   }
   function rrPfad(g, x, y, w, h, r) {
     g.beginPath();
@@ -26559,11 +27525,74 @@ const SzeneStollen = (function () {
         S2.stufeBlitz = null;
       }
     }
-    S2.wackeln = Math.max(0, S2.wackeln - dt * 1.5);
+    if (S2.banner) {
+      S2.banner.t += dt * Math.min(2, tp);
+      if (S2.banner.t >= S2.banner.T) {
+        S2.banner = null;
+      }
+    }
+    for (let f = 0; f < 4; f++) {
+      if (S2.rumWackel[f] > 0) {
+        S2.rumWackel[f] = Math.max(0, S2.rumWackel[f] - dt * 1.4);
+      }
+    }
+    if (Math.abs(S2.gewinnAnz - S2.gewinnVis) > 0.5) {
+      S2.gewinnVis += (S2.gewinnAnz - S2.gewinnVis) * Math.min(1, dt * 14);
+      gewinnZeigen(S2.gewinnVis);
+    } else if (S2.gewinnVis !== S2.gewinnAnz) {
+      S2.gewinnVis = S2.gewinnAnz;
+      gewinnZeigen(S2.gewinnVis);
+    }
+    S2.wackeln = Math.max(0, S2.wackeln - dt * 1.45);
     for (let i = S2.floats.length - 1; i >= 0; i--) {
       S2.floats[i].t += dt * Math.min(2, tp);
       if (S2.floats[i].t > 1.1) {
         S2.floats.splice(i, 1);
+      }
+    }
+    for (let i = S2.funken.length - 1; i >= 0; i--) {
+      const p = S2.funken[i];
+      p.t += dt;
+      if (p.t >= p.T) {
+        S2.funken.splice(i, 1);
+        continue;
+      }
+      p.vy += p.g * dt;
+      p.x += p.vx * dt;
+      p.y += p.vy * dt;
+      p.rot += p.vr * dt;
+    }
+    for (let i = S2.ringe.length - 1; i >= 0; i--) {
+      S2.ringe[i].t += dt;
+      if (S2.ringe[i].t >= S2.ringe[i].T) {
+        S2.ringe.splice(i, 1);
+      }
+    }
+    for (let i = S2.strahlen.length - 1; i >= 0; i--) {
+      S2.strahlen[i].t += dt;
+      if (S2.strahlen[i].t >= S2.strahlen[i].T) {
+        S2.strahlen.splice(i, 1);
+      }
+    }
+    for (let i = S2.orbs.length - 1; i >= 0; i--) {
+      S2.orbs[i].t += dt;
+      if (S2.orbs[i].t >= S2.orbs[i].T) {
+        S2.orbs.splice(i, 1);
+      }
+    }
+    for (let i = S2.spuren.length - 1; i >= 0; i--) {
+      S2.spuren[i].t += dt;
+      if (S2.spuren[i].t >= S2.spuren[i].T) {
+        S2.spuren.splice(i, 1);
+      }
+    }
+    if (!spar()) {
+      for (let i = 0; i < S2.staub.length; i++) {
+        S2.staub[i].y -= S2.staub[i].v * dt * 1.6;
+        if (S2.staub[i].y < -0.02) {
+          S2.staub[i].y = 1.02;
+          S2.staub[i].x = Math.random();
+        }
       }
     }
     zeichnen(dt);
@@ -26579,11 +27608,11 @@ const SzeneStollen = (function () {
       if (cv.getAttribute('data-st') !== String(st)) {
         cv.setAttribute('data-st', String(st));
         const d = Math.min(window.devicePixelRatio || 1, 2);
-        cv.width = cv.height = Math.round(34 * d);
+        cv.width = cv.height = Math.round(36 * d);
         const g = cv.getContext('2d');
         g.setTransform(1, 0, 0, 1, 0, 0);
         g.clearRect(0, 0, cv.width, cv.height);
-        g.drawImage(StollenGrafik.bild({ t: 'g', f: f }, 34 * d, S2.stufen), 0, 0, cv.width, cv.height);
+        g.drawImage(StollenGrafik.bild({ t: 'g', f: f }, 36 * d, S2.stufen), 0, 0, cv.width, cv.height);
         z.classList.remove('hoch');
         void z.offsetWidth;
         z.classList.add('hoch');
@@ -26597,9 +27626,27 @@ const SzeneStollen = (function () {
     qsa(el, '.ss-lore').forEach(function (x, i) {
       x.classList.toggle('an', i < loren);
     });
+    const lz = qs(el, '.ss-lorenzeile');
+    if (lz) {
+      lz.classList.toggle('nah', loren === 2);
+    }
     const leiste = S2.zustandLeiste !== undefined ? S2.zustandLeiste : S2.zustand.leiste;
-    qs(el, '.ss-leiste i').style.width = Math.min(100, leiste / L_.KONF.leiste * 100) + '%';
-    qs(el, '.ss-leiste span').textContent = 'Sammelleiste ' + Math.min(L_.KONF.leiste, leiste) + ' / ' + L_.KONF.leiste;
+    const pct = Math.min(100, leiste / L_.KONF.leiste * 100);
+    qs(el, '.ss-leiste i').style.width = pct + '%';
+    qs(el, '.ss-leiste span').textContent = 'Truhen ' + Math.min(L_.KONF.leiste, leiste) + ' / ' + L_.KONF.leiste;
+    qs(el, '.ss-leiste').classList.toggle('nah', pct >= 75);
+    const meta = qs(el, '.ss-meta');
+    if (meta) {
+      qs(meta, 'b').textContent = S2.n + ' × ' + S2.n;
+      if (S2.n !== S2.letzteGroesse) {
+        if (S2.n > S2.letzteGroesse) {
+          meta.classList.remove('waechst');
+          void meta.offsetWidth;
+          meta.classList.add('waechst');
+        }
+        S2.letzteGroesse = S2.n;
+      }
+    }
     const b = qs(el, '.ss-bonus');
     b.hidden = !S2.bonus;
     if (S2.bonus) {
@@ -26609,7 +27656,9 @@ const SzeneStollen = (function () {
     el.classList.toggle('im-bonus', !!S2.bonus);
   }
   function gewinnZeigen(cent) {
-    qs(S2.el, '.ss-gewinn b').textContent = euro(Math.round(cent));
+    const box = qs(S2.el, '.ss-gewinn');
+    qs(box, 'b').textContent = euro(Math.round(cent));
+    box.classList.toggle('aktiv', cent > 0);
   }
   function uiAktualisieren() {
     const el = S2.el;
@@ -26636,10 +27685,11 @@ const SzeneStollen = (function () {
     const e = einsatz();
     const M = L_.MODI;
     const f = Fenster.oeffne({
-      titel: 'Schatzkammer', klasse: 'ss-fenster', html: '<p class="ss-k-info">Einsatz: <b>' + euro(e) + '</b></p><div class="ss-kauf">'
-        + '<button data-m="jagd" class="' + (S2.jagd ? 'an' : '') + '"><b>Lore-Jagd</b><span>Grubenloren erscheinen viel öfter – Bonus etwa 6-mal häufiger.</span><i>' + (S2.jagd ? 'AUS' : '3× Einsatz je Fahrt') + '</i></button>'
-        + '<button data-m="bonus"><b>Schatzsuche kaufen</b><span>Direkt in den Bonus mit 5 Freifahrten.</span><i>' + euro(e * M.bonus.preis) + '</i></button>'
-        + '<button data-m="superbonus"><b>Super-Schatzsuche</b><span>Bonus mit 7 Freifahrten, größtem Stollen (8 × 8) und allen Edelsteinen auf Stufe 3.</span><i>' + euro(e * M.superbonus.preis) + '</i></button>'
+      titel: 'Schatzkammer (X-iter)', klasse: 'ss-fenster', html: '<p class="ss-k-info">Einsatz: <b>' + euro(e) + '</b></p><div class="ss-kauf">'
+        + '<button data-m="jagd" class="' + (S2.jagd ? 'an' : '') + '"><b>Bonus-Jagd</b><span>Goldene Bonus-Anker erscheinen viel öfter – Free Drops etwa 5-mal häufiger.</span><i>' + (S2.jagd ? 'AUS' : '3× / Drop') + '</i></button>'
+        + '<button data-m="fieber"><b>Truhen-Fieber</b><span>3 Schatztruhen öffnen sich sofort zu Beginn des Drops!</span><i>' + euro(e * M.fieber.preis) + '</i></button>'
+        + '<button data-m="bonus"><b>Bonus kaufen</b><span>Direkt in die Free Drops mit 5 Freifahrten bei Sonnenuntergang.</span><i>' + euro(e * M.bonus.preis) + '</i></button>'
+        + '<button data-m="superbonus"><b>Super-Bonus</b><span>7 Free Drops, größtes Schiffsdeck (8 × 8) und alle Edelsteine sofort auf Stufe 3!</span><i>' + euro(e * M.superbonus.preis) + '</i></button>'
         + '</div>'
     });
     qsa(f.el, '.ss-kauf button').forEach(function (b) {
@@ -26648,7 +27698,7 @@ const SzeneStollen = (function () {
         f.schliessen();
         if (m === 'jagd') {
           S2.jagd = !S2.jagd;
-          Hinweis.zeige(S2.jagd ? 'Lore-Jagd an: 3 × Einsatz je Fahrt' : 'Lore-Jagd aus', 'gut');
+          Hinweis.zeige(S2.jagd ? 'Bonus-Jagd an: 3 × Einsatz je Drop' : 'Bonus-Jagd aus', 'gut');
           uiAktualisieren();
         } else {
           autoAus();
@@ -26670,31 +27720,35 @@ const SzeneStollen = (function () {
     + '<div class="ss-tafel">' + [0, 1, 2, 3].map(function (f) {
       return '<div class="ss-farbe f' + f + '"><canvas></canvas><div class="ss-fn"><b>' + FARB_NAMEN[f] + '</b><span class="ss-pips">' + '<i class="ss-pip"></i>'.repeat(5) + '</span></div><span class="ss-wert">0,00 €</span></div>';
     }).join('') + '</div>'
-    + '<div class="ss-lorenzeile"><span>Loren</span><div class="ss-loren"><i class="ss-lore"></i><i class="ss-lore"></i><i class="ss-lore"></i></div></div>'
-    + '<div class="ss-leiste"><i></i><span>Sammelleiste 0 / 60</span></div>'
-    + '<div class="ss-bonus" hidden><b>SCHATZSUCHE</b><span>Freifahrt <b class="ss-b-nr">0</b> · noch <b class="ss-b-rest">5</b></span></div>'
+    + '<div class="ss-status">'
+    + '<div class="ss-lorenzeile"><span>Anker</span><div class="ss-loren"><i class="ss-lore"></i><i class="ss-lore"></i><i class="ss-lore"></i></div></div>'
+    + '<div class="ss-leiste"><i></i><span>Truhen 0 / ' + L_.KONF.leiste + '</span></div>'
+    + '<div class="ss-meta"><span>Deck</span><b>5 × 5</b></div>'
+    + '</div>'
+    + '<div class="ss-bonus" hidden><b>FREE DROPS</b><span>Drop <b class="ss-b-nr">0</b> · noch <b class="ss-b-rest">5</b></span></div>'
     + '</aside><div class="ss-feld"><canvas class="ss-cv"></canvas><div class="ss-overlay"></div></div></div>'
     + '<div class="ss-steuer"><button class="ss-kaufen">KAUFEN</button>'
     + '<div class="ss-einsatz"><button class="ss-minus">−</button><div><small>EINSATZ</small><b>1,00 €</b></div><button class="ss-plus">+</button></div>'
     + '<div class="ss-gewinn"><small>GEWINN</small><b>0,00 €</b></div>'
     + '<div class="ss-schalter"><button class="ss-auto">AUTO</button><button class="ss-turbo">TURBO</button></div>'
     + '<button class="ss-dreh" aria-label="Drehen"><svg viewBox="0 0 24 24"><path d="M19 12a7 7 0 1 1-2.05-4.95M19 4.5V8h-3.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'
-    + '<span class="ss-jagd-hinweis" hidden>Lore-Jagd aktiv</span></div>'
+    + '<span class="ss-jagd-hinweis" hidden>Bonus-Jagd aktiv</span></div>'
     + '</div>';
 
-  const regeln = '<p>Vier Maulwürfe graben sich in den Stollen ein und sammeln <b>Edelsteine ihrer Farbe</b>, die waagerecht oder senkrecht neben ihnen liegen. Sie laufen dabei Feld für Feld weiter, solange es etwas zu sammeln gibt. Gesammelte Felder werden aufgefüllt – Edelsteine rutschen nach, neue fallen von oben.</p>'
+  const regeln = '<p>Vier <b>Piraten-Papageien</b> (Rot, Lila, Grün, Blau) landen auf dem Schiffsdeck und sammeln waagerecht und senkrecht benachbarte <b>Edelsteine ihrer Farbe</b> sowie alle Feature-Symbole (CollectR-Mechanik). Gesammelte Felder werden per Lawine von oben neu aufgefüllt.</p>'
     + '<table><tr><th>Edelstein</th><th>Stufe 1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr>'
     + '<tr><td>Rubin</td><td>0,25×</td><td>0,5×</td><td>1×</td><td>3×</td><td>15×</td></tr><tr><td>Amethyst</td><td>0,1×</td><td>0,2×</td><td>0,4×</td><td>1,2×</td><td>7,5×</td></tr>'
     + '<tr><td>Smaragd</td><td>0,05×</td><td>0,15×</td><td>0,3×</td><td>0,9×</td><td>5×</td></tr><tr><td>Saphir</td><td>0,05×</td><td>0,1×</td><td>0,2×</td><td>0,6×</td><td>3×</td></tr></table>'
-    + '<p>Werte je eingesammeltem Edelstein, mal Einsatz. Im Grundspiel graben 1 bis 4 Maulwürfe mit, in der Schatzsuche immer alle vier.</p>'
-    + '<ul><li><b>Joker-Kristall:</b> zählt für jeden Maulwurf als Edelstein seiner Farbe.</li><li><b>Schleifstein:</b> hebt die Stufe seiner Farbe um 1 (bunt: alle Farben).</li>'
-    + '<li><b>Farbtopf:</b> färbt die Edelsteine rundherum in die Farbe des Maulwurfs.</li><li><b>Goldnugget:</b> zahlt seinen Wert (1× bis 1000×).</li>'
-    + '<li><b>Dynamit:</b> sprengt alle Edelsteine weg und vergrößert den Stollen um eine Reihe und Spalte (bis 8 × 8).</li>'
-    + '<li><b>Grubenlore:</b> 3 Loren in einer Runde starten die <b>Schatzsuche</b> mit 5 Freifahrten. Stollengröße, Stufen und Sammelleiste bleiben dabei erhalten; je 3 weitere Loren bringen +5 Freifahrten.</li>'
-    + '<li><b>Sammelleiste:</b> jeder Edelstein füllt sie. Bei 60 öffnen sich 3 Schatztruhen mit Sonderfeldern.</li></ul>'
-    + '<p><b>Kaufen:</b> Lore-Jagd (3× Einsatz, Bonus viel häufiger), Schatzsuche (100× Einsatz), Super-Schatzsuche (500× Einsatz).</p>'
-    + '<p>Auszahlungsquote (per Simulation über Millionen Runden ermittelt): in jeder Spielweise etwa 95,5 % – Grundspiel, Lore-Jagd, Schatzsuche kaufen und Super-Schatzsuche lohnen sich also gleich viel bzw. wenig. Die Sammelleiste gilt nur innerhalb einer Runde. '
-    + 'Im Schnitt startet die Schatzsuche alle 400 Fahrten, mit Lore-Jagd alle 50. Höchstgewinn ' + tausender(L_.MAX_GEWINN) + '× Einsatz.</p>'
+    + '<ul><li><b>Rum-Trank &amp; Rumfass (Transform):</b> verwandelt umliegende Edelsteine in die Farbe des sammelnden Papageis – und kann zusätzlich ein Feature-Symbol hervorzaubern!</li>'
+    + '<li><b>Upgrade-Pfeil (Weiß / Bunt):</b> hebt die Edelstein-Stufe des Papageis (bunt: alle 4 Farben) um <b>1 bis 3 Stufen</b> an (max. Stufe 5).</li>'
+    + '<li><b>Wild (W):</b> zählt für jeden Papagei als Edelstein seiner aktuellen Stufe.</li>'
+    + '<li><b>Goldmünze:</b> zahlt sofort ihren Multiplikator (1× bis 1000×).</li>'
+    + '<li><b>Piraten-Bombe:</b> sprengt alle Edelsteine weg und vergrößert das Schiffsdeck (bis 8 × 8).</li>'
+    + '<li><b>Platzwechsel (Switcheroo):</b> Stecken zwei benachbarte Papageien fest, tauschen sie automatisch die Plätze, sobald einer weitersammeln kann.</li>'
+    + '<li><b>Goldener Anker (Bonus):</b> 3 Anker starten <b>5 Free Drops</b>. Deckgröße, Edelstein-Stufen und Truhen-Leiste bleiben erhalten; je 3 weitere Anker bringen +5 Free Drops.</li>'
+    + '<li><b>Truhen-Leiste:</b> Jeder gesammelte Edelstein füllt sie. Bei ' + L_.KONF.leiste + ' öffnen sich 3 Piraten-Schatztruhen mit zufälligen Feature-Symbolen.</li></ul>'
+    + '<p><b>Kaufen (X-iter):</b> Bonus-Jagd (3×), Truhen-Fieber (10×, 3 Truhen sofort), Bonus (100×), Super-Bonus (500×, 8 × 8 Deck &amp; alle Edelsteine Stufe 3).</p>'
+    + '<p>Auszahlungsquote: ca. <b>88,9 %</b> (entspricht der deutschen Online-Casino-Quote). Höchstgewinn ' + tausender(L_.MAX_GEWINN) + '× Einsatz.</p>'
     + '<p>Tasten: Leertaste = Drehen bzw. beschleunigen, A = Auto, T = Turbo.</p>';
 
   function init(el) {
@@ -26702,6 +27756,7 @@ const SzeneStollen = (function () {
     S2.cv = qs(el, '.ss-cv');
     S2.g = S2.cv.getContext('2d');
     S2.L = leeresRaster();
+    initStaub();
     try {
       const d = JSON.parse(window.localStorage.getItem(SPEICHER) || 'null');
       if (d) {
@@ -26715,13 +27770,12 @@ const SzeneStollen = (function () {
       // ohne Speicher
     }
     S2.offen = 0;
-    // Startbild: ein ruhiges Raster
     const z0 = L_.neuerZustand();
     const f0 = L_.fahrt(function () {
       return Math.random();
     }, Object.assign(z0, { leiste: 0 }));
     S2.L = L_.kopie(f0.ereignisse[0].g);
-    S2.n = S2.nAnz = f0.ereignisse[0].n;
+    S2.n = S2.nAnz = S2.letzteGroesse = f0.ereignisse[0].n;
     speichern();
     qs(el, '.ss-dreh').addEventListener('click', function () {
       if (S2.warteKlick) {
@@ -26769,7 +27823,6 @@ const SzeneStollen = (function () {
   }
 
   function sofortFertig() {
-    // Runde beim Verlassen sofort abschliessen (Gewinn steht ja schon fest)
     if (S2.laeuft) {
       S2.anim = null;
       S2.plan = [];
@@ -26827,7 +27880,7 @@ const SzeneLobby = (function () {
   const Z = {
     zeit: 0, ov: 'KEINS', mx: -1, my: -1, fokus: -1, kreditAnzeige: 0, gedrueckt: -1,
     hover: [], druck: [], quoten: { roulette: 'QUOTE 97,3 %', sonnenbuch: 'QUOTE 95,0 %', mines: 'QUOTE 99 %', plinko: 'QUOTE 99 %', chicken: 'QUOTE 98 %',
-      hoehenflug: 'QUOTE 97 %', goldroulette: 'QUOTE 97,5 %', schatzstollen: 'QUOTE 95,5 %' }, dialog: null, optionen: null, ersterBesuch: true, guthGeklickt: false,
+      hoehenflug: 'QUOTE 97 %', goldroulette: 'QUOTE 97,5 %', schatzstollen: 'QUOTE 88,9 %' }, dialog: null, optionen: null, ersterBesuch: true, guthGeklickt: false,
     scroll: 0
   };
   const meld = new Meldungen();
@@ -26874,10 +27927,10 @@ const SzeneLobby = (function () {
       punkte: ['Europäischer Kessel', 'Voisins, Tiers, Orphelins', 'Heiße und kalte Zahlen']
     },
     {
-      id: 'schatzstollen', titel: 'SCHATZSTOLLEN', unter: 'SAMMLER-SLOT · 5×5 BIS 8×8',
-      text: 'Vier Maulwürfe sammeln Edelsteine ihrer Farbe. Dynamit vergrößert den Stollen, 3 Loren starten die Schatzsuche.',
-      tags: ['BIS 10.000×', 'BONUS KAUFEN'], farbe: C(255, 150, 40),
-      punkte: ['Edelsteine bis Stufe 5', 'Sammelleiste mit Truhen', 'Schatzsuche mit Freifahrten']
+      id: 'schatzstollen', titel: 'SCHATZSTOLLEN', unter: 'PIRATEN-COLLECTR · 5×5 BIS 8×8',
+      text: 'Vier Piraten-Papageien sammeln Edelsteine, Rum-Tränke & Goldmünzen. Bomben vergrößern das Deck, 3 Anker starten Free Drops.',
+      tags: ['BIS 10.000×', 'X-ITER KAUF'], farbe: C(255, 165, 35),
+      punkte: ['Rum-Trank, Upgrades +1–3 & Platzwechsel', 'Truhen-Leiste mit 3 Schatztruhen', 'Free Drops bei Sonnenuntergang']
     },
     {
       id: 'mines', titel: 'MINES', unter: 'ORIGINALS · 5×5 FELDER',
@@ -27573,20 +28626,20 @@ const SzeneLobby = (function () {
     }
   }
   function vorschauStollen(g, p, zeit) {
-    g.fillStyle = radial(g, p.x + p.w / 2, p.y + p.h * 0.4, Math.max(p.w, p.h), [[0, C(80, 52, 30)], [1, C(20, 11, 5)]]);
+    g.fillStyle = radial(g, p.x + p.w / 2, p.y + p.h * 0.3, Math.max(p.w, p.h), [[0, C(34, 140, 178)], [1, C(8, 34, 58)]]);
     g.fillRect(p.x, p.y, p.w, p.h);
     const n = 3;
     const cs = Math.min(p.h * 0.92 / n, p.w * 0.62 / n);
     const x0 = p.x + (p.w - cs * n) / 2, y0 = p.y + (p.h - cs * n) / 2;
-    const raster = [[{ t: 'g', f: 0 }, { t: 'g', f: 2 }, { t: 'a' }], [{ t: 'g', f: 3 }, { t: 's', f: 0 }, { t: 'g', f: 0 }], [{ t: 'c', v: 50 }, { t: 'g', f: 1 }, { t: 'g', f: 0 }]];
+    const raster = [[{ t: 'x' }, { t: 'g', f: 2 }, { t: 'a' }], [{ t: 'g', f: 3 }, { t: 's', f: 0 }, { t: 'g', f: 0 }], [{ t: 'c', v: 50 }, { t: 'g', f: 1 }, { t: 'b' }]];
     const stufen = [1 + Math.floor((zeit * 0.6) % 5), 3, 2, 4];
     for (let r = 0; r < n; r++) {
       for (let c = 0; c < n; c++) {
         const x = x0 + c * cs, y = y0 + r * cs;
-        fuell(g, rrP(x + 2, y + 2, cs - 4, cs - 4, cs * 0.14), (r + c) % 2 ? C(42, 26, 14) : C(36, 22, 10));
+        fuell(g, rrP(x + 2, y + 2, cs - 4, cs - 4, cs * 0.14), (r + c) % 2 ? C(54, 33, 17) : C(44, 26, 12));
         const b = StollenGrafik.bild(raster[r][c], cs * aufloesung, stufen);
         if (b) {
-          const wipp = raster[r][c].t === 's' && !Stil.sparmodus ? Math.sin(zeit * 3) * cs * 0.03 : 0;
+          const wipp = raster[r][c].t === 's' && !Stil.sparmodus ? Math.sin(zeit * 3.5) * cs * 0.035 : 0;
           g.drawImage(b, x + cs * 0.05, y + cs * 0.05 + wipp, cs * 0.9, cs * 0.9);
         }
       }
