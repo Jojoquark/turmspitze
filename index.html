@@ -25027,14 +25027,14 @@ const StollenLogik = (function () {
     truhe: [['w', 28], ['u', 24], ['x', 20], ['c', 16], ['b', 8], ['a', 4]],
     regenbogen: 0.18,
     leiste: 24,
-    skalBasis: 0.135,
-    skalBonus: 1.045
+    skalBasis: 0.238,
+    skalBonus: 0.49
   };
   // Kauf-/Spielmodi (X-iter Stil, alle auf ~88,9 % RTP kalibriert)
   const MODI = {
     normal: { preis: 1, name: 'Normal' },
-    jagd: { preis: 3, name: 'Bonus-Jagd', loreFaktor: 2.05 },
-    fieber: { preis: 10, name: 'Truhen-Fieber', startTruhen: 3, skal: 1.08 },
+    jagd: { preis: 3, name: 'Bonus-Jagd', loreFaktor: 2.05, bonusSkal: 0.95 },
+    fieber: { preis: 10, name: 'Truhen-Fieber', startTruhen: 3, skal: 1.08, bonusSkal: 1.045 },
     bonus: { preis: 100, name: 'Bonus kaufen', bonus: true, skal: 1.045 },
     superbonus: { preis: 500, name: 'Super-Bonus', bonus: true, startGroesse: 8, startStufe: 3, startRest: 7, skal: 1.65 }
   };
@@ -25397,7 +25397,7 @@ const StollenLogik = (function () {
     let bonus = false;
     if (f.loren >= 3 && !f.gedeckelt) {
       bonus = true;
-      const b = { groesse: z.groesse, stufen: z.stufen.slice(), leiste: z.leiste, bonus: true, modus: 'normal', rest: 5, loren: 0, summe: summe, skal: KONF.skalBonus };
+      const b = { groesse: z.groesse, stufen: z.stufen.slice(), leiste: z.leiste, bonus: true, modus: 'normal', rest: 5, loren: 0, summe: summe, skal: mod.bonusSkal || KONF.skalBonus };
       summe = bonusSpielen(rng, b);
       z.leiste = 0;
     }
@@ -26403,14 +26403,14 @@ const SzeneStollen = (function () {
       plan.push({ art: 'fahrt', f: f });
       summe = f.gewinn;
       if (f.loren >= 3 && !f.gedeckelt) {
-        const b = { groesse: z.groesse, stufen: z.stufen.slice(), leiste: z.leiste, bonus: true, modus: 'normal', rest: 5, loren: 0, skal: L_.KONF.skalBonus };
+        const b = { groesse: z.groesse, stufen: z.stufen.slice(), leiste: z.leiste, bonus: true, modus: 'normal', rest: 5, loren: 0, skal: mod.bonusSkal || L_.KONF.skalBonus };
         plan.push({ art: 'bonusStart', rest: 5, kauf: false });
         summe = bonusPlanen(b, plan, summe);
         z.leiste = 0;
       }
     }
     summe = Math.min(summe, L_.MAX_GEWINN);
-    S2.rundeGesamt = Math.floor(summe * e * S2.gcF + 1e-6);
+    S2.rundeGesamt = Math.round(summe * e * S2.gcF);
     S2.offen = S2.rundeGesamt;
     Offen.setzen(SPIEL, S2.offen, 'gewinn');
     speichern();
