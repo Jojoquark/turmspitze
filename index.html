@@ -25021,24 +25021,24 @@ const StollenLogik = (function () {
   // Gewichte fuer neue Felder (1:1 Pirots-Mechanik, auf 88,9 % DE-Online-Casino-RTP kalibriert)
   const KONF = {
     edel: [12, 20, 30, 38],      // rot, lila, gruen, blau
-    joker: 0.45, schleif: 0.36, topf: 0.44, nugget: 0.34, dynamit: 0.32, lore: 1.15,
-    bonusFaktor: { schleif: 3.4, dynamit: 2.5, nugget: 1.4, joker: 1.4, topf: 1.4, lore: 0.156 },
+    joker: 0.45, schleif: 0.36, topf: 0.44, nugget: 0.34, dynamit: 0.32, lore: 1.35,
+    bonusFaktor: { schleif: 3.4, dynamit: 2.5, nugget: 1.4, joker: 1.4, topf: 1.4, lore: 0.133 },
     muenzen: [[1, 400], [2, 300], [3, 150], [5, 80], [10, 40], [20, 15], [50, 6], [100, 2.5], [250, 0.6], [500, 0.2], [1000, 0.08]],
     truhe: [['w', 28], ['u', 24], ['x', 20], ['c', 16], ['b', 8], ['a', 4]],
     regenbogen: 0.18,
     leiste: 24,
     skalBasis: 1, // Edelsteinwerte wie im Original (Rubin 0,25x ... Saphir 0,05x je Stein auf Stufe 1)
     skalBonus: 1,
-    abstoss: 0.97, // Grundspiel
-    abstossBonus: 0.4
+    abstoss: 0.715, // Grundspiel
+    abstossBonus: 0
   };
-  // Kauf-/Spielmodi (X-iter Stil, alle auf ~88,9 % RTP kalibriert)
+  // Kauf-/Spielmodi (X-iter Stil, alle auf ~88,9 % RTP kalibriert, Edelsteinwerte ueberall unveraendert)
   const MODI = {
     normal: { preis: 1, name: 'Normal' },
-    jagd: { preis: 3, name: 'Bonus-Jagd', loreFaktor: 2.8 },
-    fieber: { preis: 10, name: 'Truhen-Fieber', startTruhen: 3, abstoss: 0.05, skal: 1 },
-    bonus: { preis: 100, name: 'Bonus kaufen', bonus: true, abstoss: 0, skal: 1.07 },
-    superbonus: { preis: 500, name: 'Super-Bonus', bonus: true, startGroesse: 8, startStufe: 3, startRest: 7, abstoss: 0, skal: 1.67 }
+    jagd: { preis: 3, name: 'Bonus-Jagd', loreFaktor: 2.42 },
+    fieber: { preis: 10, name: 'Truhen-Fieber', startTruhen: 3, abstoss: -0.1 },
+    bonus: { preis: 100, name: 'Bonus kaufen', bonus: true, abstoss: -0.15 },
+    superbonus: { preis: 500, name: 'Super-Bonus', bonus: true, startGroesse: 8, startStufe: 3, startRest: 7, abstoss: -0.26 }
   };
 
   function waehle(rng, liste) {
@@ -25134,8 +25134,9 @@ const StollenLogik = (function () {
 
   // Original-Verhalten: neue Edelsteine direkt neben einem Papagei haben seltener dessen Farbe,
   // damit die Papageien nicht fast jeden Drop lange Ketten sammeln (Quote bei vollen Steinwerten).
+  // Negative Staerke (Bonus): umgekehrt, neue Steine neben einem Papagei haben oefter dessen Farbe.
   function abstossen(rng, G, n, r, c, sym, staerke) {
-    if (!sym || sym.t !== 'g' || !(rng() < staerke)) {
+    if (!sym || sym.t !== 'g' || !staerke || !(rng() < Math.abs(staerke))) {
       return sym;
     }
     const nah = [];
@@ -25144,6 +25145,12 @@ const StollenLogik = (function () {
       if (rr >= 0 && cc >= 0 && rr < n && cc < n && G[rr][cc] && G[rr][cc].t === 's') {
         nah.push(G[rr][cc].f);
       }
+    }
+    if (staerke < 0) {
+      if (nah.length) {
+        sym.f = nah[Math.floor(rng() * nah.length)];
+      }
+      return sym;
     }
     if (nah.indexOf(sym.f) < 0) {
       return sym;
@@ -25339,13 +25346,13 @@ const StollenLogik = (function () {
         break;
       }
       if (!bewegt) {
-        // Platzwechsel (Switcheroo): benachbarte Papageien tauschen, wenn einer weitersammeln kann
+        // Platzwechsel (Switcheroo): waagerecht benachbarte Papageien tauschen, wenn einer weitersammeln kann
         let getauscht = false;
         if (tausche < 10) {
           for (let f1 = 0; f1 < 4 && !getauscht; f1++) {
             for (let f2 = f1 + 1; f2 < 4 && !getauscht; f2++) {
               const p1 = pos[f1], p2 = pos[f2];
-              if (p1 && p2 && Math.abs(p1[0] - p2[0]) + Math.abs(p1[1] - p2[1]) === 1) {
+              if (p1 && p2 && p1[0] === p2[0] && Math.abs(p1[1] - p2[1]) === 1) { // Original: nur waagerecht tauschen
                 if (hatSammelbar(G, n, p2, f1) || hatSammelbar(G, n, p1, f2)) {
                   G[p1[0]][p1[1]] = { t: 's', f: f2 };
                   G[p2[0]][p2[1]] = { t: 's', f: f1 };
@@ -27800,7 +27807,7 @@ const SzeneStollen = (function () {
     + '<li><b>Wild (W):</b> zählt für jeden Papagei als Edelstein seiner aktuellen Stufe.</li>'
     + '<li><b>Goldmünze:</b> zahlt sofort ihren Multiplikator (1× bis 1000×).</li>'
     + '<li><b>Piraten-Bombe:</b> sprengt alle Edelsteine weg und vergrößert das Schiffsdeck (bis 8 × 8).</li>'
-    + '<li><b>Platzwechsel (Switcheroo):</b> Stecken zwei benachbarte Papageien fest, tauschen sie automatisch die Plätze, sobald einer weitersammeln kann.</li>'
+    + '<li><b>Platzwechsel (Switcheroo):</b> Stecken zwei nebeneinander (waagerecht) stehende Papageien fest, tauschen sie automatisch die Plätze, sobald einer weitersammeln kann.</li>'
     + '<li><b>Goldener Anker (Bonus):</b> 3 Anker starten <b>5 Free Drops</b>. Deckgröße, Edelstein-Stufen und Truhen-Leiste bleiben erhalten; je 3 weitere Anker bringen +5 Free Drops.</li>'
     + '<li><b>Truhen-Leiste:</b> Jeder gesammelte Edelstein füllt sie. Bei ' + L_.KONF.leiste + ' öffnen sich 3 Piraten-Schatztruhen mit zufälligen Feature-Symbolen.</li></ul>'
     + '<p><b>Kaufen (X-iter):</b> Bonus-Jagd (3×), Truhen-Fieber (10×, 3 Truhen sofort), Bonus (100×), Super-Bonus (500×, 8 × 8 Deck &amp; alle Edelsteine Stufe 3).</p>'
