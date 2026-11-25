@@ -25021,23 +25021,24 @@ const StollenLogik = (function () {
   // Gewichte fuer neue Felder (1:1 Pirots-Mechanik, auf 88,9 % DE-Online-Casino-RTP kalibriert)
   const KONF = {
     edel: [12, 20, 30, 38],      // rot, lila, gruen, blau
-    joker: 0.45, schleif: 0.36, topf: 0.44, nugget: 0.34, dynamit: 0.32, lore: 0.56,
-    bonusFaktor: { schleif: 3.4, dynamit: 2.5, nugget: 1.4, joker: 1.4, topf: 1.4, lore: 0.32 },
+    joker: 0.45, schleif: 0.36, topf: 0.44, nugget: 0.34, dynamit: 0.32, lore: 1.15,
+    bonusFaktor: { schleif: 3.4, dynamit: 2.5, nugget: 1.4, joker: 1.4, topf: 1.4, lore: 0.156 },
     muenzen: [[1, 400], [2, 300], [3, 150], [5, 80], [10, 40], [20, 15], [50, 6], [100, 2.5], [250, 0.6], [500, 0.2], [1000, 0.08]],
     truhe: [['w', 28], ['u', 24], ['x', 20], ['c', 16], ['b', 8], ['a', 4]],
     regenbogen: 0.18,
     leiste: 24,
     skalBasis: 1, // Edelsteinwerte wie im Original (Rubin 0,25x ... Saphir 0,05x je Stein auf Stufe 1)
     skalBonus: 1,
-    sammler: [[1, 27], [2, 36], [3, 25], [4, 12]] // Papageien im Grundspiel
+    abstoss: 0.97, // Grundspiel
+    abstossBonus: 0.4
   };
   // Kauf-/Spielmodi (X-iter Stil, alle auf ~88,9 % RTP kalibriert)
   const MODI = {
     normal: { preis: 1, name: 'Normal' },
-    jagd: { preis: 3, name: 'Bonus-Jagd', loreFaktor: 2.05, alleSammler: true, skal: 0.55, bonusSkal: 0.55 },
-    fieber: { preis: 10, name: 'Truhen-Fieber', startTruhen: 3, alleSammler: true, skal: 1.1, bonusSkal: 1.1 },
-    bonus: { preis: 100, name: 'Bonus kaufen', bonus: true, skal: 1.045 },
-    superbonus: { preis: 500, name: 'Super-Bonus', bonus: true, startGroesse: 8, startStufe: 3, startRest: 7, skal: 1.65 }
+    jagd: { preis: 3, name: 'Bonus-Jagd', loreFaktor: 2.8 },
+    fieber: { preis: 10, name: 'Truhen-Fieber', startTruhen: 3, abstoss: 0.05, skal: 1 },
+    bonus: { preis: 100, name: 'Bonus kaufen', bonus: true, abstoss: 0, skal: 1.07 },
+    superbonus: { preis: 500, name: 'Super-Bonus', bonus: true, startGroesse: 8, startStufe: 3, startRest: 7, abstoss: 0, skal: 1.67 }
   };
 
   function waehle(rng, liste) {
@@ -25131,6 +25132,42 @@ const StollenLogik = (function () {
     return false;
   }
 
+  // Original-Verhalten: neue Edelsteine direkt neben einem Papagei haben seltener dessen Farbe,
+  // damit die Papageien nicht fast jeden Drop lange Ketten sammeln (Quote bei vollen Steinwerten).
+  function abstossen(rng, G, n, r, c, sym, staerke) {
+    if (!sym || sym.t !== 'g' || !(rng() < staerke)) {
+      return sym;
+    }
+    const nah = [];
+    for (let k = 0; k < 4; k++) {
+      const rr = r + NACHBARN[k][0], cc = c + NACHBARN[k][1];
+      if (rr >= 0 && cc >= 0 && rr < n && cc < n && G[rr][cc] && G[rr][cc].t === 's') {
+        nah.push(G[rr][cc].f);
+      }
+    }
+    if (nah.indexOf(sym.f) < 0) {
+      return sym;
+    }
+    const frei = [0, 1, 2, 3].filter(function (f) {
+      return nah.indexOf(f) < 0;
+    });
+    if (frei.length) {
+      let s = 0;
+      for (let i = 0; i < frei.length; i++) {
+        s += KONF.edel[frei[i]];
+      }
+      let x = rng() * s;
+      for (let i = 0; i < frei.length; i++) {
+        x -= KONF.edel[frei[i]];
+        if (x < 0 || i === frei.length - 1) {
+          sym.f = frei[i];
+          break;
+        }
+      }
+    }
+    return sym;
+  }
+
   /**
    * Eine Fahrt (Drop). zustand: { groesse, stufen[4], leiste, bonus (bool), modus } wird veraendert.
    * Liefert { ereignisse, gewinn (× Einsatz), loren, gedeckelt }.
@@ -25141,11 +25178,12 @@ const StollenLogik = (function () {
     let n = z.groesse;
     let gewinn = 0, loren = 0, gedeckelt = false, tausche = 0;
     const st = z.stufen;
+    const abst = z.abst != null ? z.abst : (z.bonus ? KONF.abstossBonus : (mod.abstoss != null ? mod.abstoss : KONF.abstoss));
     const G = [];
     for (let r = 0; r < MAX; r++) {
       G.push(new Array(MAX).fill(null));
     }
-    // Grundspiel: 1 bis 4 Papageien landen auf dem Deck, im Bonus immer alle vier
+    // Original Pirots: immer alle 4 Piraten-Papageien landen auf dem Deck
     const pos = [];
     const frei = [];
     for (let r = 0; r < n; r++) {
@@ -25153,7 +25191,7 @@ const StollenLogik = (function () {
         frei.push([r, c]);
       }
     }
-    const anzahl = z.bonus || mod.alleSammler ? 4 : waehle(rng, KONF.sammler);
+    const anzahl = 4; // Original: immer alle vier Papageien
     const farben = [0, 1, 2, 3];
     for (let i = 3; i > 0; i--) {
       const j = Math.floor(rng() * (i + 1));
@@ -25175,7 +25213,7 @@ const StollenLogik = (function () {
     for (let r = 0; r < n; r++) {
       for (let c = 0; c < n; c++) {
         if (!G[r][c]) {
-          G[r][c] = neuesSymbol(rng, z.bonus ? null : mod, z.bonus);
+          G[r][c] = abstossen(rng, G, n, r, c, neuesSymbol(rng, z.bonus ? null : mod, z.bonus), abst);
         }
       }
     }
@@ -25360,7 +25398,7 @@ const StollenLogik = (function () {
         let k = 0;
         for (let r = 0; r < n; r++) {
           if (G[r][c] === null) {
-            G[r][c] = neuesSymbol(rng, z.bonus ? null : mod, z.bonus);
+            G[r][c] = abstossen(rng, G, n, r, c, neuesSymbol(rng, z.bonus ? null : mod, z.bonus), abst);
             bewegungen.push({ von: [r - neu, c], nach: [r, c], neu: true, sym: Object.assign({}, G[r][c]), tief: neu - k });
             k++;
           }
@@ -25423,7 +25461,8 @@ const StollenLogik = (function () {
   function bonusStart(z, mod) {
     return {
       groesse: mod.startGroesse || START, stufen: [mod.startStufe || 1, mod.startStufe || 1, mod.startStufe || 1, mod.startStufe || 1],
-      leiste: 0, bonus: true, modus: 'normal', rest: mod.startRest || 5, loren: 0, summe: 0, skal: mod.skal || KONF.skalBonus
+      leiste: 0, bonus: true, modus: 'normal', rest: mod.startRest || 5, loren: 0, summe: 0, skal: mod.skal || KONF.skalBonus,
+      abst: mod.abstoss != null ? mod.abstoss : null
     };
   }
   function bonusSpielen(rng, b) {
