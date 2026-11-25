@@ -25021,24 +25021,24 @@ const StollenLogik = (function () {
   // Gewichte fuer neue Felder (1:1 Pirots-Mechanik, auf 88,9 % DE-Online-Casino-RTP kalibriert)
   const KONF = {
     edel: [12, 20, 30, 38],      // rot, lila, gruen, blau
-    joker: 0.45, schleif: 0.36, topf: 0.44, nugget: 0.34, dynamit: 0.32, lore: 1.35,
-    bonusFaktor: { schleif: 3.4, dynamit: 2.5, nugget: 1.4, joker: 1.4, topf: 1.4, lore: 0.133 },
+    joker: 0.45, schleif: 0.36, topf: 0.44, nugget: 0.34, dynamit: 0.32, lore: 1.1,
+    bonusFaktor: { schleif: 3.4, dynamit: 2.5, nugget: 1.4, joker: 1.4, topf: 1.4, lore: 0.164 },
     muenzen: [[1, 400], [2, 300], [3, 150], [5, 80], [10, 40], [20, 15], [50, 6], [100, 2.5], [250, 0.6], [500, 0.2], [1000, 0.08]],
     truhe: [['w', 28], ['u', 24], ['x', 20], ['c', 16], ['b', 8], ['a', 4]],
     regenbogen: 0.18,
     leiste: 24,
     skalBasis: 1, // Edelsteinwerte wie im Original (Rubin 0,25x ... Saphir 0,05x je Stein auf Stufe 1)
     skalBonus: 1,
-    abstoss: 0.715, // Grundspiel
-    abstossBonus: 0
+    abstoss: 0.88, // Grundspiel
+    abstossBonus: 0.68
   };
   // Kauf-/Spielmodi (X-iter Stil, alle auf ~88,9 % RTP kalibriert, Edelsteinwerte ueberall unveraendert)
   const MODI = {
     normal: { preis: 1, name: 'Normal' },
-    jagd: { preis: 3, name: 'Bonus-Jagd', loreFaktor: 2.48 },
-    fieber: { preis: 10, name: 'Truhen-Fieber', startTruhen: 3, abstoss: -0.1 },
-    bonus: { preis: 100, name: 'Bonus kaufen', bonus: true, abstoss: -0.17 },
-    superbonus: { preis: 500, name: 'Super-Bonus', bonus: true, startGroesse: 8, startStufe: 3, startRest: 7, abstoss: -0.37 }
+    jagd: { preis: 3, name: 'Bonus-Jagd', loreFaktor: 2.97 },
+    fieber: { preis: 10, name: 'Truhen-Fieber', startTruhen: 3, abstoss: 0.35 },
+    bonus: { preis: 100, name: 'Bonus kaufen', bonus: true, abstoss: 0.3 },
+    superbonus: { preis: 500, name: 'Super-Bonus', bonus: true, startGroesse: 8, startStufe: 3, startRest: 7, abstoss: 0.15 }
   };
 
   function waehle(rng, liste) {
@@ -25130,6 +25130,41 @@ const StollenLogik = (function () {
       }
     }
     return false;
+  }
+
+  // Naechstes sammelbares Feld, das ueber die eigene Spur (in dieser Sammelphase leer gesammelte Felder)
+  // mit dem Papagei verbunden ist – also der Rest seiner zusammenhaengenden Gruppe.
+  function restDerGruppe(G, n, p, f, spurF) {
+    const gesehen = {};
+    gesehen[p[0] * 8 + p[1]] = true;
+    let rand = [p];
+    while (rand.length) {
+      const naechste = [];
+      let best = null, bestP = 99;
+      for (let i = 0; i < rand.length; i++) {
+        for (let k = 0; k < 4; k++) {
+          const rr = rand[i][0] + NACHBARN[k][0], cc = rand[i][1] + NACHBARN[k][1];
+          if (rr < 0 || cc < 0 || rr >= n || cc >= n || gesehen[rr * 8 + cc]) {
+            continue;
+          }
+          gesehen[rr * 8 + cc] = true;
+          const s = G[rr][cc];
+          if (s === null) {
+            if (spurF[rr * 8 + cc]) {
+              naechste.push([rr, cc]);
+            }
+          } else if (rand[i] !== p && sammelbar(s, f) && PRIO[s.t] < bestP) {
+            best = [rr, cc];
+            bestP = PRIO[s.t];
+          }
+        }
+      }
+      if (best) {
+        return best;
+      }
+      rand = naechste;
+    }
+    return null;
   }
 
   // Original-Verhalten: neue Edelsteine direkt neben einem Papagei haben seltener dessen Farbe,
@@ -25234,102 +25269,143 @@ const StollenLogik = (function () {
     const bomben = [];
     while (runden++ < 60) {
       let bewegt = false;
-      for (let f = 0; f < 4 && !gedeckelt; f++) {
-        if (!pos[f]) {
-          continue;
-        }
-        let schritte = 0;
-        while (schritte++ < 80) {
-          const p = pos[f];
-          let best = null, bestP = 99;
-          for (let k = 0; k < 4; k++) {
-            const rr = p[0] + NACHBARN[k][0], cc = p[1] + NACHBARN[k][1];
-            if (rr < 0 || cc < 0 || rr >= n || cc >= n) {
-              continue;
-            }
-            const s = G[rr][cc];
-            if (sammelbar(s, f) && PRIO[s.t] < bestP) {
-              best = [rr, cc];
-              bestP = PRIO[s.t];
-            }
+      // Sammelphase: alle Papageien sammeln reihum, bis keiner mehr etwas erreicht (inkl. Platzwechsel).
+      // Erst danach zuenden Bomben und es rutschen neue Steine nach.
+      let durchgang = 0;
+      const spur = [{}, {}, {}, {}];
+      while (durchgang++ < 40 && !gedeckelt) {
+        let neu = false;
+        for (let f = 0; f < 4 && !gedeckelt; f++) {
+          if (!pos[f]) {
+            continue;
           }
-          if (!best) {
-            break;
-          }
-          bewegt = true;
-          const sym = G[best[0]][best[1]];
-          G[p[0]][p[1]] = null;
-          G[best[0]][best[1]] = { t: 's', f: f };
-          pos[f] = best;
-          let wert = 0;
-          if (sym.t === 'g' || sym.t === 'w') {
-            wert = WERT[f][st[f] - 1];
-            z.leiste++;
-          } else if (sym.t === 'c') {
-            wert = sym.v;
-          }
-          wert *= z.skal || 1;
-          if (wert) {
-            if (gewinn + wert >= MAX_GEWINN) {
-              wert = MAX_GEWINN - gewinn;
-              gedeckelt = true;
-            }
-            gewinn += wert;
-          }
-          ev.push({ e: 'zug', f: f, von: p.slice(), nach: best.slice(), sym: sym, wert: wert, summe: gewinn, leiste: z.leiste });
-          if (gedeckelt) {
-            break;
-          }
-          if (sym.t === 'u') {
-            // Original Pirots: +1 bis +3 Stufen (Weiss = Farbe des sammelnden Papageis, Bunt = alle)
-            const vorher = st.slice();
-            const plus = rng() < 0.65 ? 1 : (rng() < 0.72 ? 2 : 3);
-            const zielF = sym.f === 4 ? 4 : f;
-            if (zielF === 4) {
-              for (let q = 0; q < 4; q++) {
-                st[q] = Math.min(5, st[q] + plus);
+          let schritte = 0;
+          while (schritte++ < 80) {
+            const p = pos[f];
+            let best = null, bestP = 99;
+            for (let k = 0; k < 4; k++) {
+              const rr = p[0] + NACHBARN[k][0], cc = p[1] + NACHBARN[k][1];
+              if (rr < 0 || cc < 0 || rr >= n || cc >= n) {
+                continue;
               }
-            } else {
-              st[f] = Math.min(5, st[f] + plus);
+              const s = G[rr][cc];
+              if (sammelbar(s, f) && PRIO[s.t] < bestP) {
+                best = [rr, cc];
+                bestP = PRIO[s.t];
+              }
             }
-            ev.push({ e: 'stufe', vorher: vorher, stufen: st.slice(), f: zielF, plus: plus, bei: best.slice() });
-          } else if (sym.t === 'x') {
-            // Original Pirots Rum-Trank / Rumfass: faerbt Nachbarsteine in Papageienfarbe + Chance auf Feature-Symbol
-            const zellen = [];
-            const extra = [];
-            for (let dr = -1; dr <= 1; dr++) {
-              for (let dc = -1; dc <= 1; dc++) {
-                const rr = best[0] + dr, cc = best[1] + dc;
-                if (rr < 0 || cc < 0 || rr >= n || cc >= n) {
-                  continue;
+            if (!best) {
+              // Original: der Papagei sammelt die ganze zusammenhaengende Gruppe. Hat er nichts mehr direkt
+              // neben sich, fliegt er ueber bereits leer gesammelte Felder zum Rest der Gruppe zurueck.
+              best = restDerGruppe(G, n, p, f, spur[f]);
+            }
+            if (!best) {
+              break;
+            }
+            bewegt = true;
+            neu = true;
+            const sym = G[best[0]][best[1]];
+            G[p[0]][p[1]] = null;
+            spur[f][p[0] * 8 + p[1]] = true;
+            G[best[0]][best[1]] = { t: 's', f: f };
+            pos[f] = best;
+            let wert = 0;
+            if (sym.t === 'g' || sym.t === 'w') {
+              wert = WERT[f][st[f] - 1];
+              z.leiste++;
+            } else if (sym.t === 'c') {
+              wert = sym.v;
+            }
+            wert *= z.skal || 1;
+            if (wert) {
+              if (gewinn + wert >= MAX_GEWINN) {
+                wert = MAX_GEWINN - gewinn;
+                gedeckelt = true;
+              }
+              gewinn += wert;
+            }
+            ev.push({ e: 'zug', f: f, von: p.slice(), nach: best.slice(), sym: sym, wert: wert, summe: gewinn, leiste: z.leiste });
+            if (gedeckelt) {
+              break;
+            }
+            if (sym.t === 'u') {
+              // Original Pirots: +1 bis +3 Stufen (Weiss = Farbe des sammelnden Papageis, Bunt = alle)
+              const vorher = st.slice();
+              const plus = rng() < 0.65 ? 1 : (rng() < 0.72 ? 2 : 3);
+              const zielF = sym.f === 4 ? 4 : f;
+              if (zielF === 4) {
+                for (let q = 0; q < 4; q++) {
+                  st[q] = Math.min(5, st[q] + plus);
                 }
-                const s = G[rr][cc];
-                if (s && s.t === 'g' && s.f !== f) {
-                  if (extra.length === 0 && rng() < 0.14) {
-                    const ns = truhenSymbol(rng);
-                    G[rr][cc] = ns;
-                    extra.push({ bei: [rr, cc], sym: Object.assign({}, ns) });
-                  } else {
-                    s.f = f;
-                    zellen.push([rr, cc]);
+              } else {
+                st[f] = Math.min(5, st[f] + plus);
+              }
+              ev.push({ e: 'stufe', vorher: vorher, stufen: st.slice(), f: zielF, plus: plus, bei: best.slice() });
+            } else if (sym.t === 'x') {
+              // Original Pirots Rum-Trank / Rumfass: faerbt Nachbarsteine in Papageienfarbe + Chance auf Feature-Symbol
+              const zellen = [];
+              const extra = [];
+              for (let dr = -1; dr <= 1; dr++) {
+                for (let dc = -1; dc <= 1; dc++) {
+                  const rr = best[0] + dr, cc = best[1] + dc;
+                  if (rr < 0 || cc < 0 || rr >= n || cc >= n) {
+                    continue;
+                  }
+                  const s = G[rr][cc];
+                  if (s && s.t === 'g' && s.f !== f) {
+                    if (extra.length === 0 && rng() < 0.14) {
+                      const ns = truhenSymbol(rng);
+                      G[rr][cc] = ns;
+                      extra.push({ bei: [rr, cc], sym: Object.assign({}, ns) });
+                    } else {
+                      s.f = f;
+                      zellen.push([rr, cc]);
+                    }
                   }
                 }
               }
+              ev.push({ e: 'topf', f: f, bei: best.slice(), zellen: zellen, extra: extra });
+            } else if (sym.t === 'a') {
+              loren++;
+              ev.push({ e: 'lore', zahl: loren });
+            } else if (sym.t === 'b') {
+              // Original: die Bombe zuendet erst, wenn alle Papageien fertig gesammelt haben
+              bomben.push(best.slice());
             }
-            ev.push({ e: 'topf', f: f, bei: best.slice(), zellen: zellen, extra: extra });
-          } else if (sym.t === 'a') {
-            loren++;
-            ev.push({ e: 'lore', zahl: loren });
-          } else if (sym.t === 'b') {
-            // Original: die Bombe zuendet erst, wenn alle Papageien fertig gesammelt haben
-            bomben.push(best.slice());
-          }
-          // Sammelleiste voll: 3 Schatztruhen
-          if (z.leiste >= KONF.leiste) {
-            z.leiste -= KONF.leiste;
-            truhen(rng, G, n, ev, 3);
+            // Sammelleiste voll: 3 Schatztruhen
+            if (z.leiste >= KONF.leiste) {
+              z.leiste -= KONF.leiste;
+              truhen(rng, G, n, ev, 3);
+            }
           }
         }
+        if (neu) {
+          continue;
+        }
+        // Platzwechsel (Switcheroo): waagerecht benachbarte Papageien tauschen, wenn einer weitersammeln kann
+        let getauscht = false;
+        if (tausche < 10) {
+          for (let f1 = 0; f1 < 4 && !getauscht; f1++) {
+            for (let f2 = f1 + 1; f2 < 4 && !getauscht; f2++) {
+              const p1 = pos[f1], p2 = pos[f2];
+              if (p1 && p2 && p1[0] === p2[0] && Math.abs(p1[1] - p2[1]) === 1) { // Original: nur waagerecht tauschen
+                if (hatSammelbar(G, n, p2, f1) || hatSammelbar(G, n, p1, f2)) {
+                  G[p1[0]][p1[1]] = { t: 's', f: f2 };
+                  G[p2[0]][p2[1]] = { t: 's', f: f1 };
+                  pos[f1] = p2;
+                  pos[f2] = p1;
+                  tausche++;
+                  getauscht = true;
+                  ev.push({ e: 'tausch', f1: f1, f2: f2, p1: p1.slice(), p2: p2.slice() });
+                }
+              }
+            }
+          }
+        }
+        if (getauscht) {
+          continue;
+        }
+        break;
       }
       if (gedeckelt) {
         break;
@@ -25354,29 +25430,6 @@ const StollenLogik = (function () {
         ev.push({ e: 'dynamit', bei: bei, weg: weg, n: n, alt: alt });
       }
       if (!bewegt) {
-        // Platzwechsel (Switcheroo): waagerecht benachbarte Papageien tauschen, wenn einer weitersammeln kann
-        let getauscht = false;
-        if (tausche < 10) {
-          for (let f1 = 0; f1 < 4 && !getauscht; f1++) {
-            for (let f2 = f1 + 1; f2 < 4 && !getauscht; f2++) {
-              const p1 = pos[f1], p2 = pos[f2];
-              if (p1 && p2 && p1[0] === p2[0] && Math.abs(p1[1] - p2[1]) === 1) { // Original: nur waagerecht tauschen
-                if (hatSammelbar(G, n, p2, f1) || hatSammelbar(G, n, p1, f2)) {
-                  G[p1[0]][p1[1]] = { t: 's', f: f2 };
-                  G[p2[0]][p2[1]] = { t: 's', f: f1 };
-                  pos[f1] = p2;
-                  pos[f2] = p1;
-                  tausche++;
-                  getauscht = true;
-                  ev.push({ e: 'tausch', f1: f1, f2: f2, p1: p1.slice(), p2: p2.slice() });
-                }
-              }
-            }
-          }
-        }
-        if (getauscht) {
-          continue;
-        }
         break;
       }
       // Nachrutschen und Auffuellen (Avalanche)
