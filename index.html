@@ -25035,10 +25035,10 @@ const StollenLogik = (function () {
   // Kauf-/Spielmodi (X-iter Stil, alle auf ~88,9 % RTP kalibriert, Edelsteinwerte ueberall unveraendert)
   const MODI = {
     normal: { preis: 1, name: 'Normal' },
-    jagd: { preis: 3, name: 'Bonus-Jagd', loreFaktor: 2.42 },
+    jagd: { preis: 3, name: 'Bonus-Jagd', loreFaktor: 2.48 },
     fieber: { preis: 10, name: 'Truhen-Fieber', startTruhen: 3, abstoss: -0.1 },
-    bonus: { preis: 100, name: 'Bonus kaufen', bonus: true, abstoss: -0.15 },
-    superbonus: { preis: 500, name: 'Super-Bonus', bonus: true, startGroesse: 8, startStufe: 3, startRest: 7, abstoss: -0.26 }
+    bonus: { preis: 100, name: 'Bonus kaufen', bonus: true, abstoss: -0.17 },
+    superbonus: { preis: 500, name: 'Super-Bonus', bonus: true, startGroesse: 8, startStufe: 3, startRest: 7, abstoss: -0.37 }
   };
 
   function waehle(rng, liste) {
@@ -25231,6 +25231,7 @@ const StollenLogik = (function () {
       ev.push({ e: 'start', g: kopie(G), n: n, stufen: st.slice() });
     }
     let runden = 0;
+    const bomben = [];
     while (runden++ < 60) {
       let bewegt = false;
       for (let f = 0; f < 4 && !gedeckelt; f++) {
@@ -25320,20 +25321,8 @@ const StollenLogik = (function () {
             loren++;
             ev.push({ e: 'lore', zahl: loren });
           } else if (sym.t === 'b') {
-            const weg = [];
-            for (let r = 0; r < n; r++) {
-              for (let c = 0; c < n; c++) {
-                if (G[r][c] && G[r][c].t === 'g') {
-                  G[r][c] = null;
-                  weg.push([r, c]);
-                }
-              }
-            }
-            const alt = n;
-            if (n < MAX) {
-              n++;
-            }
-            ev.push({ e: 'dynamit', bei: best.slice(), weg: weg, n: n, alt: alt });
+            // Original: die Bombe zuendet erst, wenn alle Papageien fertig gesammelt haben
+            bomben.push(best.slice());
           }
           // Sammelleiste voll: 3 Schatztruhen
           if (z.leiste >= KONF.leiste) {
@@ -25344,6 +25333,25 @@ const StollenLogik = (function () {
       }
       if (gedeckelt) {
         break;
+      }
+      // Gesammelte Bomben explodieren jetzt: Edelsteine rundherum (3 × 3) weg, Deck waechst
+      while (bomben.length) {
+        const bei = bomben.shift();
+        const weg = [];
+        for (let dr = -1; dr <= 1; dr++) {
+          for (let dc = -1; dc <= 1; dc++) {
+            const rr = bei[0] + dr, cc = bei[1] + dc;
+            if (rr >= 0 && cc >= 0 && rr < n && cc < n && G[rr][cc] && G[rr][cc].t === 'g') {
+              G[rr][cc] = null;
+              weg.push([rr, cc]);
+            }
+          }
+        }
+        const alt = n;
+        if (n < MAX) {
+          n++;
+        }
+        ev.push({ e: 'dynamit', bei: bei, weg: weg, n: n, alt: alt });
       }
       if (!bewegt) {
         // Platzwechsel (Switcheroo): waagerecht benachbarte Papageien tauschen, wenn einer weitersammeln kann
@@ -27175,7 +27183,9 @@ const SzeneStollen = (function () {
               const z = u / 0.35;
               skX = 1 + z * 0.3 + Math.sin(z * 42) * 0.09;
               skY = 1 + z * 0.3 - Math.sin(z * 42) * 0.09;
-            } else if (u > 0.32 && s.t === 'g') {
+            } else if (u > 0.32 && s.t === 'g' && A.e.weg.some(function (w) {
+              return w[0] === r && w[1] === c;
+            })) {
               const p = Math.max(0, 1 - (u - 0.32) * 3.8);
               skX = skY = p;
               al = p;
@@ -27806,7 +27816,7 @@ const SzeneStollen = (function () {
     + '<li><b>Upgrade-Pfeil (Weiß / Bunt):</b> hebt die Edelstein-Stufe des Papageis (bunt: alle 4 Farben) um <b>1 bis 3 Stufen</b> an (max. Stufe 5).</li>'
     + '<li><b>Wild (W):</b> zählt für jeden Papagei als Edelstein seiner aktuellen Stufe.</li>'
     + '<li><b>Goldmünze:</b> zahlt sofort ihren Multiplikator (1× bis 1000×).</li>'
-    + '<li><b>Piraten-Bombe:</b> sprengt alle Edelsteine weg und vergrößert das Schiffsdeck (bis 8 × 8).</li>'
+    + '<li><b>Piraten-Bombe:</b> zündet, sobald alle Papageien fertig gesammelt haben, sprengt die Edelsteine rundherum weg und vergrößert das Schiffsdeck (bis 8 × 8). Erst danach rutschen neue Steine nach.</li>'
     + '<li><b>Platzwechsel (Switcheroo):</b> Stecken zwei nebeneinander (waagerecht) stehende Papageien fest, tauschen sie automatisch die Plätze, sobald einer weitersammeln kann.</li>'
     + '<li><b>Goldener Anker (Bonus):</b> 3 Anker starten <b>5 Free Drops</b>. Deckgröße, Edelstein-Stufen und Truhen-Leiste bleiben erhalten; je 3 weitere Anker bringen +5 Free Drops.</li>'
     + '<li><b>Truhen-Leiste:</b> Jeder gesammelte Edelstein füllt sie. Bei ' + L_.KONF.leiste + ' öffnen sich 3 Piraten-Schatztruhen mit zufälligen Feature-Symbolen.</li></ul>'
