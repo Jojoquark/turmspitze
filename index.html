@@ -25027,14 +25027,15 @@ const StollenLogik = (function () {
     truhe: [['w', 28], ['u', 24], ['x', 20], ['c', 16], ['b', 8], ['a', 4]],
     regenbogen: 0.18,
     leiste: 24,
-    skalBasis: 0.238,
-    skalBonus: 0.49
+    skalBasis: 1, // Edelsteinwerte wie im Original (Rubin 0,25x ... Saphir 0,05x je Stein auf Stufe 1)
+    skalBonus: 1,
+    sammler: [[1, 27], [2, 36], [3, 25], [4, 12]] // Papageien im Grundspiel
   };
   // Kauf-/Spielmodi (X-iter Stil, alle auf ~88,9 % RTP kalibriert)
   const MODI = {
     normal: { preis: 1, name: 'Normal' },
-    jagd: { preis: 3, name: 'Bonus-Jagd', loreFaktor: 2.05, bonusSkal: 0.95 },
-    fieber: { preis: 10, name: 'Truhen-Fieber', startTruhen: 3, skal: 1.08, bonusSkal: 1.045 },
+    jagd: { preis: 3, name: 'Bonus-Jagd', loreFaktor: 2.05, alleSammler: true, skal: 0.55, bonusSkal: 0.55 },
+    fieber: { preis: 10, name: 'Truhen-Fieber', startTruhen: 3, alleSammler: true, skal: 1.1, bonusSkal: 1.1 },
     bonus: { preis: 100, name: 'Bonus kaufen', bonus: true, skal: 1.045 },
     superbonus: { preis: 500, name: 'Super-Bonus', bonus: true, startGroesse: 8, startStufe: 3, startRest: 7, skal: 1.65 }
   };
@@ -25144,7 +25145,7 @@ const StollenLogik = (function () {
     for (let r = 0; r < MAX; r++) {
       G.push(new Array(MAX).fill(null));
     }
-    // Original Pirots: immer alle 4 Piraten-Papageien landen auf dem Deck
+    // Grundspiel: 1 bis 4 Papageien landen auf dem Deck, im Bonus immer alle vier
     const pos = [];
     const frei = [];
     for (let r = 0; r < n; r++) {
@@ -25152,7 +25153,20 @@ const StollenLogik = (function () {
         frei.push([r, c]);
       }
     }
+    const anzahl = z.bonus || mod.alleSammler ? 4 : waehle(rng, KONF.sammler);
+    const farben = [0, 1, 2, 3];
+    for (let i = 3; i > 0; i--) {
+      const j = Math.floor(rng() * (i + 1));
+      const t = farben[i];
+      farben[i] = farben[j];
+      farben[j] = t;
+    }
+    const dabei = farben.slice(0, anzahl);
     for (let f = 0; f < 4; f++) {
+      if (dabei.indexOf(f) < 0) {
+        pos.push(null);
+        continue;
+      }
       const i = Math.floor(rng() * frei.length);
       const p = frei.splice(i, 1)[0];
       pos.push(p);
@@ -25175,6 +25189,9 @@ const StollenLogik = (function () {
     while (runden++ < 60) {
       let bewegt = false;
       for (let f = 0; f < 4 && !gedeckelt; f++) {
+        if (!pos[f]) {
+          continue;
+        }
         let schritte = 0;
         while (schritte++ < 80) {
           const p = pos[f];
@@ -25290,7 +25307,7 @@ const StollenLogik = (function () {
           for (let f1 = 0; f1 < 4 && !getauscht; f1++) {
             for (let f2 = f1 + 1; f2 < 4 && !getauscht; f2++) {
               const p1 = pos[f1], p2 = pos[f2];
-              if (Math.abs(p1[0] - p2[0]) + Math.abs(p1[1] - p2[1]) === 1) {
+              if (p1 && p2 && Math.abs(p1[0] - p2[0]) + Math.abs(p1[1] - p2[1]) === 1) {
                 if (hatSammelbar(G, n, p2, f1) || hatSammelbar(G, n, p1, f2)) {
                   G[p1[0]][p1[1]] = { t: 's', f: f2 };
                   G[p2[0]][p2[1]] = { t: 's', f: f1 };
